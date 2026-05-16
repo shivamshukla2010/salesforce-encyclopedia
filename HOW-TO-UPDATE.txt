@@ -1,0 +1,30 @@
+HOW TO UPDATE THE SALESFORCE ENCYCLOPEDIA
+==========================================
+
+Live site : https://shivamshukla2010.github.io/salesforce-encyclopedia/
+GitHub    : https://github.com/shivamshukla2010/salesforce-encyclopedia
+
+STEPS TO PUBLISH CHANGES
+--------------------------
+1. Edit any HTML file in this folder (index.html or articles/*.html)
+
+2. Open Terminal and run:
+
+   cd "/Users/s.shukla/Desktop/GDrive/CTI LWC/LWC/encyclopedia"
+   git add index.html articles/
+   git commit -m "Brief description of what changed"
+   git push
+
+3. GitHub Pages rebuilds automatically — site is live in ~30 seconds.
+
+ADDING A NEW ARTICLE
+---------------------
+1. Create articles/article-N-your-title.html (copy an existing article as a template)
+2. Add the article card to index.html (copy an existing card block and update the fields)
+3. Run the update steps above
+
+NOTES
+------
+- The local server (serve.sh) is separate from GitHub Pages — you don't need it to publish
+- Git credentials are stored via gh CLI (authenticated as shivamshukla2010)
+- If prompted to log in again: gh auth login --web
