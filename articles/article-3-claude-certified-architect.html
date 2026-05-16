@@ -150,6 +150,11 @@
     border-radius: 2rem; padding: .15rem .65rem;
     font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
   }
+  .view-count-tag {
+    background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.3);
+    border-radius: 2rem; padding: .15rem .7rem;
+    font-size: .75rem; font-weight: 600; letter-spacing: .3px; color: rgba(255,255,255,.9);
+  }
 
   /* ── LAYOUT ───────────────────────────────────────── */
   .article-wrap {
@@ -692,6 +697,7 @@
     <span class="tag">Study Reference</span>
     <span class="tag">Practice Questions</span>
     <span>· Article #3</span>
+    <span class="view-count-tag" id="viewCountBadge">👁 — views</span>
   </div>
 </div>
 
@@ -3137,6 +3143,20 @@ with open("state/research_manifest.json", "w") as f:
       floatBtn.classList.remove('show');
     }
   }, { passive: true });
+
+  // Page view counter via hits.sh
+  (function() {
+    const id = 'shivamshukla2010.github.io/salesforce-encyclopedia/articles/article-3-claude-certified-architect';
+    fetch('https://hits.sh/' + id + '.svg')
+      .then(r => r.text())
+      .then(svg => {
+        const m = svg.match(/<title>([^<]+)<\/title>/);
+        if (m) {
+          const total = m[1].replace(/[^0-9]/g, '');
+          if (total) document.getElementById('viewCountBadge').textContent = '👁 ' + parseInt(total).toLocaleString() + ' views';
+        }
+      }).catch(() => {});
+  })();
 </script>
 </body>
 </html>

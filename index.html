@@ -648,6 +648,7 @@
     <div class="hero-stat"><div class="num" id="totalArticles">3</div><div class="lbl">Articles</div></div>
     <div class="hero-stat"><div class="num">45+</div><div class="lbl">Topics Covered</div></div>
     <div class="hero-stat"><div class="num">8</div><div class="lbl">Categories</div></div>
+    <div class="hero-stat"><div class="num" id="pageViews">—</div><div class="lbl">Page Views</div></div>
   </div>
 </div>
 
@@ -879,6 +880,22 @@
     document.getElementById('resultsCount').textContent =
       `Showing ${count} article${count !== 1 ? 's' : ''}`;
   }
+
+  // Page view counter via hits.sh
+  (function() {
+    const id = 'shivamshukla2010.github.io/salesforce-encyclopedia/index';
+    const img = new Image();
+    img.src = 'https://hits.sh/' + id + '.svg';
+    fetch('https://hits.sh/' + id + '.svg')
+      .then(r => r.text())
+      .then(svg => {
+        const m = svg.match(/<title>([^<]+)<\/title>/);
+        if (m) {
+          const total = m[1].replace(/[^0-9]/g, '');
+          if (total) document.getElementById('pageViews').textContent = parseInt(total).toLocaleString();
+        }
+      }).catch(() => {});
+  })();
 </script>
 </body>
 </html>

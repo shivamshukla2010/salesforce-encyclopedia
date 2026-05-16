@@ -118,6 +118,16 @@
     text-transform: uppercase;
     letter-spacing: .5px;
   }
+  .view-count-tag {
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.3);
+    border-radius: 2rem;
+    padding: .15rem .7rem;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .3px;
+    color: rgba(255,255,255,.9);
+  }
 
   /* ── LAYOUT ───────────────────────────────────────── */
   .article-wrap {
@@ -672,6 +682,7 @@
     <span class="tag">Sandbox</span>
     <span class="tag">APIs</span>
     <span>· Article #1</span>
+    <span class="view-count-tag" id="viewCountBadge">👁 — views</span>
   </div>
 </div>
 
@@ -1503,6 +1514,20 @@
   }, { rootMargin: '-20% 0px -70% 0px' });
 
   cards.forEach(c => observer.observe(c));
+
+  // Page view counter via hits.sh
+  (function() {
+    const id = 'shivamshukla2010.github.io/salesforce-encyclopedia/articles/article-1-sf-deployment';
+    fetch('https://hits.sh/' + id + '.svg')
+      .then(r => r.text())
+      .then(svg => {
+        const m = svg.match(/<title>([^<]+)<\/title>/);
+        if (m) {
+          const total = m[1].replace(/[^0-9]/g, '');
+          if (total) document.getElementById('viewCountBadge').textContent = '👁 ' + parseInt(total).toLocaleString() + ' views';
+        }
+      }).catch(() => {});
+  })();
 </script>
 </body>
 </html>
