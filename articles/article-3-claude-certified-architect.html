@@ -697,7 +697,7 @@
     <span class="tag">Study Reference</span>
     <span class="tag">Practice Questions</span>
     <span>· Article #3</span>
-    <span class="view-count-tag" id="viewCountBadge">👁 — views</span>
+    <img src="https://hits.sh/shivamshukla2010.github.io/salesforce-encyclopedia/articles/article-3-claude-certified-architect/.svg?style=flat&label=Views&color=4bc8ff&labelColor=032d60" alt="Views" style="height:22px;border-radius:4px;vertical-align:middle">
   </div>
 </div>
 
@@ -3144,19 +3144,6 @@ with open("state/research_manifest.json", "w") as f:
     }
   }, { passive: true });
 
-  // Page view counter via hits.sh
-  (function() {
-    const id = 'shivamshukla2010.github.io/salesforce-encyclopedia/articles/article-3-claude-certified-architect';
-    fetch('https://hits.sh/' + id + '.svg')
-      .then(r => r.text())
-      .then(svg => {
-        const m = svg.match(/<title>([^<]+)<\/title>/);
-        if (m) {
-          const total = m[1].replace(/[^0-9]/g, '');
-          if (total) document.getElementById('viewCountBadge').textContent = '👁 ' + parseInt(total).toLocaleString() + ' views';
-        }
-      }).catch(() => {});
-  })();
 </script>
 </body>
 </html>

@@ -682,7 +682,7 @@
     <span class="tag">Sandbox</span>
     <span class="tag">APIs</span>
     <span>· Article #1</span>
-    <span class="view-count-tag" id="viewCountBadge">👁 — views</span>
+    <img src="https://hits.sh/shivamshukla2010.github.io/salesforce-encyclopedia/articles/article-1-sf-deployment/.svg?style=flat&label=Views&color=4bc8ff&labelColor=032d60" alt="Views" style="height:22px;border-radius:4px;vertical-align:middle">
   </div>
 </div>
 
@@ -1515,19 +1515,6 @@
 
   cards.forEach(c => observer.observe(c));
 
-  // Page view counter via hits.sh
-  (function() {
-    const id = 'shivamshukla2010.github.io/salesforce-encyclopedia/articles/article-1-sf-deployment';
-    fetch('https://hits.sh/' + id + '.svg')
-      .then(r => r.text())
-      .then(svg => {
-        const m = svg.match(/<title>([^<]+)<\/title>/);
-        if (m) {
-          const total = m[1].replace(/[^0-9]/g, '');
-          if (total) document.getElementById('viewCountBadge').textContent = '👁 ' + parseInt(total).toLocaleString() + ' views';
-        }
-      }).catch(() => {});
-  })();
 </script>
 </body>
 </html>

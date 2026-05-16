@@ -894,7 +894,7 @@
     <span class="tag">Examples</span>
     <span class="tag">Decision Guide</span>
     <span>· Article #2</span>
-    <span class="view-count-tag" id="viewCountBadge">👁 — views</span>
+    <img src="https://hits.sh/shivamshukla2010.github.io/salesforce-encyclopedia/articles/article-2-ai-model-comparison/.svg?style=flat&label=Views&color=4bc8ff&labelColor=032d60" alt="Views" style="height:22px;border-radius:4px;vertical-align:middle">
   </div>
 </div>
 
@@ -1700,19 +1700,6 @@
     document.querySelectorAll('.example-box, .uc-card').forEach(el => el.style.opacity = '1');
   }
 
-  // Page view counter via hits.sh
-  (function() {
-    const id = 'shivamshukla2010.github.io/salesforce-encyclopedia/articles/article-2-ai-model-comparison';
-    fetch('https://hits.sh/' + id + '.svg')
-      .then(r => r.text())
-      .then(svg => {
-        const m = svg.match(/<title>([^<]+)<\/title>/);
-        if (m) {
-          const total = m[1].replace(/[^0-9]/g, '');
-          if (total) document.getElementById('viewCountBadge').textContent = '👁 ' + parseInt(total).toLocaleString() + ' views';
-        }
-      }).catch(() => {});
-  })();
 </script>
 </body>
 </html>
