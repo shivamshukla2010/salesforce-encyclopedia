@@ -398,10 +398,75 @@
   /* ── HIDDEN ───────────────────────────────────────── */
   .hidden { display: none !important; }
 
-  @media (max-width: 720px) {
-    .page-wrap { grid-template-columns: 1fr; }
-    .sidebar { position: static; }
-    .hero h1 { font-size: 1.7rem; }
+  /* ── RESPONSIVE — iPad landscape (821–1180px) ──────── */
+  @media (min-width: 821px) and (max-width: 1180px) {
+    .page-wrap {
+      grid-template-columns: 190px 1fr;
+      gap: 1.5rem;
+      padding: 2rem 1.25rem 3.5rem;
+    }
+    .sidebar { top: 62px; }
+    .article-grid { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  }
+
+  /* ── RESPONSIVE — iPad portrait + small tablets (≤820px) */
+  @media (max-width: 820px) {
+    .page-wrap {
+      grid-template-columns: 1fr;
+      padding: 1.25rem 1rem 3.5rem;
+    }
+    .sidebar { position: static; margin-bottom: 1rem; }
+    .hero { padding: 2.75rem 1.25rem 2.5rem; }
+    .hero h1 { font-size: 1.85rem; }
+    .hero p { font-size: .95rem; }
+    .hero-stats { gap: 1.25rem; }
+    .hero-stat .num { font-size: 1.5rem; }
+    /* Sidebar sections: collapsed by default on tablet */
+    .sidebar-section.collapsible .sidebar-list { display: none; }
+    .sidebar-section.collapsible.open .sidebar-list { display: block; }
+    .sidebar-title { cursor: pointer; user-select: none; }
+    .sidebar-title::after { content: ' ▼'; font-size: .6rem; float: right; margin-top: .1rem; }
+    .sidebar-section.open .sidebar-title::after { content: ' ▲'; }
+    /* Nav search — wider on tablet */
+    .nav-search input { width: 140px; }
+    /* Sort row wraps cleanly */
+    .section-header { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* ── RESPONSIVE — phones (≤560px) ─────────────────── */
+  @media (max-width: 560px) {
+    .hero h1 { font-size: 1.45rem; }
+    .hero-stats { gap: .9rem; }
+    nav { padding: 0 .85rem; gap: .75rem; }
+    .nav-links a { padding: 0 .55rem; font-size: .75rem; }
+    .nav-search input { width: 100px; }
+    .page-wrap { padding: 1rem .75rem 3rem; }
+    .article-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── TOUCH DEVICES ─────────────────────────────────── */
+  @media (hover: none) and (pointer: coarse) {
+    /* Remove hover shimmer */
+    .article-card::after { display: none; }
+    /* Disable hover lift — use active state instead */
+    .article-card:hover { transform: none; box-shadow: var(--shadow-sm); border-color: var(--border); }
+    .article-card:active { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--blue); }
+    /* 44px tap targets */
+    .sidebar-list li a { min-height: 44px; padding: .55rem .9rem; font-size: .86rem; }
+    .nav-links a { min-height: 52px; }
+    /* Touch-friendly card footer */
+    .card-footer { padding: .75rem 1.1rem; }
+    .card-open-btn { font-size: .8rem; }
+    /* Comfortable card body text */
+    .card-title { font-size: 1rem; }
+    .card-desc { font-size: .84rem; line-height: 1.65; }
+    /* Fast tap */
+    a, button, .sidebar-list li a { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  }
+
+  /* ── iOS safe-area ─────────────────────────────────── */
+  @supports (padding: env(safe-area-inset-bottom)) {
+    .page-wrap { padding-bottom: calc(3.5rem + env(safe-area-inset-bottom)); }
   }
 
   /* ══════════════════════════════════════════════════
@@ -721,6 +786,26 @@
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 40);
   }, { passive: true });
+
+  /* ── Collapsible sidebar sections on tablet/mobile ── */
+  document.querySelectorAll('.sidebar-section').forEach(sec => {
+    sec.classList.add('collapsible');
+    sec.querySelector('.sidebar-title').addEventListener('click', () => {
+      if (window.innerWidth <= 820) sec.classList.toggle('open');
+    });
+  });
+  // Open "All Articles" section by default on tablet
+  function initSidebarState() {
+    if (window.innerWidth <= 820) {
+      document.querySelectorAll('.sidebar-section').forEach((s, i) => {
+        s.classList.toggle('open', i === 0);
+      });
+    } else {
+      document.querySelectorAll('.sidebar-section').forEach(s => s.classList.add('open'));
+    }
+  }
+  initSidebarState();
+  window.addEventListener('resize', initSidebarState, { passive: true });
 
   /* ── Card + sidebar entrance via IntersectionObserver ── */
   const enterObserver = new IntersectionObserver((entries) => {
