@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salesforce Deployment, Testing &amp; Architecture — Salesforce Encyclopedia</title>
+<style>
+  :root {
+    --blue:       #0176d3;
+    --blue-dark:  #014486;
+    --blue-light: #e8f4fd;
+    --navy:       #032d60;
+    --cloud:      #f4f6f9;
+    --white:      #ffffff;
+    --border:     #d8dde6;
+    --text:       #16325c;
+    --text-muted: #54698d;
+    --radius:     0.6rem;
+    --shadow-sm:  0 2px 6px rgba(0,0,0,.09);
+    --shadow-md:  0 4px 18px rgba(0,0,0,.13);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Salesforce Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--cloud);
+    color: var(--text);
+  }
+
+  /* ── NAV ─────────────────────────────────────────── */
+  nav {
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    height: 52px;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  }
+  .nav-back {
+    color: rgba(255,255,255,.75);
+    text-decoration: none;
+    font-size: .82rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    transition: color .15s;
+  }
+  .nav-back:hover { color: #fff; }
+  .nav-divider { color: rgba(255,255,255,.25); }
+  .nav-crumb { color: rgba(255,255,255,.5); font-size: .82rem; }
+  .nav-brand {
+    margin-left: auto;
+    font-size: .95rem;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+  }
+  .nav-brand .dot { color: #00a1e0; }
+
+  /* ── ARTICLE HERO ─────────────────────────────────── */
+  .article-hero {
+    background: linear-gradient(140deg, var(--navy) 0%, #0b5fb0 60%, #0176d3 100%);
+    padding: 3rem 2rem 2.5rem;
+    color: #fff;
+  }
+  .article-hero .breadcrumb {
+    font-size: .75rem;
+    opacity: .65;
+    margin-bottom: .75rem;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .article-hero .breadcrumb a { color: #fff; text-decoration: none; }
+  .article-hero .breadcrumb a:hover { text-decoration: underline; }
+  .article-hero h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -.4px;
+    line-height: 1.25;
+    max-width: 720px;
+    margin-bottom: .75rem;
+  }
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: .78rem;
+    opacity: .8;
+  }
+  .article-date {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 2rem;
+    padding: .25rem .75rem;
+    font-size: .75rem;
+    opacity: .9;
+    margin-bottom: .7rem;
+  }
+  .article-date::before { content: '📅'; font-size: .7rem; }
+
+  .article-meta .tag {
+    background: rgba(255,255,255,.15);
+    border-radius: 2rem;
+    padding: .15rem .65rem;
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+
+  /* ── LAYOUT ───────────────────────────────────────── */
+  .article-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 5rem;
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* ── TOC SIDEBAR ──────────────────────────────────── */
+  .toc-sidebar {
+    position: sticky;
+    top: 68px;
+  }
+  .toc-box {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .toc-box-header {
+    background: var(--blue-light);
+    padding: .55rem .9rem;
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--blue-dark);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+  .toc-box-body { max-height: 70vh; overflow-y: auto; }
+  .toc-group { }
+  .toc-group-label {
+    padding: .5rem .9rem .25rem;
+    font-size: .68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--blue);
+    background: #fafbfc;
+    border-bottom: 1px solid #f0f3f7;
+  }
+  .toc-link {
+    display: block;
+    padding: .38rem .9rem .38rem 1.2rem;
+    font-size: .8rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid #f9f9f9;
+    transition: background .12s, color .12s;
+    line-height: 1.4;
+  }
+  .toc-link:hover { background: var(--blue-light); color: var(--blue); }
+  .toc-link.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+
+  /* search in toc */
+  .toc-search {
+    padding: .5rem .9rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .toc-search input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: .35rem;
+    padding: .3rem .6rem;
+    font-size: .78rem;
+    outline: none;
+    color: var(--text);
+  }
+  .toc-search input:focus { border-color: var(--blue); }
+
+  /* ── ARTICLE BODY ─────────────────────────────────── */
+  .article-body {}
+
+  /* Section headers */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin: 2.5rem 0 1.1rem;
+  }
+  .section-divider:first-child { margin-top: 0; }
+  .section-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .section-divider h2 {
+    font-size: .8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--blue);
+    flex: 1;
+  }
+  .section-divider::after {
+    content: '';
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue) 0%, transparent 100%);
+    flex: 1;
+  }
+
+  /* Q cards */
+  .q-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: box-shadow .2s;
+    scroll-margin-top: 80px;
+  }
+  .q-card:hover { box-shadow: var(--shadow-md); }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    padding: .9rem 1.1rem;
+    cursor: pointer;
+    user-select: none;
+    background: var(--white);
+    transition: background .12s;
+  }
+  .q-header:hover { background: #fafbfd; }
+
+  .q-num {
+    background: var(--blue);
+    color: #fff;
+    border-radius: 50%;
+    min-width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .q-num.green  { background: #2e844a; }
+  .q-num.orange { background: #fe9339; }
+  .q-num.purple { background: #7b5ea7; }
+  .q-num.teal   { background: #0b827c; }
+
+  .q-title {
+    font-size: .93rem;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+    line-height: 1.45;
+  }
+
+  .q-chevron {
+    color: #aaa;
+    font-size: .75rem;
+    transition: transform .22s;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .q-card.open .q-chevron { transform: rotate(180deg); }
+
+  .q-body {
+    display: none;
+    padding: 0 1.1rem 1.1rem 1.1rem;
+    border-top: 1px solid var(--border);
+  }
+  .q-card.open .q-body { display: block; }
+
+  .q-body p {
+    font-size: .875rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+    margin-bottom: .7rem;
+  }
+  .q-body p:last-of-type { margin-bottom: 0; }
+
+  .q-body ul, .q-body ol {
+    padding-left: 1.3rem;
+    margin-bottom: .75rem;
+    font-size: .875rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+  }
+  .q-body li { margin-bottom: .3rem; }
+  .q-body strong { color: var(--text); }
+
+  .q-body code {
+    background: #f0f3f8;
+    border: 1px solid var(--border);
+    border-radius: .25rem;
+    padding: .05rem .35rem;
+    font-size: .82rem;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    color: #c7254e;
+  }
+
+  /* callouts */
+  .callout {
+    border-radius: 0 .35rem .35rem 0;
+    padding: .65rem 1rem;
+    margin-top: .8rem;
+    font-size: .83rem;
+    line-height: 1.6;
+  }
+  .callout.tip {
+    background: #e8f4fd;
+    border-left: 3px solid var(--blue);
+    color: #014486;
+  }
+  .callout.tip::before { content: '💡  '; }
+  .callout.warn {
+    background: #fff8e6;
+    border-left: 3px solid #fe9339;
+    color: #5d3a00;
+  }
+  .callout.warn::before { content: '⚠️  '; }
+  .callout.info {
+    background: #e3f5e3;
+    border-left: 3px solid #2e844a;
+    color: #143a1e;
+  }
+  .callout.info::before { content: 'ℹ️  '; }
+
+  .tag-row { display: flex; gap: .35rem; flex-wrap: wrap; margin-top: .8rem; }
+  .badge {
+    border-radius: 2rem;
+    padding: .12rem .6rem;
+    font-size: .68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+  }
+  .badge.blue   { background: #e8f4fd; color: #014486; }
+  .badge.green  { background: #e3f5e3; color: #2e844a; }
+  .badge.orange { background: #fff0e0; color: #8a4500; }
+  .badge.purple { background: #f3e8ff; color: #5e00c8; }
+  .badge.teal   { background: #e0f5f4; color: #0b5c58; }
+
+  /* ── TOOLBAR ──────────────────────────────────────── */
+  .article-toolbar {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    padding: .7rem 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .toolbar-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: .4rem;
+    padding: .3rem .75rem;
+    font-size: .78rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-weight: 600;
+    transition: background .12s, color .12s, border-color .12s;
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+  }
+  .toolbar-btn:hover { background: var(--blue-light); color: var(--blue); border-color: var(--blue); }
+  .toolbar-sep { flex: 1; }
+  .toolbar-count { font-size: .78rem; color: var(--text-muted); }
+
+  .search-inline {
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: .4rem;
+    overflow: hidden;
+  }
+  .search-inline input {
+    border: none;
+    outline: none;
+    padding: .3rem .65rem;
+    font-size: .78rem;
+    color: var(--text);
+    width: 160px;
+  }
+  .search-inline input:focus { background: var(--blue-light); }
+
+  /* ── HIDDEN ───────────────────────────────────────── */
+  .hidden { display: none !important; }
+
+  @media (max-width: 800px) {
+    .article-wrap { grid-template-columns: 1fr; }
+    .toc-sidebar { position: static; order: -1; }
+    .article-hero h1 { font-size: 1.5rem; }
+  }
+
+  /* ══════════════════════════════════════════════════
+     ANIMATIONS & ENHANCED STYLING
+  ══════════════════════════════════════════════════ */
+
+  /* ── 1. NAV SCROLL SHRINK + FROSTED GLASS ─────────── */
+  nav {
+    transition: height .3s ease, background .3s ease, box-shadow .3s ease, backdrop-filter .3s ease;
+  }
+  nav.scrolled {
+    height: 42px;
+    background: rgba(3, 45, 96, 0.82);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    box-shadow: 0 2px 20px rgba(0,0,0,.4);
+  }
+  nav.scrolled .nav-back,
+  nav.scrolled .nav-crumb { font-size: .78rem; }
+  nav.scrolled .nav-brand { font-size: .88rem; }
+
+  /* ── 2. HERO ANIMATED ORBS ────────────────────────── */
+  .article-hero {
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  .hero-orb-1 {
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, rgba(75,200,255,.15) 0%, transparent 70%);
+    top: -160px; right: -100px;
+    animation: orbFloat1 12s ease-in-out infinite;
+  }
+  .hero-orb-2 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(1,118,211,.2) 0%, transparent 70%);
+    bottom: -100px; left: -80px;
+    animation: orbFloat2 15s ease-in-out infinite;
+  }
+  .hero-orb-3 {
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(255,255,255,.08) 0%, transparent 70%);
+    top: 30%; left: 38%;
+    animation: orbFloat3 10s ease-in-out infinite;
+  }
+  @keyframes orbFloat1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33%       { transform: translate(-30px, 20px) scale(1.05); }
+    66%       { transform: translate(20px, -25px) scale(.95); }
+  }
+  @keyframes orbFloat2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    40%       { transform: translate(25px, -20px) scale(1.08); }
+    70%       { transform: translate(-15px, 30px) scale(.97); }
+  }
+  @keyframes orbFloat3 {
+    0%, 100% { transform: translate(0, 0) scale(1);   opacity: .6; }
+    50%       { transform: translate(18px, -18px) scale(1.15); opacity: 1; }
+  }
+
+  /* Hero content fade-in */
+  @keyframes heroFadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .article-hero .breadcrumb { animation: heroFadeUp .5s ease both; }
+  .article-hero .article-date { animation: heroFadeUp .5s .1s ease both; }
+  .article-hero h1            { animation: heroFadeUp .6s .15s ease both; }
+  .article-hero .article-meta { animation: heroFadeUp .6s .28s ease both; }
+  .article-toolbar            { animation: heroFadeUp .5s .35s ease both; }
+
+  /* ── 3. Q-CARD ENTRANCE ───────────────────────────── */
+  .q-card {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity .45s ease, transform .45s ease, box-shadow .2s ease;
+  }
+  .q-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── 4. Q-CARD HOVER SHIMMER ──────────────────────── */
+  .q-card { position: relative; overflow: hidden; }
+  .q-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.14) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0s;
+    pointer-events: none;
+  }
+  .q-card:hover::after {
+    transform: translateX(100%);
+    transition: transform .5s ease;
+  }
+  .q-card:hover { box-shadow: 0 6px 24px rgba(1,118,211,.13); }
+
+  /* ── TOC SIDEBAR SLIDE-IN ─────────────────────────── */
+  .toc-box {
+    opacity: 0;
+    transform: translateX(16px);
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .toc-box.visible { opacity: 1; transform: translateX(0); }
+  .toc-box:nth-child(1) { transition-delay: .05s; }
+  .toc-box:nth-child(2) { transition-delay: .15s; }
+  .toc-box:nth-child(3) { transition-delay: .22s; }
+  /* back-to-top button */
+  .toc-sidebar > button {
+    opacity: 0;
+    transition: opacity .4s .3s ease;
+  }
+  .toc-sidebar > button.visible { opacity: 1; }
+
+  /* ── SECTION DIVIDER SLIDE-IN ─────────────────────── */
+  .sec-divider, .section-divider {
+    opacity: 0;
+    transform: translateX(-12px);
+    transition: opacity .4s ease, transform .4s ease;
+  }
+  .sec-divider.visible, .section-divider.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-back" href="../index.html">← Back</a>
+  <span class="nav-divider">›</span>
+  <span class="nav-crumb">DevOps &amp; Deployment</span>
+  <a class="nav-brand" href="../index.html">☁ Salesforce</span> Encyclopedia</a>
+</nav>
+
+<!-- HERO -->
+<div class="article-hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+  <div class="breadcrumb">
+    <a href="../index.html">Encyclopedia</a> › <a href="../index.html">DevOps &amp; Deployment</a> › Article #1
+  </div>
+  <div class="article-date">Published 16 May 2026</div>
+  <h1>Salesforce Deployment, Testing &amp; Architecture<br>— Complete Reference</h1>
+  <div class="article-meta">
+    <span class="tag">34 Topics</span>
+    <span class="tag">DevOps</span>
+    <span class="tag">Testing</span>
+    <span class="tag">Packages</span>
+    <span class="tag">Sandbox</span>
+    <span class="tag">APIs</span>
+    <span>· Article #1</span>
+  </div>
+</div>
+
+<!-- WRAP -->
+<div class="article-wrap">
+
+  <!-- MAIN CONTENT -->
+  <main class="article-body">
+
+    <!-- Toolbar -->
+    <div class="article-toolbar">
+      <button class="toolbar-btn" onclick="expandAll()">⊞ Expand All</button>
+      <button class="toolbar-btn" onclick="collapseAll()">⊟ Collapse All</button>
+      <div class="search-inline">
+        <input type="text" id="qSearch" placeholder="🔍 Filter questions…" oninput="filterQuestions()">
+      </div>
+      <span class="toolbar-sep"></span>
+      <span class="toolbar-count" id="qCount">34 topics</span>
+    </div>
+
+    <!-- ── SECTION 1: Deployment & Migration ───────── -->
+    <div class="section-divider" id="sec-deployment">
+      <span class="section-icon">🚀</span><h2>Deployment &amp; Migration</h2>
+    </div>
+
+    <div class="q-card" id="q1" data-text="destructivechanges xml deployment metadata">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">1</div>
+        <div class="q-title">How does destructivechanges.xml work?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p><strong>destructivechanges.xml</strong> is a Salesforce Metadata API file that deletes metadata components from a target org during a deployment. It shares the same XML structure as <code>package.xml</code> but lists components to remove rather than deploy.</p>
+        <ul>
+          <li><strong>Pre-destructive (<code>destructiveChangesPre.xml</code>):</strong> Deletions run <em>before</em> the main deployment. Use when conflicting metadata must be removed first.</li>
+          <li><strong>Post-destructive (<code>destructiveChangesPost.xml</code>):</strong> Deletions run <em>after</em>. Use for cleanup once new components are safely deployed.</li>
+          <li>Must be included in the same ZIP package alongside an (optionally empty) <code>package.xml</code>.</li>
+          <li>Component files do <em>not</em> need to be present in the package — only the XML manifest entry.</li>
+        </ul>
+        <div class="callout tip">Always validate with <code>--checkonly</code> before running a destructive deployment in production.</div>
+        <div class="tag-row"><span class="badge blue">Metadata API</span><span class="badge orange">Destructive</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q2" data-text="migration products opportunities loading order data">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">2</div>
+        <div class="q-title">Why should products be loaded after opportunities in Salesforce during migration?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>Opportunity Line Items (products on an opportunity) have a <strong>required parent relationship</strong> with both Opportunity and PricebookEntry. Loading order must respect these FK dependencies:</p>
+        <ol>
+          <li>Pricebooks &amp; Products (PricebookEntry)</li>
+          <li>Accounts &amp; Contacts</li>
+          <li>Opportunities (reference Accounts)</li>
+          <li>Opportunity Line Items (reference Opportunities + PricebookEntries)</li>
+        </ol>
+        <p>If you attempt to insert Opportunity Line Items before the parent Opportunity exists, the operation fails with a parent-not-found error. Salesforce enforces referential integrity at the database level.</p>
+        <div class="tag-row"><span class="badge blue">Data Migration</span><span class="badge green">Best Practice</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q25" data-text="automated deployment ci cd pipeline sf cli">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">25</div>
+        <div class="q-title">Automated deployment</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>Automated deployment uses CI/CD pipelines to push Salesforce metadata to target orgs without manual intervention. Common tools include <strong>GitHub Actions, Jenkins, Bitbucket Pipelines</strong>, and the <code>sf</code> CLI.</p>
+        <ul>
+          <li>Source is validated (check-only) against the target, then deployed on merge or tag.</li>
+          <li>Apex test execution is enforced automatically — no human bypass possible.</li>
+          <li>Rollback is achieved by reverting the source commit and redeploying.</li>
+          <li>Reduces human error, enforces code review gates, and provides a full audit trail via git history.</li>
+        </ul>
+        <div class="callout tip">Use <code>sf project deploy start --dry-run</code> in PR checks for validation feedback before merging.</div>
+        <div class="tag-row"><span class="badge blue">CI/CD</span><span class="badge green">DevOps</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q23" data-text="ant migration tool benefits apache force.com deploy">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">23</div>
+        <div class="q-title">Benefits of the Ant Migration Tool</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>The Ant Migration Tool wraps the Metadata API in Apache Ant tasks for scripted deployments.</p>
+        <ul>
+          <li><strong>Scriptable &amp; repeatable:</strong> Build files can be version-controlled and run in CI pipelines.</li>
+          <li><strong>Fine-grained control:</strong> Specify exactly which components to retrieve/deploy via <code>package.xml</code>.</li>
+          <li><strong>Destructive changes support:</strong> Easy inclusion of <code>destructiveChanges.xml</code>.</li>
+          <li><strong>Validation mode:</strong> <code>checkOnly=true</code> validates without committing changes.</li>
+          <li><strong>Test level control:</strong> Specify <code>RunLocalTests</code>, <code>RunAllTestsInOrg</code>, or <code>NoTestRun</code>.</li>
+        </ul>
+        <div class="callout warn">The Ant Migration Tool is considered legacy. Salesforce recommends migrating to the <strong>sf CLI</strong> with DX source format.</div>
+        <div class="tag-row"><span class="badge orange">Legacy</span><span class="badge blue">Metadata API</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q26" data-text="automated change tracking source tracking delta sfdx">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">26</div>
+        <div class="q-title">Automated change tracking</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>Automated change tracking detects which metadata has changed in an org or source directory without manual identification. Two main forms:</p>
+        <ul>
+          <li><strong>Source Tracking:</strong> Scratch orgs and Developer/Developer Pro sandboxes record every metadata change. <code>sf project retrieve start</code> pulls only changed components.</li>
+          <li><strong>Git-based delta:</strong> Tools like <em>sfdx-git-delta</em> compare git commits to build a <code>package.xml</code> containing only changed files, dramatically speeding up deployments.</li>
+        </ul>
+        <div class="callout tip">Source tracking requires Developer or Developer Pro sandboxes. Full Copy and Partial Copy sandboxes do <em>not</em> support source tracking.</div>
+        <div class="tag-row"><span class="badge blue">Source Tracking</span><span class="badge green">DevOps</span></div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 2: Packages ──────────────────────── -->
+    <div class="section-divider" id="sec-packages">
+      <span class="section-icon">📦</span><h2>Packages</h2>
+    </div>
+
+    <div class="q-card" id="q3" data-text="managed unmanaged package difference namespace appexchange">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">3</div>
+        <div class="q-title">Difference between managed and unmanaged packages</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <ul>
+          <li><strong>Managed packages:</strong> Code is obfuscated (IP protected), have a unique namespace, support upgrades/patches, and are listed on AppExchange. Subscribers cannot edit source. Components stay locked post-install.</li>
+          <li><strong>Unmanaged packages:</strong> No namespace, code is visible and editable by the subscriber, but <em>not</em> upgradeable. Best for open-source templates or one-time installs.</li>
+        </ul>
+        <div class="tag-row"><span class="badge purple">ISV</span><span class="badge blue">AppExchange</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q4" data-text="managed package metadata access testing switched on subscriber">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">4</div>
+        <div class="q-title">Does access to Salesforce metadata need to be switched on for a managed package during testing?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>Yes — managed package code cannot automatically access subscriber org metadata due to namespace isolation:</p>
+        <ul>
+          <li>Subscriber must grant <strong>object-level and field-level permissions</strong> to the package's permission set.</li>
+          <li>In a Partner Developer or Trialforce org, configure the subscriber environment so the package can interact with pre-installed metadata.</li>
+          <li>For Apex tests inside the managed package, <code>SeeAllData=false</code> is the default — test data must be created explicitly.</li>
+        </ul>
+        <div class="tag-row"><span class="badge purple">ISV</span><span class="badge blue">Testing</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q10" data-text="unlocked packages sfdx versioned upgradeable internal">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">10 / 33</div>
+        <div class="q-title">Unlocked packages</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>Unlocked packages are the modern Salesforce DX packaging model for internal org development (not AppExchange ISV).</p>
+        <ul>
+          <li><strong>Versioned &amp; upgradeable:</strong> Each release is a numbered version that can be installed and promoted.</li>
+          <li><strong>Editable post-install:</strong> Unlike managed packages, subscribers can modify components.</li>
+          <li><strong>No namespace required</strong> (optional namespaced unlocked packages exist).</li>
+          <li><strong>Modular:</strong> Break large orgs into multiple packages with defined dependency chains.</li>
+          <li><strong>CI/CD native:</strong> <code>sf package version create</code> integrates directly with pipelines.</li>
+        </ul>
+        <div class="callout tip">Unlocked packages are the recommended path for the <strong>Package Development Model</strong> in enterprise orgs.</div>
+        <div class="tag-row"><span class="badge blue">SFDX</span><span class="badge green">Recommended</span></div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 3: Sandboxes & Environments ──────── -->
+    <div class="section-divider" id="sec-sandboxes">
+      <span class="section-icon">🏖️</span><h2>Sandboxes &amp; Environments</h2>
+    </div>
+
+    <div class="q-card" id="q6" data-text="preview non-preview sandbox instances release upgrade">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">6</div>
+        <div class="q-title">What are preview and non-preview instances in Salesforce?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <ul>
+          <li><strong>Preview instances:</strong> Receive the upcoming major release 4–6 weeks early. Ideal for testing customizations before they reach production.</li>
+          <li><strong>Non-preview instances:</strong> Stay on the current production release until GA. All production orgs run on non-preview instances.</li>
+        </ul>
+        <p>Check your sandbox's instance in Setup → Sandboxes. Instance names indicate preview vs. non-preview status per the Sandbox Preview Guide published each release cycle.</p>
+        <div class="tag-row"><span class="badge blue">Sandbox</span><span class="badge orange">Release</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q7" data-text="release preview window timing weeks dates">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">7</div>
+        <div class="q-title">What is the release preview window?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>The <strong>release preview window</strong> is the 4–6 week period before general availability during which preview sandboxes receive the upcoming Salesforce release. Teams use this window to:</p>
+        <ul>
+          <li>Test existing customizations and integrations against the new platform version.</li>
+          <li>Validate that automated test suites still pass.</li>
+          <li>Review new features and configure Critical Update opt-in/opt-out settings.</li>
+        </ul>
+        <p>Exact dates are published in the <strong>Sandbox Preview Guide</strong> on the Salesforce Help portal each cycle.</p>
+        <div class="tag-row"><span class="badge orange">Release</span><span class="badge blue">Planning</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q8" data-text="UAT sandbox user acceptance testing which type full partial">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">8</div>
+        <div class="q-title">In which sandbox should you do UAT?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>UAT should be conducted in a <strong>Full Copy sandbox</strong>, or a <strong>Partial Copy</strong> if Full Copy isn't available:</p>
+        <ul>
+          <li><strong>Full Copy:</strong> Replicates production data volume and structure, giving realistic performance. Business users test against familiar data. Edge cases from real data surface that synthetic data would miss.</li>
+          <li><strong>Partial Copy:</strong> Acceptable when Full Copy isn't licensed — use a representative data subset.</li>
+          <li><strong>Developer sandboxes</strong> are not suitable for UAT due to lack of production data fidelity.</li>
+        </ul>
+        <div class="tag-row"><span class="badge blue">Sandbox</span><span class="badge green">UAT</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q21" data-text="hotfix environment sandbox which best developer pro partial">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">21</div>
+        <div class="q-title">Which sandbox is best for a hotfix environment?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>A <strong>Developer Pro sandbox</strong> or <strong>Partial Copy sandbox</strong> is typically best, balancing speed of refresh with sufficient metadata fidelity:</p>
+        <ul>
+          <li><strong>Developer Pro:</strong> Fast to create/refresh, holds more data than a plain Developer sandbox, suitable for reproducing the bug and developing the fix quickly.</li>
+          <li><strong>Partial Copy:</strong> Better data fidelity for testing the fix against realistic scenarios.</li>
+        </ul>
+        <p>The hotfix sandbox should always be refreshed from production (or a recent snapshot) so it exactly matches the metadata state where the bug exists.</p>
+        <div class="tag-row"><span class="badge blue">Sandbox</span><span class="badge orange">Hotfix</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q24" data-text="sandbox preview guide resource document release">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">24</div>
+        <div class="q-title">Sandbox preview guide</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>Salesforce publishes a <strong>Sandbox Preview Guide</strong> before each major release containing:</p>
+        <ul>
+          <li>List of sandbox instances receiving the preview release and their go-live dates.</li>
+          <li>Instructions for opting sandboxes in or out of preview (via refresh timing).</li>
+          <li>Dates for preview start, freeze window, and general availability.</li>
+          <li>Links to Release Notes for new features.</li>
+        </ul>
+        <p>Find it by searching <em>"Sandbox Preview Guide [Season Year]"</em> in Salesforce Help.</p>
+        <div class="tag-row"><span class="badge blue">Sandbox</span><span class="badge orange">Release</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q34" data-text="two 2 full copy sandbox drawback cost storage refresh">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">34</div>
+        <div class="q-title">Drawbacks of having 2 Full Copy sandboxes</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <ul>
+          <li><strong>Cost:</strong> Full Copy sandboxes are the most expensive type — two doubles licensing costs.</li>
+          <li><strong>Storage:</strong> Each mirrors production data. Two sandboxes double storage consumption and fees.</li>
+          <li><strong>Refresh time:</strong> Full Copy refreshes can take hours or days. Two sandboxes means double the maintenance overhead.</li>
+          <li><strong>29-day restriction:</strong> Full Copy can only be refreshed every 29 days, making it hard to keep two in sync with production simultaneously.</li>
+          <li><strong>Data drift:</strong> Both sandboxes diverge from production between refreshes, reducing test reliability over time.</li>
+          <li><strong>Data privacy risk:</strong> Sensitive production data is replicated twice, increasing GDPR/CCPA compliance exposure.</li>
+        </ul>
+        <div class="callout tip">Consider one Full Copy (UAT) + one Partial Copy (integration testing) as a more cost-effective alternative.</div>
+        <div class="tag-row"><span class="badge orange">Cost</span><span class="badge blue">Sandbox</span></div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 4: Testing ────────────────────────── -->
+    <div class="section-divider" id="sec-testing">
+      <span class="section-icon">🧪</span><h2>Testing</h2>
+    </div>
+
+    <div class="q-card" id="q5" data-text="automated browser testing selenium playwright cypress UI">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">5</div>
+        <div class="q-title">What is automated browser testing?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>Automated browser testing uses tools to programmatically control a web browser and simulate user interactions — clicks, form fills, navigation — then assert expected outcomes without human intervention.</p>
+        <ul>
+          <li><strong>Common tools:</strong> Selenium, Playwright, Cypress, WebdriverIO.</li>
+          <li>In Salesforce: tests cover Lightning UI flows, Visualforce pages, and Experience Cloud sites.</li>
+          <li>Tests run in CI pipelines against sandboxes or scratch orgs.</li>
+          <li>Catches regressions that Apex unit tests cannot — UI rendering, LWC component behavior, page layouts.</li>
+        </ul>
+        <div class="callout warn">LWC's Shadow DOM can make element selection tricky — use <code>data-id</code> attributes or Salesforce-specific selectors rather than CSS class names which may change between releases.</div>
+        <div class="tag-row"><span class="badge blue">Testing</span><span class="badge purple">UI</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q9" data-text="static code analysis PMD ESLint quality tools apex">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">9</div>
+        <div class="q-title">Static code analysis</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>Static code analysis inspects source code <em>without executing it</em> to find bugs, security vulnerabilities, code smells, and style violations.</p>
+        <ul>
+          <li><strong>Salesforce tools:</strong> PMD (Apex ruleset), Salesforce Code Analyzer (wraps PMD, ESLint, RetireJS), Checkmarx.</li>
+          <li><strong>What it catches:</strong> SOQL in loops, hardcoded IDs, missing sharing declarations, unused variables, potential null dereferences.</li>
+          <li><strong>When to run:</strong> In CI pipelines on every PR/commit — fail the build if violations exceed a threshold.</li>
+          <li>Configured via XML rule sets; teams can disable or tune severity of specific rules.</li>
+        </ul>
+        <div class="tag-row"><span class="badge blue">Testing</span><span class="badge green">Code Quality</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q28" data-text="negative unit testing apex exception invalid input">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">28</div>
+        <div class="q-title">Negative unit testing</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>Negative unit testing verifies that code behaves correctly when given <em>invalid, unexpected, or out-of-bounds inputs</em> — testing what <em>should not</em> work.</p>
+        <ul>
+          <li>Ensures proper error handling and exception throwing rather than silent failures.</li>
+          <li>Examples: passing null where a record is expected, providing an invalid ID, exceeding governor limits intentionally.</li>
+          <li>In Apex: use <code>try/catch</code> inside tests and assert that the expected exception was thrown.</li>
+          <li>Validates that custom error messages surface correctly to users.</li>
+        </ul>
+        <div class="callout tip">Pattern: set a boolean <code>exceptionThrown = false</code> before the try block, set it <code>true</code> in the catch block, then <code>System.assert(exceptionThrown)</code> after.</div>
+        <div class="tag-row"><span class="badge blue">Testing</span><span class="badge orange">Apex</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q17" data-text="load performance stress testing difference definition">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">17</div>
+        <div class="q-title">Difference between load performance and stress testing</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <ul>
+          <li><strong>Load testing:</strong> Validates system behavior under <em>expected</em> production load. Confirms response times and throughput meet SLAs at normal/peak usage. The system is expected to remain stable and pass.</li>
+          <li><strong>Stress testing:</strong> Pushes the system <em>beyond</em> its designed capacity to find the breaking point. Goal is to understand failure modes, degradation patterns, and recovery behavior — not to confirm it passes.</li>
+        </ul>
+        <div class="tag-row"><span class="badge blue">Testing</span><span class="badge purple">Performance</span></div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 5: Source Control & Dev Models ────── -->
+    <div class="section-divider" id="sec-sourcecontrol">
+      <span class="section-icon">🌿</span><h2>Source Control &amp; Development Models</h2>
+    </div>
+
+    <div class="q-card" id="q31" data-text="source control version control git what is definition">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">31</div>
+        <div class="q-title">What is source control?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>Source control (version control) is a system that tracks changes to files over time, enabling teams to collaborate, review history, revert mistakes, and manage parallel lines of work.</p>
+        <ul>
+          <li>In Salesforce: metadata (Apex, LWC, objects, flows) is stored as files in a Git repository rather than only living in an org.</li>
+          <li>Provides a single source of truth, enabling automated deployments and full audit trails.</li>
+          <li>Common platforms: GitHub, GitLab, Bitbucket, Azure DevOps.</li>
+        </ul>
+        <div class="tag-row"><span class="badge blue">Git</span><span class="badge green">DevOps</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q32" data-text="org development model package development model difference sfdx">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">32</div>
+        <div class="q-title">Difference between org development model and package development model</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <ul>
+          <li><strong>Org Development Model:</strong> Changes are made in persistent orgs (sandboxes), retrieved to source control, and deployed to other orgs. The org is the system of record. Simpler to start, harder to enforce modularity.</li>
+          <li><strong>Package Development Model:</strong> Metadata is organized into unlocked/managed packages built from source. Scratch orgs are the dev environment. Packages are the unit of deployment. Enforces modularity, versioning, and reproducibility.</li>
+        </ul>
+        <div class="tag-row"><span class="badge blue">SFDX</span><span class="badge green">Architecture</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q16" data-text="continuous integration CI meaning definition what is">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">16</div>
+        <div class="q-title">Meaning of continuous integration</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p><strong>Continuous Integration (CI)</strong> is the practice of frequently merging developer code changes into a shared branch, with each merge automatically triggering a build and test suite.</p>
+        <ul>
+          <li>Detects integration bugs early — before they compound with other changes.</li>
+          <li>In Salesforce: each PR triggers a check-only deployment + Apex test run against a sandbox or scratch org.</li>
+          <li>Relies on automated tests being fast, reliable, and comprehensive enough to provide confidence.</li>
+          <li>CI is the foundation for Continuous Delivery (CD), which extends into automated production deployments.</li>
+        </ul>
+        <div class="tag-row"><span class="badge green">CI/CD</span><span class="badge blue">DevOps</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q19" data-text="hotfix branch git what is short-lived production fix">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">19</div>
+        <div class="q-title">What is a hotfix branch?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>A <strong>hotfix branch</strong> is a short-lived git branch created directly from the production release tag/branch to fix a critical bug, bypassing the normal feature development cycle.</p>
+        <ul>
+          <li>Common naming: <code>hotfix/&lt;issue&gt;</code> or <code>fix/&lt;ticket-id&gt;</code>.</li>
+          <li>Branched from <code>main</code> or the production tag — <em>not</em> from the current development branch.</li>
+          <li>Once verified, merged back into <strong>both</strong> <code>main</code> and the current development branch to prevent the bug reappearing in the next release.</li>
+          <li>Keeps the hotfix isolated from in-progress feature work.</li>
+        </ul>
+        <div class="tag-row"><span class="badge blue">Git</span><span class="badge orange">Hotfix</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q20" data-text="hotfix environment what is production fix sandbox dedicated">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">20</div>
+        <div class="q-title">What is a hotfix environment?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>A <strong>hotfix environment</strong> is a dedicated sandbox used exclusively for developing, testing, and validating emergency production fixes — kept separate from main development/UAT sandboxes.</p>
+        <ul>
+          <li>Refreshed from production (or a recent snapshot) so metadata exactly matches what is live.</li>
+          <li>Used to reproduce the bug, develop the fix, and validate it before deploying directly to production.</li>
+          <li>Often paired with a dedicated hotfix CI pipeline that bypasses normal sprint gates.</li>
+        </ul>
+        <div class="tag-row"><span class="badge orange">Hotfix</span><span class="badge blue">Sandbox</span></div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 6: Architecture ───────────────────── -->
+    <div class="section-divider" id="sec-architecture">
+      <span class="section-icon">🏗️</span><h2>Architecture</h2>
+    </div>
+
+    <div class="q-card" id="q11" data-text="circular relationships data model problems trigger loop">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">11</div>
+        <div class="q-title">Circular relationships</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>A <strong>circular relationship</strong> occurs when Object A references Object B and Object B (directly or transitively) references Object A, creating a cycle in the data model.</p>
+        <ul>
+          <li>Salesforce prevents circular <strong>master-detail</strong> relationships at the platform level.</li>
+          <li>Circular <strong>lookup</strong> relationships are possible but introduce risk: trigger loop recursion, complex SOQL, and deployment ordering problems.</li>
+          <li><strong>Mitigation:</strong> Redesign with junction objects, or break the cycle with a non-required lookup on one side.</li>
+        </ul>
+        <div class="tag-row"><span class="badge purple">Data Model</span><span class="badge orange">Risk</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q12" data-text="depth nested relationships SOQL 5 levels limit query">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">12</div>
+        <div class="q-title">Depth of nested relationships</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>Salesforce enforces a maximum depth of <strong>5 levels</strong> for relationship traversal in SOQL:</p>
+        <ul>
+          <li>SOQL supports traversal up to 5 levels of parent relationships in a single query (e.g., <code>Contact.Account.Owner.Manager.Department</code>).</li>
+          <li>Deep nesting increases query complexity, CPU time usage, and risks hitting SOQL row limits.</li>
+          <li>In the data model, deeply nested master-detail chains create tight coupling — ownership and sharing rules cascade all the way down.</li>
+          <li><strong>Best practice:</strong> Keep relationship depth to 3 levels or fewer for maintainability.</li>
+        </ul>
+        <div class="tag-row"><span class="badge purple">Data Model</span><span class="badge blue">SOQL</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q13" data-text="DOM changes Shadow DOM LWC native synthetic testing browser">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">13</div>
+        <div class="q-title">DOM changes</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>In the Salesforce context, DOM changes most commonly refer to <strong>LWC Shadow DOM behavior</strong> and Salesforce's periodic updates to component rendering.</p>
+        <ul>
+          <li>LWC uses <strong>native Shadow DOM</strong> — child component internals are encapsulated and not accessible from parent JS or external CSS.</li>
+          <li>Salesforce has been migrating from <em>synthetic shadow</em> (polyfill) to <em>native shadow</em> — this can break browser tests and JS that queries into component internals.</li>
+          <li>Third-party test tools may fail when Salesforce updates DOM structure in a release (use preview sandboxes to catch these early).</li>
+        </ul>
+        <div class="tag-row"><span class="badge purple">LWC</span><span class="badge blue">Shadow DOM</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q14" data-text="kanban board agile project management work in progress WIP">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">14</div>
+        <div class="q-title">Kanban board</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>A <strong>Kanban board</strong> is a visual project management tool representing work items as cards moving through columns (To Do → In Progress → Review → Done).</p>
+        <ul>
+          <li>Key principle: <strong>WIP limits</strong> — each column has a cap to prevent bottlenecks and surface flow problems.</li>
+          <li>Salesforce has a native Kanban view in <strong>List Views</strong> — switch via the display options toggle on any object list view.</li>
+          <li>Common external tools: Jira, Azure DevOps Boards, Trello, Linear.</li>
+        </ul>
+        <div class="tag-row"><span class="badge green">Agile</span><span class="badge blue">Project Management</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q15" data-text="tooling api developer tools apex coverage debug log">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">15</div>
+        <div class="q-title">Tooling API</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>The <strong>Salesforce Tooling API</strong> provides programmatic access to metadata and development tools used by IDEs, CI systems, and code coverage dashboards.</p>
+        <ul>
+          <li>Query Apex class metadata, code coverage data, debug logs, and compile/execute Apex anonymously.</li>
+          <li>Used by <strong>VS Code Salesforce Extension Pack</strong> for anonymous Apex execution and inline coverage overlays.</li>
+          <li>Supports SOQL-like queries on: <code>ApexClass</code>, <code>ApexTrigger</code>, <code>ApexCodeCoverage</code>, <code>TraceFlag</code>, etc.</li>
+          <li>Endpoint: <code>/services/data/vXX.0/tooling/</code></li>
+        </ul>
+        <div class="tag-row"><span class="badge blue">API</span><span class="badge purple">Developer Tools</span></div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 7: Orgs & Editions ───────────────── -->
+    <div class="section-divider" id="sec-orgs">
+      <span class="section-icon">🏢</span><h2>Orgs &amp; Editions</h2>
+    </div>
+
+    <div class="q-card" id="q18" data-text="developer edition partner developer edition difference storage licenses">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">18</div>
+        <div class="q-title">Difference between Developer Edition and Partner Developer Edition</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <ul>
+          <li><strong>Developer Edition (DE):</strong> Free, 5 MB data / 20 MB file storage, 2 user licenses. Limited governor limit headroom. Available to anyone.</li>
+          <li><strong>Partner Developer Edition (PDE):</strong> Available to Salesforce Partners via the Partner Community. 1 GB data / 1 GB file storage, 100+ user licenses, Enterprise Edition feature set, namespace support for managed packages, Trialforce access, LMA access.</li>
+        </ul>
+        <div class="callout tip">PDE is the recommended org for ISV app development and managed package testing.</div>
+        <div class="tag-row"><span class="badge purple">ISV</span><span class="badge blue">Org Types</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q27" data-text="partner development org benefits ISV enterprise features Trialforce">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">27</div>
+        <div class="q-title">Benefits of a Partner Development Org</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <ul>
+          <li>Access to Enterprise and Unlimited Edition features (advanced sharing, territory management, etc.).</li>
+          <li>High storage and user license counts for realistic testing scenarios.</li>
+          <li>Ability to create and test namespaced managed packages for AppExchange.</li>
+          <li>Access to <strong>Trialforce</strong> for creating templated trial orgs for prospects.</li>
+          <li>Access to <strong>LMA (License Management Application)</strong> for managing subscriber installs.</li>
+          <li>Environment Hub access to manage multiple orgs from a single console.</li>
+        </ul>
+        <div class="tag-row"><span class="badge purple">ISV</span><span class="badge green">Partner</span></div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 8: APIs ────────────────────────────── -->
+    <div class="section-divider" id="sec-apis">
+      <span class="section-icon">🔌</span><h2>APIs</h2>
+    </div>
+
+    <div class="q-card" id="q29" data-text="REST API tree request create related records atomic parent child">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">29</div>
+        <div class="q-title">REST API tree request</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>The REST API tree request (<code>/sobjects/&lt;Type&gt;/tree/</code>) creates <strong>multiple related records in a single call</strong> using a nested JSON tree structure.</p>
+        <ul>
+          <li>Create parent and child records atomically (e.g., Account + Contacts in one request).</li>
+          <li>Maximum of <strong>200 total records</strong> across all nodes per request.</li>
+          <li>All-or-nothing: if any record fails, the entire request rolls back.</li>
+          <li>Uses <code>@referenceId</code> on each node so child records can reference parents within the same request body.</li>
+        </ul>
+        <div class="tag-row"><span class="badge blue">REST API</span><span class="badge green">Bulk Insert</span></div>
+      </div>
+    </div>
+
+    <div class="q-card" id="q30" data-text="REST API composite request subrequests 25 mixed operations allOrNone">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">30</div>
+        <div class="q-title">REST API composite request</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>A composite request (<code>/composite</code>) bundles up to <strong>25 subrequests</strong> into a single HTTP call, each subrequest being a full REST API call (GET, POST, PATCH, DELETE).</p>
+        <ul>
+          <li>Reduces network round trips — especially valuable for high-latency mobile clients.</li>
+          <li>Subrequests can reference outputs of earlier subrequests using <code>@{referenceId.field}</code> syntax.</li>
+          <li><strong>allOrNone:</strong> If <code>true</code>, all subrequests roll back on any failure. If <code>false</code>, each is independent.</li>
+          <li>More flexible than tree requests — mix different SObject types and HTTP methods freely.</li>
+        </ul>
+        <div class="tag-row"><span class="badge blue">REST API</span><span class="badge purple">Performance</span></div>
+      </div>
+    </div>
+
+    <!-- ── SECTION 9: Process & Governance ──────────── -->
+    <div class="section-divider" id="sec-process">
+      <span class="section-icon">📋</span><h2>Process &amp; Governance</h2>
+    </div>
+
+    <div class="q-card" id="q22" data-text="requirement traceability matrix RTM testing governance audit">
+      <div class="q-header" onclick="toggle(this)">
+        <div class="q-num">22</div>
+        <div class="q-title">Requirement traceability matrix</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>A <strong>Requirement Traceability Matrix (RTM)</strong> maps each business requirement to its design, development tasks, test cases, and defects — proving complete coverage end-to-end.</p>
+        <ul>
+          <li><strong>Typical columns:</strong> Requirement ID, Description, Design Reference, Test Case ID, Test Status, Defect ID.</li>
+          <li>Proves to stakeholders and auditors that every requirement has been tested.</li>
+          <li>Identifies orphaned test cases (tests with no requirement) and untested requirements.</li>
+          <li>Maintained throughout the project lifecycle — updated as requirements change.</li>
+        </ul>
+        <div class="tag-row"><span class="badge green">Governance</span><span class="badge blue">Testing</span></div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- TOC SIDEBAR -->
+  <aside class="toc-sidebar">
+    <div class="toc-box">
+      <div class="toc-box-header" onclick="toggleToc()">
+        Contents <span id="tocArrow">▲</span>
+      </div>
+      <div class="toc-box-body" id="tocBody">
+        <div class="toc-search">
+          <input type="text" id="tocSearch" placeholder="Filter…" oninput="filterToc()">
+        </div>
+        <div id="tocLinks">
+          <div class="toc-group-label">Deployment &amp; Migration</div>
+          <a class="toc-link" href="#q1">1. destructivechanges.xml</a>
+          <a class="toc-link" href="#q2">2. Products after Opportunities</a>
+          <a class="toc-link" href="#q25">25. Automated deployment</a>
+          <a class="toc-link" href="#q23">23. Ant Migration Tool</a>
+          <a class="toc-link" href="#q26">26. Automated change tracking</a>
+
+          <div class="toc-group-label">Packages</div>
+          <a class="toc-link" href="#q3">3. Managed vs. Unmanaged</a>
+          <a class="toc-link" href="#q4">4. Managed pkg metadata access</a>
+          <a class="toc-link" href="#q10">10/33. Unlocked packages</a>
+
+          <div class="toc-group-label">Sandboxes &amp; Environments</div>
+          <a class="toc-link" href="#q6">6. Preview vs. non-preview</a>
+          <a class="toc-link" href="#q7">7. Release preview window</a>
+          <a class="toc-link" href="#q8">8. UAT sandbox</a>
+          <a class="toc-link" href="#q21">21. Hotfix sandbox</a>
+          <a class="toc-link" href="#q24">24. Sandbox preview guide</a>
+          <a class="toc-link" href="#q34">34. 2 Full Copy drawbacks</a>
+
+          <div class="toc-group-label">Testing</div>
+          <a class="toc-link" href="#q5">5. Automated browser testing</a>
+          <a class="toc-link" href="#q9">9. Static code analysis</a>
+          <a class="toc-link" href="#q28">28. Negative unit testing</a>
+          <a class="toc-link" href="#q17">17. Load vs. stress testing</a>
+
+          <div class="toc-group-label">Source Control &amp; Dev Models</div>
+          <a class="toc-link" href="#q31">31. Source control</a>
+          <a class="toc-link" href="#q32">32. Org vs. Package dev model</a>
+          <a class="toc-link" href="#q16">16. Continuous integration</a>
+          <a class="toc-link" href="#q19">19. Hotfix branch</a>
+          <a class="toc-link" href="#q20">20. Hotfix environment</a>
+
+          <div class="toc-group-label">Architecture</div>
+          <a class="toc-link" href="#q11">11. Circular relationships</a>
+          <a class="toc-link" href="#q12">12. Nested relationship depth</a>
+          <a class="toc-link" href="#q13">13. DOM changes</a>
+          <a class="toc-link" href="#q14">14. Kanban board</a>
+          <a class="toc-link" href="#q15">15. Tooling API</a>
+
+          <div class="toc-group-label">Orgs &amp; Editions</div>
+          <a class="toc-link" href="#q18">18. Dev vs. Partner Dev Edition</a>
+          <a class="toc-link" href="#q27">27. Partner Development Org</a>
+
+          <div class="toc-group-label">APIs</div>
+          <a class="toc-link" href="#q29">29. REST tree request</a>
+          <a class="toc-link" href="#q30">30. REST composite request</a>
+
+          <div class="toc-group-label">Process &amp; Governance</div>
+          <a class="toc-link" href="#q22">22. Traceability matrix</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Back to top -->
+    <button onclick="window.scrollTo({top:0,behavior:'smooth'})" style="width:100%;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:.55rem;font-size:.78rem;cursor:pointer;color:var(--text-muted);font-weight:600;transition:background .12s;" onmouseover="this.style.background='var(--blue-light)'" onmouseout="this.style.background='var(--white)'">↑ Back to top</button>
+  </aside>
+
+</div>
+
+<script>
+  // Nav scroll shrink
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40), { passive: true });
+
+  // Entrance animations
+  const enterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); enterObserver.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.q-card, .toc-box, .section-divider, .toc-sidebar > button').forEach(el => enterObserver.observe(el));
+
+  function toggle(header) {
+    const card = header.parentElement;
+    card.classList.toggle('open');
+  }
+
+  function expandAll() {
+    document.querySelectorAll('.q-card').forEach(c => c.classList.add('open'));
+  }
+
+  function collapseAll() {
+    document.querySelectorAll('.q-card').forEach(c => c.classList.remove('open'));
+  }
+
+  function filterQuestions() {
+    const q = document.getElementById('qSearch').value.toLowerCase();
+    let count = 0;
+    document.querySelectorAll('.q-card').forEach(card => {
+      const text = (card.textContent + (card.dataset.text || '')).toLowerCase();
+      const show = !q || text.includes(q);
+      card.style.display = show ? '' : 'none';
+      if (show) count++;
+    });
+    document.getElementById('qCount').textContent = q ? `${count} of 34 topics` : '34 topics';
+  }
+
+  let tocOpen = true;
+  function toggleToc() {
+    tocOpen = !tocOpen;
+    document.getElementById('tocBody').style.display = tocOpen ? '' : 'none';
+    document.getElementById('tocArrow').textContent = tocOpen ? '▲' : '▼';
+  }
+
+  function filterToc() {
+    const q = document.getElementById('tocSearch').value.toLowerCase();
+    document.querySelectorAll('#tocLinks .toc-link').forEach(link => {
+      link.style.display = !q || link.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+    document.querySelectorAll('#tocLinks .toc-group-label').forEach(label => {
+      const next = label.nextElementSibling;
+      label.style.display = next && next.style.display !== 'none' ? '' : 'none';
+    });
+  }
+
+  // Highlight active TOC item on scroll
+  const cards = document.querySelectorAll('.q-card');
+  const tocLinks = document.querySelectorAll('.toc-link');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(l => l.classList.remove('active'));
+        const active = document.querySelector(`.toc-link[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  cards.forEach(c => observer.observe(c));
+</script>
+</body>
+</html>

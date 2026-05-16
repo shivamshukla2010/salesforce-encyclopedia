@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salesforce Encyclopedia</title>
+<style>
+  :root {
+    --blue:       #0176d3;
+    --blue-dark:  #014486;
+    --blue-light: #e8f4fd;
+    --navy:       #032d60;
+    --cloud:      #f4f6f9;
+    --white:      #ffffff;
+    --border:     #d8dde6;
+    --text:       #16325c;
+    --text-muted: #54698d;
+    --radius:     0.6rem;
+    --shadow-sm:  0 2px 6px rgba(0,0,0,.09);
+    --shadow-md:  0 4px 18px rgba(0,0,0,.13);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Salesforce Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--cloud);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── NAV ─────────────────────────────────────────── */
+  nav {
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    height: 52px;
+    gap: 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  }
+
+  .nav-brand {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -.3px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  .nav-brand .dot { color: #00a1e0; }
+
+  .nav-links { display: flex; gap: 0; flex: 1; }
+  .nav-links a {
+    color: rgba(255,255,255,.75);
+    text-decoration: none;
+    font-size: .82rem;
+    font-weight: 600;
+    padding: 0 .9rem;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    border-bottom: 3px solid transparent;
+    transition: color .15s, border-color .15s;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: #fff;
+    border-bottom-color: #00a1e0;
+  }
+
+  .nav-search {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,.12);
+    border-radius: 2rem;
+    padding: .3rem .9rem;
+    gap: .5rem;
+  }
+  .nav-search input {
+    background: none;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: .82rem;
+    width: 180px;
+  }
+  .nav-search input::placeholder { color: rgba(255,255,255,.5); }
+  .nav-search svg { flex-shrink: 0; opacity: .6; }
+
+  /* ── HERO ─────────────────────────────────────────── */
+  .hero {
+    background: linear-gradient(140deg, var(--navy) 0%, #0b5fb0 55%, #0176d3 100%);
+    padding: 4rem 2rem 3.5rem;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 350px; height: 350px;
+    background: rgba(255,255,255,.04);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: -60px;
+    width: 300px; height: 300px;
+    background: rgba(255,255,255,.03);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: -.5px;
+    margin-bottom: .5rem;
+  }
+  .hero h1 em { color: #4bc8ff; font-style: normal; }
+  .hero p {
+    font-size: 1.05rem;
+    opacity: .82;
+    max-width: 560px;
+    margin: 0 auto .8rem;
+    line-height: 1.7;
+  }
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .hero-stat { text-align: center; }
+  .hero-stat .num {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #4bc8ff;
+    line-height: 1;
+  }
+  .hero-stat .lbl {
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: .7;
+    margin-top: .2rem;
+  }
+
+  /* ── MAIN LAYOUT ──────────────────────────────────── */
+  .page-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* ── SIDEBAR ──────────────────────────────────────── */
+  .sidebar {
+    position: sticky;
+    top: 68px;
+  }
+
+  .sidebar-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .sidebar-title {
+    background: var(--blue-light);
+    padding: .55rem .9rem;
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--blue-dark);
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-list { list-style: none; }
+  .sidebar-list li a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .5rem .9rem;
+    font-size: .82rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background .12s, color .12s;
+  }
+  .sidebar-list li:last-child a { border-bottom: none; }
+  .sidebar-list li a:hover { background: var(--blue-light); color: var(--blue); }
+  .sidebar-list li a .count {
+    background: var(--blue-light);
+    color: var(--blue);
+    border-radius: 2rem;
+    padding: .1rem .5rem;
+    font-size: .68rem;
+    font-weight: 700;
+  }
+  .sidebar-list li a.active-filter { background: var(--blue); color: #fff; }
+  .sidebar-list li a.active-filter .count { background: rgba(255,255,255,.25); color: #fff; }
+
+  /* ── CONTENT AREA ─────────────────────────────────── */
+  .content-area {}
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .sort-row {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .8rem;
+    color: var(--text-muted);
+  }
+  .sort-row select {
+    border: 1px solid var(--border);
+    border-radius: .35rem;
+    padding: .25rem .5rem;
+    font-size: .78rem;
+    color: var(--text);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .results-count {
+    font-size: .8rem;
+    color: var(--text-muted);
+    margin-bottom: .75rem;
+  }
+
+  /* ── ARTICLE GRID ─────────────────────────────────── */
+  .article-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.1rem;
+  }
+
+  .article-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow .2s, transform .15s, border-color .2s;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .article-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--blue);
+  }
+
+  .card-band {
+    height: 5px;
+    background: var(--blue);
+  }
+  .card-band.green   { background: #2e844a; }
+  .card-band.orange  { background: #fe9339; }
+  .card-band.purple  { background: #7b5ea7; }
+  .card-band.teal    { background: #0b827c; }
+  .card-band.red     { background: #c23934; }
+
+  .card-body { padding: 1rem 1.1rem .85rem; flex: 1; }
+
+  .card-category {
+    font-size: .68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--blue);
+    margin-bottom: .35rem;
+  }
+  .card-category.green  { color: #2e844a; }
+  .card-category.orange { color: #a0522d; }
+  .card-category.purple { color: #5e00c8; }
+  .card-category.teal   { color: #0b827c; }
+  .card-category.red    { color: #c23934; }
+
+  .card-title {
+    font-size: .97rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: .45rem;
+  }
+
+  .card-desc {
+    font-size: .8rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .card-date {
+    font-size: .72rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+    margin-top: .5rem;
+  }
+  .card-date::before {
+    content: '📅';
+    font-size: .68rem;
+  }
+
+  .card-footer {
+    padding: .6rem 1.1rem;
+    border-top: 1px solid #f0f3f7;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+  }
+
+  .card-tags { display: flex; gap: .35rem; flex-wrap: wrap; }
+  .card-tag {
+    background: var(--blue-light);
+    color: var(--blue-dark);
+    border-radius: 2rem;
+    padding: .1rem .5rem;
+    font-size: .67rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+  }
+
+  .card-open-btn {
+    font-size: .72rem;
+    color: var(--blue);
+    font-weight: 600;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: .2rem;
+  }
+  .card-open-btn svg { flex-shrink: 0; }
+
+  /* ── EMPTY STATE ──────────────────────────────────── */
+  .empty-state {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+  }
+  .empty-state svg { opacity: .3; margin-bottom: .75rem; }
+  .empty-state p { font-size: .9rem; }
+
+  /* ── FOOTER ───────────────────────────────────────── */
+  footer {
+    background: var(--navy);
+    color: rgba(255,255,255,.55);
+    text-align: center;
+    padding: 1.5rem 2rem;
+    font-size: .78rem;
+  }
+  footer strong { color: rgba(255,255,255,.8); }
+
+  /* ── HIDDEN ───────────────────────────────────────── */
+  .hidden { display: none !important; }
+
+  @media (max-width: 720px) {
+    .page-wrap { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .hero h1 { font-size: 1.7rem; }
+  }
+
+  /* ══════════════════════════════════════════════════
+     ANIMATIONS & ENHANCED STYLING
+  ══════════════════════════════════════════════════ */
+
+  /* ── 1. NAV SCROLL SHRINK + FROSTED GLASS ─────────── */
+  nav {
+    transition: height .3s ease, background .3s ease, box-shadow .3s ease, backdrop-filter .3s ease;
+  }
+  nav.scrolled {
+    height: 42px;
+    background: rgba(3, 45, 96, 0.82);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    box-shadow: 0 2px 20px rgba(0,0,0,.4);
+  }
+  nav.scrolled .nav-brand { font-size: .95rem; }
+  nav.scrolled .nav-links a { height: 42px; font-size: .78rem; }
+
+  /* ── 2. HERO ANIMATED ORBS ────────────────────────── */
+  .hero { overflow: hidden; }
+
+  .hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  .hero-orb-1 {
+    width: 420px; height: 420px;
+    background: radial-gradient(circle, rgba(75,200,255,.18) 0%, transparent 70%);
+    top: -160px; right: -100px;
+    animation: orbFloat1 12s ease-in-out infinite;
+  }
+  .hero-orb-2 {
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(1,118,211,.22) 0%, transparent 70%);
+    bottom: -120px; left: -80px;
+    animation: orbFloat2 15s ease-in-out infinite;
+  }
+  .hero-orb-3 {
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(255,255,255,.1) 0%, transparent 70%);
+    top: 30%; left: 40%;
+    animation: orbFloat3 10s ease-in-out infinite;
+  }
+
+  @keyframes orbFloat1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33%       { transform: translate(-30px, 20px) scale(1.05); }
+    66%       { transform: translate(20px, -25px) scale(.95); }
+  }
+  @keyframes orbFloat2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    40%       { transform: translate(25px, -20px) scale(1.08); }
+    70%       { transform: translate(-15px, 30px) scale(.97); }
+  }
+  @keyframes orbFloat3 {
+    0%, 100% { transform: translate(0, 0) scale(1);   opacity: .6; }
+    50%       { transform: translate(18px, -18px) scale(1.15); opacity: 1; }
+  }
+
+  /* Hero content fade-in */
+  .hero h1 {
+    animation: heroFadeUp .7s ease both;
+  }
+  .hero p {
+    animation: heroFadeUp .7s .15s ease both;
+  }
+  .hero-stats {
+    animation: heroFadeUp .7s .28s ease both;
+  }
+  @keyframes heroFadeUp {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── 3. CARD ENTRANCE ANIMATIONS ─────────────────── */
+  .article-card {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity .5s ease, transform .5s ease,
+                box-shadow .2s ease, border-color .2s ease;
+  }
+  .article-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* stagger via nth-child */
+  .article-card:nth-child(1) { transition-delay: 0s; }
+  .article-card:nth-child(2) { transition-delay: .1s; }
+  .article-card:nth-child(3) { transition-delay: .18s; }
+  .article-card:nth-child(4) { transition-delay: .26s; }
+
+  /* ── 4. CARD HOVER SHIMMER ────────────────────────── */
+  .article-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .article-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 30%,
+      rgba(255,255,255,.18) 50%,
+      transparent 70%
+    );
+    transform: translateX(-100%);
+    transition: transform 0s;
+    pointer-events: none;
+  }
+  .article-card:hover::after {
+    transform: translateX(100%);
+    transition: transform .55s ease;
+  }
+
+  /* Lift the band above the shimmer */
+  .card-band { position: relative; z-index: 1; }
+
+  /* Slightly more dramatic lift on hover */
+  .article-card:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 12px 32px rgba(1,118,211,.18);
+    border-color: var(--blue);
+  }
+
+  /* Sidebar section fade-in */
+  .sidebar-section {
+    opacity: 0;
+    transform: translateX(-16px);
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .sidebar-section.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .sidebar-section:nth-child(1) { transition-delay: .05s; }
+  .sidebar-section:nth-child(2) { transition-delay: .15s; }
+  .sidebar-section:nth-child(3) { transition-delay: .25s; }
+
+  /* Section-header subtle fade */
+  .section-header {
+    animation: heroFadeUp .5s .35s ease both;
+  }
+  .results-count {
+    animation: heroFadeUp .5s .42s ease both;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="index.html">☁ Salesforce</span> Encyclopedia</a>
+  <div class="nav-links">
+    <a href="#" class="active">Articles</a>
+    <a href="#">Topics</a>
+    <a href="#">Glossary</a>
+  </div>
+  <div class="nav-search">
+    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#fff">
+      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/>
+    </svg>
+    <input type="text" id="searchInput" placeholder="Search articles…" oninput="filterArticles()">
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+  <h1>The <em>Salesforce</em> Encyclopedia</h1>
+  <p>A growing knowledge base covering deployment, architecture, testing, APIs, packages, AI models, and development best practices.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num" id="totalArticles">3</div><div class="lbl">Articles</div></div>
+    <div class="hero-stat"><div class="num">45+</div><div class="lbl">Topics Covered</div></div>
+    <div class="hero-stat"><div class="num">8</div><div class="lbl">Categories</div></div>
+  </div>
+</div>
+
+<!-- PAGE WRAP -->
+<div class="page-wrap">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Categories</div>
+      <ul class="sidebar-list" id="categoryList">
+        <li><a href="#" onclick="filterCategory('all', this)" class="active-filter">All Articles <span class="count" id="allCount">3</span></a></li>
+        <li><a href="#" onclick="filterCategory('devops', this)">DevOps &amp; Deployment <span class="count">1</span></a></li>
+        <li><a href="#" onclick="filterCategory('ai', this)">AI Models <span class="count">1</span></a></li>
+        <li><a href="#" onclick="filterCategory('certifications', this)">Certifications <span class="count">1</span></a></li>
+        <li><a href="#" onclick="filterCategory('testing', this)">Testing <span class="count">0</span></a></li>
+        <li><a href="#" onclick="filterCategory('architecture', this)">Architecture <span class="count">0</span></a></li>
+        <li><a href="#" onclick="filterCategory('packages', this)">Packages <span class="count">0</span></a></li>
+        <li><a href="#" onclick="filterCategory('api', this)">APIs <span class="count">0</span></a></li>
+        <li><a href="#" onclick="filterCategory('org', this)">Orgs &amp; Editions <span class="count">0</span></a></li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Featured Tags</div>
+      <ul class="sidebar-list">
+        <li><a href="#">Deployment</a></li>
+        <li><a href="#">Sandbox</a></li>
+        <li><a href="#">Testing</a></li>
+        <li><a href="#">Packages</a></li>
+        <li><a href="#">SFDX</a></li>
+        <li><a href="#">CI/CD</a></li>
+        <li><a href="#">REST API</a></li>
+        <li><a href="#">AI Models</a></li>
+        <li><a href="#">Benchmarks</a></li>
+      </ul>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">Quick Links</div>
+      <ul class="sidebar-list">
+        <li><a href="articles/article-1-sf-deployment.html" target="_blank">Deployment Reference ↗</a></li>
+        <li><a href="articles/article-2-ai-model-comparison.html" target="_blank">AI Model Comparison ↗</a></li>
+        <li><a href="articles/article-3-claude-certified-architect.html" target="_blank">Claude Architect Cert ↗</a></li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="content-area">
+
+    <div class="section-header">
+      <span class="section-title">All Articles</span>
+      <div class="sort-row">
+        Sort by:
+        <select id="sortSelect" onchange="sortCards(this.value)">
+          <option value="recent">Most Recent</option>
+          <option value="az">A–Z</option>
+          <option value="category">Category</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="results-count" id="resultsCount">Showing 3 articles</div>
+
+    <div class="article-grid" id="articleGrid">
+
+      <!-- ARTICLE 1 — live -->
+      <a class="article-card" href="articles/article-1-sf-deployment.html" target="_blank" data-category="devops" data-tags="deployment sandbox testing packages api architecture" data-date="20260516" data-title="Salesforce Deployment Testing Architecture Complete Reference">
+        <div class="card-band"></div>
+        <div class="card-body">
+          <div class="card-category">DevOps &amp; Deployment</div>
+          <div class="card-title">Salesforce Deployment, Testing &amp; Architecture — Complete Reference</div>
+          <div class="card-desc">Covers destructivechanges.xml, data migration ordering, managed vs. unmanaged packages, unlocked packages, sandbox types, preview instances, UAT environments, hotfix branches, static code analysis, REST API composite requests, source control models, and more — 34 topics in a single searchable reference.</div>
+          <div class="card-date">16 May 2026</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-tags">
+            <span class="card-tag">34 Topics</span>
+            <span class="card-tag">Deployment</span>
+            <span class="card-tag">Sandbox</span>
+          </div>
+          <span class="card-open-btn">Open ↗</span>
+        </div>
+      </a>
+
+      <!-- ARTICLE 2 — live -->
+      <a class="article-card" href="articles/article-2-ai-model-comparison.html" target="_blank" data-category="ai" data-tags="ai models grok claude openai benchmarks comparison examples use cases" data-date="20260517" data-title="Grok vs Claude Opus vs OpenAI Which AI Model Wins and When">
+        <div class="card-band purple"></div>
+        <div class="card-body">
+          <div class="card-category purple">AI Models</div>
+          <div class="card-title">Grok vs Claude Opus vs OpenAI — Which AI Model Wins &amp; When?</div>
+          <div class="card-desc">Side-by-side comparison of xAI Grok 3, Anthropic Claude Opus 4, and OpenAI GPT-4o / o3 — with benchmark charts, 5 real-world examples (code debugging, long documents, creative writing, real-time data, agentic research), a decision flow diagram, and 12 reference links.</div>
+          <div class="card-date">17 May 2026</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-tags">
+            <span class="card-tag">Benchmarks</span>
+            <span class="card-tag">Examples</span>
+            <span class="card-tag">Decision Guide</span>
+          </div>
+          <span class="card-open-btn">Open ↗</span>
+        </div>
+      </a>
+
+      <!-- ARTICLE 3 — live -->
+      <a class="article-card" href="articles/article-3-claude-certified-architect.html" target="_blank" data-category="certifications" data-tags="claude certified architect certification anthropic exam guide agentic mcp tool design prompt engineering context management claude code agent sdk" data-date="20260517" data-title="Claude Certified Architect Foundations Complete Exam Guide Study Reference">
+        <div class="card-band" style="background:linear-gradient(90deg,#7c3aed,#0176d3);"></div>
+        <div class="card-body">
+          <div class="card-category" style="color:#7c3aed;">Certifications</div>
+          <div class="card-title">Claude Certified Architect – Foundations: Complete Exam Guide &amp; Study Reference</div>
+          <div class="card-desc">Full study reference for the Anthropic partner certification. Covers all 5 domains (Agentic Architecture 27%, Claude Code 20%, Prompt Engineering 20%, Tool &amp; MCP 18%, Context 15%), all 6 exam scenarios, 9 decision rules, 12 official sample questions with explanations, and a complete technologies reference.</div>
+          <div class="card-date">17 May 2026</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-tags">
+            <span class="card-tag">5 Domains</span>
+            <span class="card-tag">12 Sample Qs</span>
+            <span class="card-tag">Exam Prep</span>
+          </div>
+          <span class="card-open-btn">Open ↗</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  <strong>Salesforce Encyclopedia</strong> &mdash; A community knowledge base &mdash; Not affiliated with Salesforce, Inc.
+</footer>
+
+<script>
+  /* ── Nav scroll shrink ── */
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+
+  /* ── Card + sidebar entrance via IntersectionObserver ── */
+  const enterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        enterObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.article-card, .sidebar-section').forEach(el => {
+    enterObserver.observe(el);
+  });
+
+  function filterCategory(cat, el) {
+    event.preventDefault();
+    document.querySelectorAll('#categoryList a').forEach(a => a.classList.remove('active-filter'));
+    el.classList.add('active-filter');
+    document.getElementById('searchInput').value = '';
+    const cards = document.querySelectorAll('#articleGrid .article-card:not(.card-coming-soon)');
+    let count = 0;
+    cards.forEach(card => {
+      const match = cat === 'all' || card.dataset.category === cat;
+      card.classList.toggle('hidden', !match);
+      if (match) count++;
+    });
+    document.getElementById('resultsCount').textContent =
+      `Showing ${count} article${count !== 1 ? 's' : ''}`;
+  }
+
+  function sortCards(mode) {
+    const grid = document.getElementById('articleGrid');
+    const cards = [...grid.querySelectorAll('.article-card')];
+    cards.sort((a, b) => {
+      if (mode === 'recent') {
+        return Number(b.dataset.date) - Number(a.dataset.date);
+      }
+      if (mode === 'az') {
+        return (a.dataset.title || '').localeCompare(b.dataset.title || '');
+      }
+      if (mode === 'category') {
+        const catA = (a.dataset.category || '');
+        const catB = (b.dataset.category || '');
+        return catA.localeCompare(catB) || (a.dataset.title || '').localeCompare(b.dataset.title || '');
+      }
+      return 0;
+    });
+    cards.forEach(card => {
+      card.classList.remove('visible');
+      grid.appendChild(card);
+    });
+    // re-trigger entrance animation after reorder
+    requestAnimationFrame(() => {
+      cards.forEach((card, i) => {
+        setTimeout(() => card.classList.add('visible'), i * 80);
+      });
+    });
+  }
+
+  function filterArticles() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const cards = document.querySelectorAll('#articleGrid .article-card:not(.card-coming-soon)');
+    let count = 0;
+    cards.forEach(card => {
+      const text = (card.textContent + (card.dataset.tags || '')).toLowerCase();
+      const show = !q || text.includes(q);
+      card.classList.toggle('hidden', !show);
+      if (show) count++;
+    });
+    document.getElementById('resultsCount').textContent =
+      `Showing ${count} article${count !== 1 ? 's' : ''}`;
+  }
+</script>
+</body>
+</html>

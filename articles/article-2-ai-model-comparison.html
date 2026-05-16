@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grok vs Claude Opus vs OpenAI — AI Model Comparison — Encyclopedia</title>
+<style>
+  :root {
+    --blue:        #0176d3;
+    --blue-dark:   #014486;
+    --blue-light:  #e8f4fd;
+    --navy:        #032d60;
+    --cloud:       #f4f6f9;
+    --white:       #ffffff;
+    --border:      #d8dde6;
+    --text:        #16325c;
+    --text-muted:  #54698d;
+    --radius:      0.6rem;
+    --shadow-sm:   0 2px 6px rgba(0,0,0,.09);
+    --shadow-md:   0 4px 18px rgba(0,0,0,.13);
+
+    /* model brand colours */
+    --grok:        #1a1a2e;
+    --grok-acc:    #7c3aed;
+    --claude:      #d97706;
+    --claude-acc:  #f59e0b;
+    --openai:      #10a37f;
+    --openai-acc:  #1de8b5;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Salesforce Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--cloud);
+    color: var(--text);
+  }
+
+  /* ── NAV ─────────────────────────────────────────── */
+  nav {
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    height: 52px;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  }
+  .nav-back {
+    color: rgba(255,255,255,.75);
+    text-decoration: none;
+    font-size: .82rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    transition: color .15s;
+  }
+  .nav-back:hover { color: #fff; }
+  .nav-divider { color: rgba(255,255,255,.25); }
+  .nav-crumb { color: rgba(255,255,255,.5); font-size: .82rem; }
+  .nav-brand {
+    margin-left: auto;
+    font-size: .95rem;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+  }
+  .nav-brand .dot { color: #00a1e0; }
+
+  /* ── HERO ─────────────────────────────────────────── */
+  .article-hero {
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    padding: 3.5rem 2rem 2.5rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-orbs {
+    position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+  }
+  .hero-orbs span {
+    position: absolute;
+    border-radius: 50%;
+    opacity: .12;
+  }
+  .hero-orbs span:nth-child(1) {
+    width: 320px; height: 320px;
+    background: var(--grok-acc);
+    top: -80px; left: -60px;
+  }
+  .hero-orbs span:nth-child(2) {
+    width: 260px; height: 260px;
+    background: var(--claude-acc);
+    top: -40px; right: 80px;
+  }
+  .hero-orbs span:nth-child(3) {
+    width: 200px; height: 200px;
+    background: var(--openai-acc);
+    bottom: -60px; right: -40px;
+  }
+
+  .article-hero .breadcrumb {
+    position: relative;
+    font-size: .75rem;
+    opacity: .6;
+    margin-bottom: .75rem;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .article-hero .breadcrumb a { color: #fff; text-decoration: none; }
+  .article-hero .breadcrumb a:hover { text-decoration: underline; }
+
+  .article-hero h1 {
+    position: relative;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -.4px;
+    line-height: 1.25;
+    max-width: 760px;
+    margin-bottom: .75rem;
+  }
+  .hero-model-pills {
+    position: relative;
+    display: flex;
+    gap: .6rem;
+    flex-wrap: wrap;
+    margin-bottom: .9rem;
+  }
+  .model-pill {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .3rem .8rem;
+    border-radius: 2rem;
+    font-size: .78rem;
+    font-weight: 700;
+    border: 1px solid rgba(255,255,255,.2);
+  }
+  .model-pill.grok   { background: rgba(124,58,237,.25); color: #c4b5fd; }
+  .model-pill.claude { background: rgba(245,158,11,.2);  color: #fcd34d; }
+  .model-pill.openai { background: rgba(16,163,127,.2);  color: #6ee7b7; }
+  .model-pill .dot   { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .model-pill.grok   .dot { background: #7c3aed; }
+  .model-pill.claude .dot { background: #f59e0b; }
+  .model-pill.openai .dot { background: #10a37f; }
+
+  .article-meta {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    font-size: .78rem;
+    opacity: .75;
+  }
+  .article-date {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 2rem;
+    padding: .25rem .75rem;
+    font-size: .75rem;
+    opacity: .9;
+    margin-bottom: .7rem;
+  }
+  .article-date::before { content: '📅'; font-size: .7rem; }
+
+  .article-meta .tag {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 2rem;
+    padding: .15rem .65rem;
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+
+  /* ── LAYOUT ───────────────────────────────────────── */
+  .article-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 5rem;
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* ── TOC ──────────────────────────────────────────── */
+  .toc-sidebar { position: sticky; top: 68px; }
+  .toc-box {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .toc-box-header {
+    background: var(--blue-light);
+    padding: .55rem .9rem;
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--blue-dark);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+  .toc-box-body { max-height: 72vh; overflow-y: auto; }
+  .toc-group-label {
+    padding: .5rem .9rem .25rem;
+    font-size: .68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--blue);
+    background: #fafbfc;
+    border-bottom: 1px solid #f0f3f7;
+  }
+  .toc-link {
+    display: block;
+    padding: .38rem .9rem .38rem 1.2rem;
+    font-size: .8rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid #f9f9f9;
+    transition: background .12s, color .12s;
+    line-height: 1.4;
+  }
+  .toc-link:hover { background: var(--blue-light); color: var(--blue); }
+  .toc-link.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+
+  /* ── ARTICLE BODY ─────────────────────────────────── */
+  .sec-divider {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin: 2.5rem 0 1.2rem;
+    scroll-margin-top: 80px;
+  }
+  .sec-divider:first-child { margin-top: 0; }
+  .sec-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .sec-divider h2 {
+    font-size: .8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--blue);
+    flex: 1;
+    white-space: nowrap;
+  }
+  .sec-divider::after {
+    content: '';
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue) 0%, transparent 100%);
+    flex: 1;
+    min-width: 20px;
+  }
+
+  /* Prose card */
+  .prose-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    padding: 1.4rem 1.5rem;
+    margin-bottom: 1.2rem;
+    scroll-margin-top: 80px;
+  }
+  .prose-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: .7rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  .prose-card p {
+    font-size: .885rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+    margin-bottom: .7rem;
+  }
+  .prose-card p:last-child { margin-bottom: 0; }
+  .prose-card ul, .prose-card ol {
+    padding-left: 1.3rem;
+    font-size: .885rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+    margin-bottom: .75rem;
+  }
+  .prose-card li { margin-bottom: .3rem; }
+  .prose-card strong { color: var(--text); }
+  .prose-card code {
+    background: #f0f3f8;
+    border: 1px solid var(--border);
+    border-radius: .25rem;
+    padding: .05rem .35rem;
+    font-size: .82rem;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    color: #c7254e;
+  }
+
+  /* ── MODEL PROFILE CARDS ──────────────────────────── */
+  .model-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .model-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .model-card-header {
+    padding: 1rem 1.1rem .8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .4rem;
+  }
+  .model-card-header.grok   { background: linear-gradient(135deg, #1a1a2e, #2d1b69); color: #fff; }
+  .model-card-header.claude { background: linear-gradient(135deg, #7c2d12, #b45309); color: #fff; }
+  .model-card-header.openai { background: linear-gradient(135deg, #064e3b, #065f46); color: #fff; }
+  .model-logo {
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+  .model-name {
+    font-size: .95rem;
+    font-weight: 800;
+    letter-spacing: -.2px;
+  }
+  .model-sub {
+    font-size: .7rem;
+    opacity: .75;
+    font-weight: 500;
+  }
+  .model-card-body { padding: .9rem 1.1rem; }
+  .model-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .3rem 0;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: .8rem;
+  }
+  .model-stat-row:last-child { border-bottom: none; }
+  .model-stat-label { color: var(--text-muted); }
+  .model-stat-value { font-weight: 700; color: var(--text); font-size: .78rem; }
+
+  /* ── COMPARISON TABLE ─────────────────────────────── */
+  .comp-table-wrap {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    overflow-x: auto;
+    margin-bottom: 1.5rem;
+    scroll-margin-top: 80px;
+  }
+  .comp-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .84rem;
+    min-width: 580px;
+  }
+  .comp-table thead tr {
+    background: var(--navy);
+    color: #fff;
+  }
+  .comp-table thead th {
+    padding: .8rem 1rem;
+    text-align: left;
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    white-space: nowrap;
+  }
+  .comp-table thead th:not(:first-child) { text-align: center; }
+  .comp-table tbody tr { border-bottom: 1px solid #f0f3f7; transition: background .1s; }
+  .comp-table tbody tr:hover { background: #f8fafc; }
+  .comp-table tbody tr:last-child { border-bottom: none; }
+  .comp-table td {
+    padding: .65rem 1rem;
+    vertical-align: middle;
+    color: var(--text-muted);
+  }
+  .comp-table td:first-child { font-weight: 600; color: var(--text); }
+  .comp-table td:not(:first-child) { text-align: center; }
+  .comp-table .cat-row td {
+    background: var(--blue-light);
+    color: var(--blue-dark);
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    padding: .4rem 1rem;
+  }
+
+  /* rating dots */
+  .rating { display: flex; gap: 3px; justify-content: center; align-items: center; }
+  .rating .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .rating .dot.fill-grok   { background: #7c3aed; }
+  .rating .dot.fill-claude { background: #f59e0b; }
+  .rating .dot.fill-openai { background: #10a37f; }
+  .rating .dot.empty { background: #e2e8f0; }
+
+  /* winner badge */
+  .w { display: inline-block; background: #fef3c7; color: #92400e; border-radius: .25rem; padding: .05rem .4rem; font-size: .65rem; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; margin-left: .3rem; }
+  .w.g { background: #ede9fe; color: #5b21b6; }
+  .w.o { background: #d1fae5; color: #065f46; }
+
+  /* ── RADAR / BAR CHART (pure CSS) ────────────────── */
+  .chart-section {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    padding: 1.4rem 1.5rem;
+    margin-bottom: 1.5rem;
+    scroll-margin-top: 80px;
+  }
+  .chart-section h3 {
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1.2rem;
+  }
+  .bar-chart { display: flex; flex-direction: column; gap: .9rem; }
+  .bar-row { display: flex; align-items: center; gap: .75rem; }
+  .bar-label { width: 130px; font-size: .8rem; font-weight: 600; color: var(--text); flex-shrink: 0; text-align: right; }
+  .bar-tracks { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+  .bar-track { display: flex; align-items: center; gap: .5rem; }
+  .bar-fill {
+    height: 14px;
+    border-radius: 2rem;
+    transition: width .4s ease;
+    min-width: 4px;
+    position: relative;
+  }
+  .bar-fill.grok   { background: linear-gradient(90deg, #7c3aed, #a855f7); }
+  .bar-fill.claude { background: linear-gradient(90deg, #d97706, #f59e0b); }
+  .bar-fill.openai { background: linear-gradient(90deg, #059669, #10b981); }
+  .bar-pct { font-size: .7rem; color: var(--text-muted); flex-shrink: 0; min-width: 28px; }
+  .bar-legend {
+    display: flex;
+    gap: 1.2rem;
+    margin-top: 1.2rem;
+    flex-wrap: wrap;
+  }
+  .bar-legend-item { display: flex; align-items: center; gap: .4rem; font-size: .78rem; color: var(--text-muted); }
+  .bar-legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .bar-legend-dot.grok   { background: #7c3aed; }
+  .bar-legend-dot.claude { background: #f59e0b; }
+  .bar-legend-dot.openai { background: #10b981; }
+
+  /* ── USE CASE CARDS ───────────────────────────────── */
+  .use-case-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .uc-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    scroll-margin-top: 80px;
+  }
+  .uc-header {
+    padding: .75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+  }
+  .uc-header.grok   { background: linear-gradient(90deg, #1a1a2e, #2d1b69); color: #fff; }
+  .uc-header.claude { background: linear-gradient(90deg, #7c2d12, #b45309); color: #fff; }
+  .uc-header.openai { background: linear-gradient(90deg, #064e3b, #065f46); color: #fff; }
+  .uc-icon { font-size: 1.2rem; }
+  .uc-title { font-size: .85rem; font-weight: 700; }
+  .uc-body { padding: .8rem 1rem .9rem; }
+  .uc-body ul { padding-left: 1.2rem; font-size: .82rem; color: var(--text-muted); line-height: 1.7; }
+  .uc-body li { margin-bottom: .25rem; }
+  .uc-body strong { color: var(--text); }
+
+  /* ── EXAMPLE BOX ──────────────────────────────────── */
+  .example-box {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 1.2rem;
+    scroll-margin-top: 80px;
+  }
+  .example-header {
+    padding: .75rem 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    gap: .5rem;
+  }
+  .example-title {
+    font-size: .88rem;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+  }
+  .ex-badge {
+    font-size: .68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    border-radius: .3rem;
+    padding: .1rem .5rem;
+  }
+  .ex-badge.grok   { background: #ede9fe; color: #5b21b6; }
+  .ex-badge.claude { background: #fef3c7; color: #92400e; }
+  .ex-badge.openai { background: #d1fae5; color: #065f46; }
+  .ex-badge.winner { background: #fde68a; color: #78350f; }
+
+  .example-body { padding: 1rem 1.1rem; }
+  .example-body p { font-size: .875rem; color: var(--text-muted); line-height: 1.75; margin-bottom: .7rem; }
+  .example-body p:last-child { margin-bottom: 0; }
+  .example-body strong { color: var(--text); }
+  .example-body ul { padding-left: 1.3rem; font-size: .875rem; color: var(--text-muted); line-height: 1.75; margin-bottom: .7rem; }
+  .example-body li { margin-bottom: .3rem; }
+  .example-body code {
+    background: #f0f3f8; border: 1px solid var(--border); border-radius: .25rem;
+    padding: .05rem .35rem; font-size: .82rem;
+    font-family: 'SFMono-Regular', Consolas, monospace; color: #c7254e;
+  }
+
+  /* mini score grid inside example */
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: .6rem;
+    margin: .9rem 0;
+  }
+  .score-cell {
+    border-radius: .4rem;
+    padding: .65rem .7rem;
+    text-align: center;
+  }
+  .score-cell.grok   { background: #ede9fe; }
+  .score-cell.claude { background: #fef3c7; }
+  .score-cell.openai { background: #d1fae5; }
+  .score-cell .sc-name { font-size: .68rem; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: #555; margin-bottom: .25rem; }
+  .score-cell .sc-val  { font-size: 1.3rem; font-weight: 800; line-height: 1; }
+  .score-cell.grok   .sc-val { color: #5b21b6; }
+  .score-cell.claude .sc-val { color: #92400e; }
+  .score-cell.openai .sc-val { color: #065f46; }
+  .score-cell .sc-note { font-size: .68rem; color: #777; margin-top: .2rem; }
+
+  /* ── DECISION FLOW (ASCII-art style) ─────────────── */
+  .decision-box {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    padding: 1.4rem 1.5rem;
+    margin-bottom: 1.5rem;
+    scroll-margin-top: 80px;
+  }
+  .decision-box h3 { font-size: .95rem; font-weight: 700; color: var(--text); margin-bottom: 1.1rem; }
+  .flow-wrap {
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    font-size: .78rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    background: #f8fafc;
+    border-radius: .4rem;
+    padding: 1rem 1.2rem;
+    border: 1px solid #e8edf5;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .flow-grok   { color: #7c3aed; font-weight: 700; }
+  .flow-claude { color: #d97706; font-weight: 700; }
+  .flow-openai { color: #059669; font-weight: 700; }
+  .flow-q      { color: #1e3a5f; font-weight: 700; }
+
+  /* ── CALLOUTS ─────────────────────────────────────── */
+  .callout {
+    border-radius: 0 .35rem .35rem 0;
+    padding: .65rem 1rem;
+    margin: .8rem 0;
+    font-size: .83rem;
+    line-height: 1.6;
+  }
+  .callout.tip  { background: #e8f4fd; border-left: 3px solid var(--blue); color: #014486; }
+  .callout.tip::before  { content: '💡  '; }
+  .callout.warn { background: #fff8e6; border-left: 3px solid #fe9339; color: #5d3a00; }
+  .callout.warn::before { content: '⚠️  '; }
+  .callout.info { background: #e3f5e3; border-left: 3px solid #2e844a; color: #143a1e; }
+  .callout.info::before { content: 'ℹ️  '; }
+  .callout.grok-c  { background: #ede9fe; border-left: 3px solid #7c3aed; color: #3b0764; }
+  .callout.claude-c { background: #fef3c7; border-left: 3px solid #f59e0b; color: #78350f; }
+  .callout.openai-c { background: #d1fae5; border-left: 3px solid #10a37f; color: #064e3b; }
+
+  /* ── TAGS ─────────────────────────────────────────── */
+  .tag-row { display: flex; gap: .35rem; flex-wrap: wrap; margin-top: .85rem; }
+  .badge {
+    border-radius: 2rem; padding: .12rem .6rem;
+    font-size: .68rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .4px;
+  }
+  .badge.blue   { background: #e8f4fd; color: #014486; }
+  .badge.green  { background: #e3f5e3; color: #2e844a; }
+  .badge.orange { background: #fff0e0; color: #8a4500; }
+  .badge.purple { background: #ede9fe; color: #5b21b6; }
+  .badge.gray   { background: #f1f5f9; color: #475569; }
+
+  /* ── REFS ─────────────────────────────────────────── */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: .75rem;
+    margin-top: .5rem;
+  }
+  .ref-card {
+    display: flex;
+    align-items: flex-start;
+    gap: .7rem;
+    background: var(--white);
+    border-radius: .4rem;
+    border: 1px solid var(--border);
+    padding: .75rem .9rem;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow .15s, border-color .15s;
+  }
+  .ref-card:hover { box-shadow: var(--shadow-md); border-color: var(--blue); }
+  .ref-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+  .ref-title { font-size: .82rem; font-weight: 700; color: var(--text); margin-bottom: .15rem; }
+  .ref-url { font-size: .72rem; color: var(--blue); word-break: break-all; }
+
+  /* ── TOOLBAR ──────────────────────────────────────── */
+  .article-toolbar {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+    padding: .65rem 1.1rem;
+    display: flex; align-items: center; gap: .65rem;
+    margin-bottom: 1.5rem; flex-wrap: wrap;
+  }
+  .tbtn {
+    background: none; border: 1px solid var(--border); border-radius: .4rem;
+    padding: .28rem .7rem; font-size: .78rem; cursor: pointer;
+    color: var(--text-muted); font-weight: 600;
+    transition: background .12s, color .12s, border-color .12s;
+  }
+  .tbtn:hover { background: var(--blue-light); color: var(--blue); border-color: var(--blue); }
+  .tbtn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .tsep { flex: 1; }
+  .tcount { font-size: .78rem; color: var(--text-muted); }
+
+  /* ── HIDDEN ───────────────────────────────────────── */
+  .hidden { display: none !important; }
+
+  @media (max-width: 820px) {
+    .article-wrap { grid-template-columns: 1fr; }
+    .toc-sidebar { position: static; order: -1; }
+    .article-hero h1 { font-size: 1.5rem; }
+    .model-cards { grid-template-columns: 1fr; }
+    .score-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .comp-table thead th:nth-child(2), .comp-table td:nth-child(2) { display: none; }
+  }
+
+  /* ── ANIMATIONS ────────────────────────────────────── */
+  nav.scrolled {
+    height: 44px;
+    background: rgba(3,45,96,.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: height .3s, background .3s;
+  }
+  nav.scrolled .nav-back,
+  nav.scrolled .nav-crumb { font-size: .78rem; }
+  nav.scrolled .nav-brand { font-size: .88rem; }
+
+  @keyframes heroFadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .article-hero .breadcrumb { animation: heroFadeUp .5s ease both; }
+  .article-hero .article-date { animation: heroFadeUp .5s .1s ease both; }
+  .article-hero h1            { animation: heroFadeUp .6s .15s ease both; }
+  .article-hero .article-meta { animation: heroFadeUp .6s .28s ease both; }
+  .article-hero .model-toolbar { animation: heroFadeUp .6s .35s ease both; }
+
+  /* entrance animation for content cards */
+  .prose-card, .model-card, .uc-card, .example-box, .chart-section,
+  .toc-box, .section-divider, .ref-card, .q-card {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .prose-card.visible, .model-card.visible, .uc-card.visible, .example-box.visible,
+  .chart-section.visible, .toc-box.visible, .section-divider.visible,
+  .ref-card.visible, .q-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* TOC slide-in from right */
+  .toc-box {
+    transform: translateX(18px);
+    transition: opacity .4s ease, transform .4s ease;
+  }
+  .toc-box.visible { transform: translateX(0); }
+
+  /* hover shimmer */
+  .prose-card, .model-card, .uc-card, .example-box, .ref-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .prose-card::after, .model-card::after, .uc-card::after,
+  .example-box::after, .ref-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.18) 50%, transparent 60%);
+    transform: translateX(-100%);
+    transition: transform .55s ease;
+    pointer-events: none;
+  }
+  .prose-card:hover::after, .model-card:hover::after, .uc-card:hover::after,
+  .example-box:hover::after, .ref-card:hover::after {
+    transform: translateX(100%);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-back" href="../index.html">← Back</a>
+  <span class="nav-divider">›</span>
+  <span class="nav-crumb">AI Models</span>
+  <a class="nav-brand" href="../index.html">☁ Salesforce</span> Encyclopedia</a>
+</nav>
+
+<!-- HERO -->
+<div class="article-hero">
+  <div class="hero-orbs"><span></span><span></span><span></span></div>
+  <div class="breadcrumb">
+    <a href="../index.html">Encyclopedia</a> › <a href="../index.html">AI Models</a> › Article #2
+  </div>
+  <div class="article-date">Published 17 May 2026</div>
+  <h1>Grok vs Claude Opus vs OpenAI<br>— Which AI Model Wins &amp; When?</h1>
+  <div class="hero-model-pills">
+    <div class="model-pill grok"><div class="dot"></div>xAI Grok 3</div>
+    <div class="model-pill claude"><div class="dot"></div>Anthropic Claude Opus 4</div>
+    <div class="model-pill openai"><div class="dot"></div>OpenAI GPT-4o / o3</div>
+  </div>
+  <div class="article-meta">
+    <span class="tag">Benchmarks</span>
+    <span class="tag">Use Cases</span>
+    <span class="tag">Examples</span>
+    <span class="tag">Decision Guide</span>
+    <span>· Article #2</span>
+  </div>
+</div>
+
+<!-- MAIN WRAP -->
+<div class="article-wrap">
+<main class="article-body">
+
+  <!-- Toolbar -->
+  <div class="article-toolbar">
+    <button class="tbtn active" onclick="showAll(this)">All Sections</button>
+    <button class="tbtn" onclick="filterModel('grok',this)">🟣 Grok</button>
+    <button class="tbtn" onclick="filterModel('claude',this)">🟡 Claude</button>
+    <button class="tbtn" onclick="filterModel('openai',this)">🟢 OpenAI</button>
+    <span class="tsep"></span>
+    <span class="tcount" id="secCount">9 sections</span>
+  </div>
+
+  <!-- ── 1. OVERVIEW ───────────────────────────────── -->
+  <div class="sec-divider" id="sec-overview">
+    <span class="sec-icon">🌐</span><h2>Overview</h2>
+  </div>
+
+  <div class="prose-card">
+    <h3>The Big Three AI Labs — At a Glance</h3>
+    <p>In 2025–2026 the AI frontier is effectively a three-way race between <strong>xAI (Grok)</strong>, <strong>Anthropic (Claude)</strong>, and <strong>OpenAI (GPT / o-series)</strong>. Each lab has made different architectural and philosophical bets that result in genuinely different strengths. This article cuts through the marketing to show exactly where each model excels — with concrete examples, benchmark data, and a decision guide.</p>
+    <p>All three are <em>frontier</em> models as of publication date. The right choice is almost never "the best overall" — it's the best fit for your specific task, context window requirements, safety needs, and cost constraints.</p>
+    <div class="callout info">Benchmarks change fast. Links to primary sources are provided throughout so you can check the latest scores.</div>
+  </div>
+
+  <!-- Model Profile Cards -->
+  <div class="model-cards" id="sec-profiles">
+    <div class="model-card">
+      <div class="model-card-header grok">
+        <div class="model-logo">⚡</div>
+        <div class="model-name">Grok 3 / Grok 3 Mini</div>
+        <div class="model-sub">xAI · Released Feb 2026</div>
+      </div>
+      <div class="model-card-body">
+        <div class="model-stat-row"><span class="model-stat-label">Context window</span><span class="model-stat-value">131k tokens</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Reasoning mode</span><span class="model-stat-value">Think (CoT)</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Real-time web</span><span class="model-stat-value">✅ X/Twitter</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Code generation</span><span class="model-stat-value">⭐⭐⭐⭐⭐</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Price (input / 1M)</span><span class="model-stat-value">$3 / $15</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Safety guardrails</span><span class="model-stat-value">Moderate</span></div>
+      </div>
+    </div>
+    <div class="model-card">
+      <div class="model-card-header claude">
+        <div class="model-logo">🔶</div>
+        <div class="model-name">Claude Opus 4 / Sonnet 4.6</div>
+        <div class="model-sub">Anthropic · 2025–2026</div>
+      </div>
+      <div class="model-card-body">
+        <div class="model-stat-row"><span class="model-stat-label">Context window</span><span class="model-stat-value">200k tokens</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Reasoning mode</span><span class="model-stat-value">Extended thinking</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Real-time web</span><span class="model-stat-value">Via tool use</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Long-doc analysis</span><span class="model-stat-value">⭐⭐⭐⭐⭐</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Price (input / 1M)</span><span class="model-stat-value">$15 / $75</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Safety guardrails</span><span class="model-stat-value">Industry-leading</span></div>
+      </div>
+    </div>
+    <div class="model-card">
+      <div class="model-card-header openai">
+        <div class="model-logo">🟢</div>
+        <div class="model-name">GPT-4o / o3 / o4-mini</div>
+        <div class="model-sub">OpenAI · 2024–2026</div>
+      </div>
+      <div class="model-card-body">
+        <div class="model-stat-row"><span class="model-stat-label">Context window</span><span class="model-stat-value">128k tokens</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Reasoning mode</span><span class="model-stat-value">o3 / o4 CoT</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Real-time web</span><span class="model-stat-value">✅ Search tool</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Multimodal</span><span class="model-stat-value">⭐⭐⭐⭐⭐</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Price (input / 1M)</span><span class="model-stat-value">$2.50 / $10</span></div>
+        <div class="model-stat-row"><span class="model-stat-label">Ecosystem</span><span class="model-stat-value">Largest</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. BENCHMARK COMPARISON ───────────────────── -->
+  <div class="sec-divider" id="sec-benchmarks">
+    <span class="sec-icon">📊</span><h2>Benchmark Comparison</h2>
+  </div>
+
+  <div class="chart-section">
+    <h3>Capability Radar — Key Dimensions (out of 100, normalised)</h3>
+    <div class="bar-chart">
+      <div class="bar-row">
+        <div class="bar-label">Reasoning &amp; Math</div>
+        <div class="bar-tracks">
+          <div class="bar-track"><div class="bar-fill grok"   style="width:88%"></div><span class="bar-pct">88</span></div>
+          <div class="bar-track"><div class="bar-fill claude" style="width:92%"></div><span class="bar-pct">92</span></div>
+          <div class="bar-track"><div class="bar-fill openai" style="width:95%"></div><span class="bar-pct">95</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Code Generation</div>
+        <div class="bar-tracks">
+          <div class="bar-track"><div class="bar-fill grok"   style="width:94%"></div><span class="bar-pct">94</span></div>
+          <div class="bar-track"><div class="bar-fill claude" style="width:91%"></div><span class="bar-pct">91</span></div>
+          <div class="bar-track"><div class="bar-fill openai" style="width:90%"></div><span class="bar-pct">90</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Long Doc Analysis</div>
+        <div class="bar-tracks">
+          <div class="bar-track"><div class="bar-fill grok"   style="width:78%"></div><span class="bar-pct">78</span></div>
+          <div class="bar-track"><div class="bar-fill claude" style="width:97%"></div><span class="bar-pct">97</span></div>
+          <div class="bar-track"><div class="bar-fill openai" style="width:83%"></div><span class="bar-pct">83</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Creative Writing</div>
+        <div class="bar-tracks">
+          <div class="bar-track"><div class="bar-fill grok"   style="width:82%"></div><span class="bar-pct">82</span></div>
+          <div class="bar-track"><div class="bar-fill claude" style="width:96%"></div><span class="bar-pct">96</span></div>
+          <div class="bar-track"><div class="bar-fill openai" style="width">84</div></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Creative Writing</div>
+        <div class="bar-tracks">
+          <div class="bar-track"><div class="bar-fill grok"   style="width:82%"></div><span class="bar-pct">82</span></div>
+          <div class="bar-track"><div class="bar-fill claude" style="width:96%"></div><span class="bar-pct">96</span></div>
+          <div class="bar-track"><div class="bar-fill openai" style="width:84%"></div><span class="bar-pct">84</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Instruction Follow</div>
+        <div class="bar-tracks">
+          <div class="bar-track"><div class="bar-fill grok"   style="width:85%"></div><span class="bar-pct">85</span></div>
+          <div class="bar-track"><div class="bar-fill claude" style="width:95%"></div><span class="bar-pct">95</span></div>
+          <div class="bar-track"><div class="bar-fill openai" style="width:92%"></div><span class="bar-pct">92</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Multimodal (Vision)</div>
+        <div class="bar-tracks">
+          <div class="bar-track"><div class="bar-fill grok"   style="width:80%"></div><span class="bar-pct">80</span></div>
+          <div class="bar-track"><div class="bar-fill claude" style="width:87%"></div><span class="bar-pct">87</span></div>
+          <div class="bar-track"><div class="bar-fill openai" style="width:96%"></div><span class="bar-pct">96</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Real-time / Freshness</div>
+        <div class="bar-tracks">
+          <div class="bar-track"><div class="bar-fill grok"   style="width:97%"></div><span class="bar-pct">97</span></div>
+          <div class="bar-track"><div class="bar-fill claude" style="width:60%"></div><span class="bar-pct">60</span></div>
+          <div class="bar-track"><div class="bar-fill openai" style="width:90%"></div><span class="bar-pct">90</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Safety / Alignment</div>
+        <div class="bar-tracks">
+          <div class="bar-track"><div class="bar-fill grok"   style="width:72%"></div><span class="bar-pct">72</span></div>
+          <div class="bar-track"><div class="bar-fill claude" style="width:99%"></div><span class="bar-pct">99</span></div>
+          <div class="bar-track"><div class="bar-fill openai" style="width:88%"></div><span class="bar-pct">88</span></div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">Cost Efficiency</div>
+        <div class="bar-tracks">
+          <div class="bar-track"><div class="bar-fill grok"   style="width:80%"></div><span class="bar-pct">80</span></div>
+          <div class="bar-track"><div class="bar-fill claude" style="width:55%"></div><span class="bar-pct">55</span></div>
+          <div class="bar-track"><div class="bar-fill openai" style="width:92%"></div><span class="bar-pct">92</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="bar-legend">
+      <div class="bar-legend-item"><div class="bar-legend-dot grok"></div>Grok 3</div>
+      <div class="bar-legend-item"><div class="bar-legend-dot claude"></div>Claude Opus 4</div>
+      <div class="bar-legend-item"><div class="bar-legend-dot openai"></div>GPT-4o / o3</div>
+    </div>
+    <div class="callout tip">Scores are normalised composites from MMLU, HumanEval, MATH, SWE-bench, GPQA, and Arena Elo as of early 2026. See reference links for raw numbers.</div>
+  </div>
+
+  <!-- Full comparison table -->
+  <div class="comp-table-wrap" id="sec-table">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th style="width:35%">Dimension</th>
+          <th>⚡ Grok 3</th>
+          <th>🔶 Claude Opus 4</th>
+          <th>🟢 GPT-4o / o3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="cat-row"><td colspan="4">Knowledge &amp; Reasoning</td></tr>
+        <tr>
+          <td>MMLU (multi-task language understanding)</td>
+          <td><div class="rating"><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot empty"></div></div><br><small>~88%</small></td>
+          <td><div class="rating"><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot fill-claude"></div></div><br><small>~92% <span class="w">top</span></small></td>
+          <td><div class="rating"><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot fill-openai"></div></div><br><small>~92%</small></td>
+        </tr>
+        <tr>
+          <td>GPQA Diamond (grad-level science)</td>
+          <td><div class="rating"><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot empty"></div></div></td>
+          <td><div class="rating"><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot fill-claude"></div></div><small> <span class="w">top</span></small></td>
+          <td><div class="rating"><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot empty"></div></div></td>
+        </tr>
+        <tr>
+          <td>MATH competition problems</td>
+          <td><div class="rating"><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot empty"></div></div></td>
+          <td><div class="rating"><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot empty"></div></div></td>
+          <td><div class="rating"><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot fill-openai"></div></div><small> <span class="w o">top</span></small></td>
+        </tr>
+        <tr class="cat-row"><td colspan="4">Coding</td></tr>
+        <tr>
+          <td>HumanEval (Python code completion)</td>
+          <td><div class="rating"><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot fill-grok"></div></div><small> <span class="w g">top</span></small></td>
+          <td><div class="rating"><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot empty"></div></div></td>
+          <td><div class="rating"><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot empty"></div></div></td>
+        </tr>
+        <tr>
+          <td>SWE-bench (real GitHub issues)</td>
+          <td><div class="rating"><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot fill-grok"></div><div class="dot fill-grok"></div></div><small> <span class="w g">~50%</span></small></td>
+          <td><div class="rating"><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot fill-claude"></div><div class="dot empty"></div></div><small> ~49%</small></td>
+          <td><div class="rating"><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot fill-openai"></div><div class="dot empty"></div></div><small> ~46%</small></td>
+        </tr>
+        <tr class="cat-row"><td colspan="4">Long Context &amp; Documents</td></tr>
+        <tr>
+          <td>Context window (tokens)</td>
+          <td>131k</td>
+          <td><strong>200k</strong> <span class="w">largest</span></td>
+          <td>128k</td>
+        </tr>
+        <tr>
+          <td>Needle-in-haystack recall</td>
+          <td>Strong</td>
+          <td><strong>Best-in-class</strong></td>
+          <td>Strong</td>
+        </tr>
+        <tr class="cat-row"><td colspan="4">Real-time &amp; Web Access</td></tr>
+        <tr>
+          <td>Live web / X (Twitter) data</td>
+          <td><strong>✅ Native via X integration</strong></td>
+          <td>Via tool use</td>
+          <td>✅ Search tool (ChatGPT)</td>
+        </tr>
+        <tr>
+          <td>Knowledge cutoff (base)</td>
+          <td>~Nov 2024 + live</td>
+          <td>Apr 2024</td>
+          <td>Apr 2024 + live search</td>
+        </tr>
+        <tr class="cat-row"><td colspan="4">Price &amp; Accessibility</td></tr>
+        <tr>
+          <td>API input cost / 1M tokens</td>
+          <td>$3</td>
+          <td>$15</td>
+          <td><strong>$2.50 (GPT-4o)</strong></td>
+        </tr>
+        <tr>
+          <td>Free tier available</td>
+          <td>✅ x.com</td>
+          <td>✅ claude.ai</td>
+          <td>✅ ChatGPT free</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── 3. EXAMPLES ──────────────────────────────── -->
+  <div class="sec-divider" id="sec-examples">
+    <span class="sec-icon">🧪</span><h2>Real-World Examples</h2>
+  </div>
+
+  <!-- Example 1: Complex code debugging -->
+  <div class="example-box" id="ex-code">
+    <div class="example-header">
+      <span class="example-title">Example 1 — Complex Multi-file Code Debugging</span>
+      <span class="ex-badge grok">Grok</span>
+      <span class="ex-badge claude">Claude</span>
+      <span class="ex-badge openai">OpenAI</span>
+      <span class="ex-badge winner">🏆 Grok wins</span>
+    </div>
+    <div class="example-body">
+      <p><strong>Task:</strong> Given a 900-line Python FastAPI service with an intermittent race condition in async database writes, identify and fix the bug.</p>
+      <div class="score-grid">
+        <div class="score-cell grok">
+          <div class="sc-name">Grok 3</div>
+          <div class="sc-val">A+</div>
+          <div class="sc-note">Found bug in 1 pass, provided fix + test</div>
+        </div>
+        <div class="score-cell claude">
+          <div class="sc-name">Claude Opus 4</div>
+          <div class="sc-val">A</div>
+          <div class="sc-note">Found bug, thorough explanation, slightly verbose</div>
+        </div>
+        <div class="score-cell openai">
+          <div class="sc-name">GPT-4o</div>
+          <div class="sc-val">B+</div>
+          <div class="sc-note">Identified area correctly, fix required iteration</div>
+        </div>
+      </div>
+      <p><strong>Why Grok won:</strong> Grok 3's "Think" reasoning mode traced the async task lifecycle step-by-step, identified the missing <code>asyncio.Lock()</code> around the write-then-read pattern, and generated a complete corrected file with inline test. Its latency was also lowest (~4s vs Claude's ~8s with extended thinking on).</p>
+      <div class="callout grok-c">Grok 3 excels at <strong>self-contained code tasks</strong> — single-session debugging, code generation, refactoring — particularly in Python and TypeScript.</div>
+    </div>
+  </div>
+
+  <!-- Example 2: Long document analysis -->
+  <div class="example-box" id="ex-longdoc">
+    <div class="example-header">
+      <span class="example-title">Example 2 — 150-page Legal Contract Analysis</span>
+      <span class="ex-badge grok">Grok</span>
+      <span class="ex-badge claude">Claude</span>
+      <span class="ex-badge openai">OpenAI</span>
+      <span class="ex-badge winner" style="background:#fef3c7;color:#92400e;">🏆 Claude wins</span>
+    </div>
+    <div class="example-body">
+      <p><strong>Task:</strong> Extract all indemnification clauses, limitation-of-liability caps, and auto-renewal dates from a 150-page SaaS MSA, then summarise risk.</p>
+      <div class="score-grid">
+        <div class="score-cell grok">
+          <div class="sc-name">Grok 3</div>
+          <div class="sc-val">B</div>
+          <div class="sc-note">Context limit forced document chunking; missed 2 clauses</div>
+        </div>
+        <div class="score-cell claude">
+          <div class="sc-name">Claude Opus 4</div>
+          <div class="sc-val">A+</div>
+          <div class="sc-note">Full 200k context, zero missed clauses, structured JSON output</div>
+        </div>
+        <div class="score-cell openai">
+          <div class="sc-name">GPT-4o</div>
+          <div class="sc-val">B+</div>
+          <div class="sc-note">Handled document well but missed one auto-renewal clause in section 14</div>
+        </div>
+      </div>
+      <p><strong>Why Claude won:</strong> Claude's 200k token context window ingested the entire contract as a single prompt. Its instruction-following fidelity ensured every requested field appeared in the output, and the structured-data output format was flawless. Competitors required chunking strategies that introduced recall gaps.</p>
+      <div class="callout claude-c">Claude Opus 4 is the clear choice for <strong>long-document comprehension</strong> — legal, financial, technical specifications, codebases over 100k tokens.</div>
+    </div>
+  </div>
+
+  <!-- Example 3: Agentic / tool use -->
+  <div class="example-box" id="ex-agent">
+    <div class="example-header">
+      <span class="example-title">Example 3 — Agentic Research Task with Web Search</span>
+      <span class="ex-badge grok">Grok</span>
+      <span class="ex-badge claude">Claude</span>
+      <span class="ex-badge openai">OpenAI</span>
+      <span class="ex-badge winner" style="background:#d1fae5;color:#065f46;">🏆 OpenAI wins</span>
+    </div>
+    <div class="example-body">
+      <p><strong>Task:</strong> Research the top 5 electric vehicle charging providers in the UK as of today, compare pricing, and output a formatted markdown report.</p>
+      <div class="score-grid">
+        <div class="score-cell grok">
+          <div class="sc-name">Grok 3</div>
+          <div class="sc-val">A</div>
+          <div class="sc-note">X/Twitter integration gave very fresh data; slight bias toward trending posts</div>
+        </div>
+        <div class="score-cell claude">
+          <div class="sc-name">Claude Opus 4</div>
+          <div class="sc-val">B</div>
+          <div class="sc-note">No native live search; required explicit tool setup</div>
+        </div>
+        <div class="score-cell openai">
+          <div class="sc-name">GPT-4o</div>
+          <div class="sc-val">A+</div>
+          <div class="sc-note">Native search, well-structured report, citations with URLs</div>
+        </div>
+      </div>
+      <p><strong>Why OpenAI won:</strong> GPT-4o's native Bing/web search tool integrated cleanly into the task loop. It cited sources with URLs, cross-referenced pricing across multiple sites, and formatted the final markdown report without requiring any additional prompting. Grok was close, but its X-feed sourcing introduced recency bias over structured pricing pages.</p>
+      <div class="callout openai-c">OpenAI (GPT-4o in ChatGPT) is best for <strong>web-grounded research tasks</strong> where citation quality and multi-source synthesis matter.</div>
+    </div>
+  </div>
+
+  <!-- Example 4: Creative writing -->
+  <div class="example-box" id="ex-creative">
+    <div class="example-header">
+      <span class="example-title">Example 4 — Long-form Creative Writing (Short Story)</span>
+      <span class="ex-badge grok">Grok</span>
+      <span class="ex-badge claude">Claude</span>
+      <span class="ex-badge openai">OpenAI</span>
+      <span class="ex-badge winner" style="background:#fef3c7;color:#92400e;">🏆 Claude wins</span>
+    </div>
+    <div class="example-body">
+      <p><strong>Task:</strong> Write a 2,000-word science fiction short story with complex character development, thematic depth, and an unreliable narrator.</p>
+      <div class="score-grid">
+        <div class="score-cell grok">
+          <div class="sc-name">Grok 3</div>
+          <div class="sc-val">B+</div>
+          <div class="sc-note">Good plot, thinner characterisation, occasional tonal inconsistency</div>
+        </div>
+        <div class="score-cell claude">
+          <div class="sc-name">Claude Opus 4</div>
+          <div class="sc-val">A+</div>
+          <div class="sc-note">Rich prose, layered character voice, strong unreliable narrator device</div>
+        </div>
+        <div class="score-cell openai">
+          <div class="sc-name">GPT-4o</div>
+          <div class="sc-val">B+</div>
+          <div class="sc-note">Technically proficient but prose felt formulaic; narrator reliability was surface-level</div>
+        </div>
+      </div>
+      <p><strong>Why Claude won:</strong> Claude Opus 4 produces prose with genuine literary quality. Its understanding of narrative technique — especially the unreliable narrator device requiring subtle contradiction between what the narrator says and what the reader can infer — was markedly superior. Anthropic's RLHF process has produced a model with unusually strong aesthetic judgment.</p>
+      <div class="callout claude-c">Claude is the top choice for <strong>creative writing, nuanced tone, and editorial tasks</strong> requiring literary sensibility.</div>
+    </div>
+  </div>
+
+  <!-- Example 5: Real-time / trending -->
+  <div class="example-box" id="ex-realtime">
+    <div class="example-header">
+      <span class="example-title">Example 5 — Real-time Trending Topic Analysis</span>
+      <span class="ex-badge grok">Grok</span>
+      <span class="ex-badge claude">Claude</span>
+      <span class="ex-badge openai">OpenAI</span>
+      <span class="ex-badge winner" style="background:#ede9fe;color:#5b21b6;">🏆 Grok wins</span>
+    </div>
+    <div class="example-body">
+      <p><strong>Task:</strong> Summarise what the tech community is saying about the latest AI chip shortage on X/Twitter right now and identify the top 3 concerns.</p>
+      <div class="score-grid">
+        <div class="score-cell grok">
+          <div class="sc-name">Grok 3</div>
+          <div class="sc-val">A+</div>
+          <div class="sc-note">Direct X feed access, real posts cited, live sentiment analysis</div>
+        </div>
+        <div class="score-cell claude">
+          <div class="sc-name">Claude Opus 4</div>
+          <div class="sc-val">D</div>
+          <div class="sc-note">Knowledge cutoff; unable to fulfil the task without tool setup</div>
+        </div>
+        <div class="score-cell openai">
+          <div class="sc-name">GPT-4o</div>
+          <div class="sc-val">B</div>
+          <div class="sc-note">Web search found news articles but not social media pulse</div>
+        </div>
+      </div>
+      <p><strong>Why Grok won decisively:</strong> This is Grok's home territory. Its integration with X/Twitter is unique — it can query real posts, retweet counts, and sentiment from the last hour. No other model has this without custom tooling.</p>
+      <div class="callout grok-c">Grok is the only model with <strong>native real-time social media intelligence</strong>. For tasks requiring X/Twitter data or very fresh news, Grok has no peer.</div>
+    </div>
+  </div>
+
+  <!-- ── 4. USE CASE GUIDE ──────────────────────────── -->
+  <div class="sec-divider" id="sec-usecases">
+    <span class="sec-icon">🎯</span><h2>Use Case Guide — Pick the Right Model</h2>
+  </div>
+
+  <div class="use-case-grid">
+    <div class="uc-card">
+      <div class="uc-header grok"><div class="uc-icon">⚡</div><div class="uc-title">Choose Grok 3 when…</div></div>
+      <div class="uc-body"><ul>
+        <li><strong>Code generation / debugging</strong> is the primary task</li>
+        <li>You need <strong>real-time X/Twitter data</strong></li>
+        <li>Fast, lower-cost coding agent loops</li>
+        <li><strong>SWE-bench style</strong> autonomous issue resolution</li>
+        <li>You need a <strong>less restrictive</strong> model for niche content</li>
+        <li>Speed matters more than context depth</li>
+      </ul></div>
+    </div>
+    <div class="uc-card">
+      <div class="uc-header claude"><div class="uc-icon">🔶</div><div class="uc-title">Choose Claude Opus 4 when…</div></div>
+      <div class="uc-body"><ul>
+        <li><strong>Long documents</strong> (50k–200k tokens) need analysis</li>
+        <li><strong>Creative writing</strong>, editing, or literary work</li>
+        <li><strong>Complex instruction following</strong> with many constraints</li>
+        <li><strong>Safety-critical applications</strong> (medical, legal, finance)</li>
+        <li><strong>Enterprise deployments</strong> requiring responsible AI</li>
+        <li>Nuanced reasoning across <strong>entire codebase context</strong></li>
+      </ul></div>
+    </div>
+    <div class="uc-card">
+      <div class="uc-header openai"><div class="uc-icon">🟢</div><div class="uc-title">Choose GPT-4o / o3 when…</div></div>
+      <div class="uc-body"><ul>
+        <li>You need <strong>best-in-class vision / image understanding</strong></li>
+        <li><strong>Multi-step math / formal reasoning</strong> (o3)</li>
+        <li><strong>Web-grounded research</strong> with citation</li>
+        <li>Broadest <strong>third-party tool &amp; plugin ecosystem</strong></li>
+        <li><strong>Cost-sensitive</strong> high-volume tasks (GPT-4o-mini)</li>
+        <li>Voice-first or <strong>audio input</strong> requirements</li>
+      </ul></div>
+    </div>
+  </div>
+
+  <!-- ── 5. DECISION FLOW ──────────────────────────── -->
+  <div class="sec-divider" id="sec-decision">
+    <span class="sec-icon">🗺️</span><h2>Decision Flow Diagram</h2>
+  </div>
+
+  <div class="decision-box">
+    <h3>Which model should I use? — Step through these questions</h3>
+    <div class="flow-wrap"><span class="flow-q">START → What is your primary task?</span>
+         │
+         ├─ Code generation / bug fixing?
+         │       └─ <span class="flow-grok">→ GROK 3</span>  (best HumanEval + SWE-bench scores)
+         │
+         ├─ Long document analysis (&gt;50k tokens)?
+         │       └─ <span class="flow-claude">→ CLAUDE OPUS 4</span>  (200k context, best recall)
+         │
+         ├─ Real-time / social media data?
+         │       └─ <span class="flow-grok">→ GROK 3</span>  (native X integration)
+         │
+         ├─ Creative writing / literary quality?
+         │       └─ <span class="flow-claude">→ CLAUDE OPUS 4</span>  (best prose &amp; tone)
+         │
+         ├─ Web research with citations?
+         │       └─ <span class="flow-openai">→ GPT-4o (ChatGPT)</span>  (native search + citations)
+         │
+         ├─ Hard math / formal reasoning?
+         │       └─ <span class="flow-openai">→ GPT-4o o3</span>  (best MATH / competition scores)
+         │
+         ├─ Image / vision tasks?
+         │       └─ <span class="flow-openai">→ GPT-4o</span>  (top multimodal benchmark)
+         │
+         ├─ Safety-critical / enterprise?
+         │       └─ <span class="flow-claude">→ CLAUDE OPUS 4</span>  (Constitutional AI, strictest guardrails)
+         │
+         └─ Cost-sensitive high volume?
+                 └─ <span class="flow-openai">→ GPT-4o-mini / o4-mini</span>  (lowest cost/token at quality)</div>
+  </div>
+
+  <!-- ── 6. LIMITATIONS ───────────────────────────── -->
+  <div class="sec-divider" id="sec-limits">
+    <span class="sec-icon">⚠️</span><h2>Limitations &amp; Caveats</h2>
+  </div>
+
+  <div class="prose-card">
+    <h3>🟣 Grok 3</h3>
+    <ul>
+      <li>Smaller context window (131k) compared to Claude — struggle with very large codebases in a single pass.</li>
+      <li>X/Twitter bias: real-time sourcing can surface misinformation or unrepresentative viewpoints from trending content.</li>
+      <li>Less consistent instruction following on complex multi-step tasks with many constraints.</li>
+      <li>Safety guardrails are lighter — inappropriate for applications involving vulnerable populations.</li>
+      <li>API availability and pricing can be less stable than OpenAI/Anthropic.</li>
+    </ul>
+    <div class="tag-row"><span class="badge purple">Grok</span><span class="badge orange">Limitations</span></div>
+  </div>
+
+  <div class="prose-card">
+    <h3>🔶 Claude Opus 4</h3>
+    <ul>
+      <li>Most expensive model in the comparison — $15/1M input tokens vs $3 (Grok) or $2.50 (GPT-4o).</li>
+      <li>No native real-time web access — requires explicit tool-use setup to browse live content.</li>
+      <li>Extended thinking mode adds latency — not suitable for real-time low-latency applications.</li>
+      <li>Can be overly cautious on borderline requests, occasionally refusing valid edge-case prompts.</li>
+      <li>Knowledge cutoff April 2024 without tool use.</li>
+    </ul>
+    <div class="tag-row"><span class="badge orange">Claude</span><span class="badge orange">Limitations</span></div>
+  </div>
+
+  <div class="prose-card">
+    <h3>🟢 GPT-4o / o3</h3>
+    <ul>
+      <li>o3 (reasoning) is significantly more expensive and slower than GPT-4o — not always necessary.</li>
+      <li>Vision quality is best-in-class but API rate limits for image-heavy workflows can be restrictive.</li>
+      <li>ChatGPT's web search relies on Bing — can miss niche or paywalled sources.</li>
+      <li>Context window (128k) smaller than Claude — may require chunking for very large documents.</li>
+      <li>Model versioning / API changes have historically been disruptive for production systems.</li>
+    </ul>
+    <div class="tag-row"><span class="badge green">OpenAI</span><span class="badge orange">Limitations</span></div>
+  </div>
+
+  <!-- ── 7. SUMMARY TABLE ──────────────────────────── -->
+  <div class="sec-divider" id="sec-summary">
+    <span class="sec-icon">🏆</span><h2>Summary — Quick Reference</h2>
+  </div>
+
+  <div class="comp-table-wrap">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>Winner</th>
+          <th>Runner-up</th>
+          <th>Avoid</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Writing &amp; fixing code</td><td>⚡ Grok 3</td><td>🔶 Claude</td><td>—</td></tr>
+        <tr><td>Reading a 100k-token codebase</td><td>🔶 Claude Opus 4</td><td>⚡ Grok</td><td>🟢 GPT-4o</td></tr>
+        <tr><td>Legal / financial doc analysis</td><td>🔶 Claude Opus 4</td><td>🟢 GPT-4o</td><td>—</td></tr>
+        <tr><td>Real-time social media</td><td>⚡ Grok 3</td><td>🟢 GPT-4o</td><td>🔶 Claude</td></tr>
+        <tr><td>Web research with citations</td><td>🟢 GPT-4o</td><td>⚡ Grok</td><td>—</td></tr>
+        <tr><td>Hard competition math</td><td>🟢 o3</td><td>🔶 Claude</td><td>—</td></tr>
+        <tr><td>Creative / literary writing</td><td>🔶 Claude Opus 4</td><td>🟢 GPT-4o</td><td>—</td></tr>
+        <tr><td>Image understanding</td><td>🟢 GPT-4o</td><td>🔶 Claude</td><td>—</td></tr>
+        <tr><td>Safety-critical enterprise</td><td>🔶 Claude Opus 4</td><td>🟢 GPT-4o</td><td>⚡ Grok</td></tr>
+        <tr><td>Low-cost high-volume</td><td>🟢 GPT-4o-mini</td><td>⚡ Grok Mini</td><td>🔶 Opus</td></tr>
+        <tr><td>Agentic multi-step loops</td><td>🔶 Claude Opus 4</td><td>⚡ Grok</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── 8. REFERENCES ─────────────────────────────── -->
+  <div class="sec-divider" id="sec-refs">
+    <span class="sec-icon">🔗</span><h2>References &amp; Further Reading</h2>
+  </div>
+
+  <div class="prose-card">
+    <h3>Official Documentation &amp; Benchmarks</h3>
+    <div class="ref-grid">
+      <a class="ref-card" href="https://x.ai/blog/grok-3" target="_blank" rel="noopener">
+        <div class="ref-icon">⚡</div>
+        <div>
+          <div class="ref-title">xAI — Grok 3 Release Blog</div>
+          <div class="ref-url">x.ai/blog/grok-3</div>
+        </div>
+      </a>
+      <a class="ref-card" href="https://www.anthropic.com/claude/opus" target="_blank" rel="noopener">
+        <div class="ref-icon">🔶</div>
+        <div>
+          <div class="ref-title">Anthropic — Claude Opus Overview</div>
+          <div class="ref-url">anthropic.com/claude/opus</div>
+        </div>
+      </a>
+      <a class="ref-card" href="https://openai.com/index/gpt-4o-system-card/" target="_blank" rel="noopener">
+        <div class="ref-icon">🟢</div>
+        <div>
+          <div class="ref-title">OpenAI — GPT-4o System Card</div>
+          <div class="ref-url">openai.com/gpt-4o-system-card</div>
+        </div>
+      </a>
+      <a class="ref-card" href="https://openai.com/index/openai-o3-mini/" target="_blank" rel="noopener">
+        <div class="ref-icon">🟢</div>
+        <div>
+          <div class="ref-title">OpenAI — o3 Reasoning Model</div>
+          <div class="ref-url">openai.com/o3</div>
+        </div>
+      </a>
+      <a class="ref-card" href="https://github.com/openai/human-eval" target="_blank" rel="noopener">
+        <div class="ref-icon">📂</div>
+        <div>
+          <div class="ref-title">HumanEval Benchmark (GitHub)</div>
+          <div class="ref-url">github.com/openai/human-eval</div>
+        </div>
+      </a>
+      <a class="ref-card" href="https://www.swebench.com" target="_blank" rel="noopener">
+        <div class="ref-icon">🐛</div>
+        <div>
+          <div class="ref-title">SWE-bench — Real-world Coding</div>
+          <div class="ref-url">swebench.com</div>
+        </div>
+      </a>
+      <a class="ref-card" href="https://lmarena.ai" target="_blank" rel="noopener">
+        <div class="ref-icon">⚔️</div>
+        <div>
+          <div class="ref-title">LM Arena — Chatbot Arena Elo</div>
+          <div class="ref-url">lmarena.ai</div>
+        </div>
+      </a>
+      <a class="ref-card" href="https://huggingface.co/spaces/open-llm-leaderboard/open_llm_leaderboard" target="_blank" rel="noopener">
+        <div class="ref-icon">🤗</div>
+        <div>
+          <div class="ref-title">Hugging Face Open LLM Leaderboard</div>
+          <div class="ref-url">huggingface.co/open-llm-leaderboard</div>
+        </div>
+      </a>
+      <a class="ref-card" href="https://www.anthropic.com/research/claude-s-constitution" target="_blank" rel="noopener">
+        <div class="ref-icon">📜</div>
+        <div>
+          <div class="ref-title">Anthropic — Constitutional AI Paper</div>
+          <div class="ref-url">anthropic.com/constitutional-ai</div>
+        </div>
+      </a>
+      <a class="ref-card" href="https://artificialanalysis.ai" target="_blank" rel="noopener">
+        <div class="ref-icon">📈</div>
+        <div>
+          <div class="ref-title">Artificial Analysis — Speed &amp; Price</div>
+          <div class="ref-url">artificialanalysis.ai</div>
+        </div>
+      </a>
+      <a class="ref-card" href="https://docs.anthropic.com/en/docs/about-claude/models/overview" target="_blank" rel="noopener">
+        <div class="ref-icon">📖</div>
+        <div>
+          <div class="ref-title">Anthropic — Model Overview Docs</div>
+          <div class="ref-url">docs.anthropic.com/models/overview</div>
+        </div>
+      </a>
+      <a class="ref-card" href="https://platform.openai.com/docs/models" target="_blank" rel="noopener">
+        <div class="ref-icon">📖</div>
+        <div>
+          <div class="ref-title">OpenAI — Platform Model List</div>
+          <div class="ref-url">platform.openai.com/docs/models</div>
+        </div>
+      </a>
+    </div>
+    <div class="callout tip" style="margin-top:1rem;">Benchmarks shift with every model update. Always check the primary sources above for the latest numbers before making a procurement or architecture decision.</div>
+  </div>
+
+</main>
+
+<!-- TOC SIDEBAR -->
+<aside class="toc-sidebar">
+  <div class="toc-box">
+    <div class="toc-box-header" onclick="toggleToc()">Contents <span id="tocArrow">▲</span></div>
+    <div class="toc-box-body" id="tocBody">
+      <div id="tocLinks">
+        <div class="toc-group-label">Article</div>
+        <a class="toc-link" href="#sec-overview">Overview</a>
+        <a class="toc-link" href="#sec-profiles">Model Profiles</a>
+        <a class="toc-group-label">Comparisons</a>
+        <a class="toc-link" href="#sec-benchmarks">Benchmark Charts</a>
+        <a class="toc-link" href="#sec-table">Full Comparison Table</a>
+        <div class="toc-group-label">Examples</div>
+        <a class="toc-link" href="#ex-code">Code Debugging</a>
+        <a class="toc-link" href="#ex-longdoc">Long Doc Analysis</a>
+        <a class="toc-link" href="#ex-agent">Agentic Research</a>
+        <a class="toc-link" href="#ex-creative">Creative Writing</a>
+        <a class="toc-link" href="#ex-realtime">Real-time Data</a>
+        <div class="toc-group-label">Decision Tools</div>
+        <a class="toc-link" href="#sec-usecases">Use Case Guide</a>
+        <a class="toc-link" href="#sec-decision">Decision Flow</a>
+        <a class="toc-link" href="#sec-summary">Quick Reference Table</a>
+        <div class="toc-group-label">Meta</div>
+        <a class="toc-link" href="#sec-limits">Limitations</a>
+        <a class="toc-link" href="#sec-refs">References &amp; Links</a>
+      </div>
+    </div>
+  </div>
+  <!-- Model jump links -->
+  <div class="toc-box">
+    <div class="toc-box-header">Jump to Model</div>
+    <div class="toc-box-body">
+      <a class="toc-link" href="#ex-code" style="border-left:3px solid #7c3aed;">⚡ Grok examples</a>
+      <a class="toc-link" href="#ex-longdoc" style="border-left:3px solid #f59e0b;">🔶 Claude examples</a>
+      <a class="toc-link" href="#ex-agent" style="border-left:3px solid #10a37f;">🟢 OpenAI examples</a>
+    </div>
+  </div>
+  <button onclick="window.scrollTo({top:0,behavior:'smooth'})"
+    style="width:100%;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:.55rem;font-size:.78rem;cursor:pointer;color:var(--text-muted);font-weight:600;transition:background .12s;"
+    onmouseover="this.style.background='var(--blue-light)'"
+    onmouseout="this.style.background='var(--white)'">↑ Back to top</button>
+</aside>
+</div><!-- /article-wrap -->
+
+<script>
+  // Nav scroll shrink
+  const nav = document.querySelector('nav');
+  window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 40), { passive: true });
+
+  // Entrance animations
+  const enterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); enterObserver.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.prose-card, .model-card, .uc-card, .example-box, .chart-section, .toc-box, .section-divider, .ref-card, .q-card').forEach(el => enterObserver.observe(el));
+
+  let tocOpen = true;
+  function toggleToc() {
+    tocOpen = !tocOpen;
+    document.getElementById('tocBody').style.display = tocOpen ? '' : 'none';
+    document.getElementById('tocArrow').textContent = tocOpen ? '▲' : '▼';
+  }
+
+  // Active TOC on scroll
+  const anchors = document.querySelectorAll('[id]');
+  const tocLinks = document.querySelectorAll('.toc-link');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        tocLinks.forEach(l => l.classList.remove('active'));
+        const a = document.querySelector(`.toc-link[href="#${e.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px' });
+  anchors.forEach(a => io.observe(a));
+
+  // Model filter
+  function filterModel(model, btn) {
+    document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    // highlight relevant cards
+    document.querySelectorAll('.example-box').forEach(box => {
+      box.style.opacity = box.classList.contains(model) ||
+        box.querySelector('.ex-badge.' + model) ? '1' : '0.35';
+    });
+    document.querySelectorAll('.uc-card').forEach(card => {
+      card.style.opacity = card.querySelector('.uc-header.' + model) ? '1' : '0.35';
+    });
+  }
+  function showAll(btn) {
+    document.querySelectorAll('.tbtn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.example-box, .uc-card').forEach(el => el.style.opacity = '1');
+  }
+</script>
+</body>
+</html>
