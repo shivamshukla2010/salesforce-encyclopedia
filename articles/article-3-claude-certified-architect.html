@@ -585,6 +585,15 @@
     .nav-divider { display: none; }
   }
 
+  /* ── RESPONSIVE — small phones (≤420px) ───────────── */
+  @media (max-width: 420px) {
+    .article-hero h1 { font-size: 1.2rem; }
+    nav { padding: 0 .75rem; gap: .5rem; }
+    .nav-brand { font-size: .82rem; }
+    .theme-btn { width: 30px; height: 30px; font-size: 13px; }
+    .domain-pill { font-size: .65rem; padding: .18rem .45rem; }
+  }
+
   /* ── TOUCH DEVICES (iPad, iPhone, Android) ─────────── */
   @media (hover: none) and (pointer: coarse) {
     /* Remove hover shimmer — no hover on touch */
@@ -644,6 +653,53 @@
     from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
   }
+
+  /* ── THEME TOGGLE ─────────────────────────────────── */
+  .theme-btn {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.22);
+    color: #fff;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    transition: background .2s, transform .2s;
+    flex-shrink: 0; padding: 0;
+    margin-left: .5rem;
+  }
+  .theme-btn:hover { background: rgba(255,255,255,.22); transform: rotate(20deg); }
+
+  /* ── DARK THEME OVERRIDES ──────────────────────────── */
+  [data-theme="dark"] {
+    --cloud:      #0a0f1a;
+    --white:      #111c2e;
+    --border:     #1e3050;
+    --text:       #d8eaff;
+    --text-muted: #7099bb;
+    --blue-light: rgba(1,118,211,.15);
+  }
+  [data-theme="dark"] body { background: var(--cloud); color: var(--text); }
+  [data-theme="dark"] .article-hero { background: linear-gradient(140deg,#020818 0%,#041228 55%,#0c2240 100%); }
+  [data-theme="dark"] .toc-box { background: var(--white); border-color: var(--border); }
+  [data-theme="dark"] .toc-box-header { background: rgba(1,118,211,.1); border-bottom-color: var(--border); color: #7ac7f0; }
+  [data-theme="dark"] .toc-link { color: var(--text-muted); }
+  [data-theme="dark"] .toc-link:hover, [data-theme="dark"] .toc-link.active { background: rgba(1,118,211,.12); color: #7ac7f0; }
+  [data-theme="dark"] .toc-search input { background: rgba(255,255,255,.06); border-color: var(--border); color: var(--text); }
+  [data-theme="dark"] .q-card { background: var(--white); border-color: var(--border); }
+  [data-theme="dark"] .q-card-header { color: var(--text); }
+  [data-theme="dark"] .q-card-header:hover { background: rgba(1,118,211,.07); }
+  [data-theme="dark"] .q-body { border-top-color: var(--border); }
+  [data-theme="dark"] .callout { border-left-color: #0176d3; background: rgba(1,118,211,.08); color: #93c5fd; }
+  [data-theme="dark"] .callout.tip { background: rgba(34,197,94,.07); border-left-color: #22c55e; color: #86efac; }
+  [data-theme="dark"] .callout.warn { background: rgba(249,115,22,.07); border-left-color: #f97316; color: #fdba74; }
+  [data-theme="dark"] .callout.info { background: rgba(1,118,211,.08); border-left-color: #0176d3; color: #93c5fd; }
+  [data-theme="dark"] code { background: rgba(255,255,255,.08); color: #a5d6ff; }
+  [data-theme="dark"] .badge { background: rgba(1,118,211,.15); color: #7ac7f0; }
+  [data-theme="dark"] .section-divider { border-color: var(--border); color: var(--text-muted); }
+  [data-theme="dark"] footer { background: #020c18; color: rgba(255,255,255,.45); }
+  [data-theme="dark"] .theme-btn { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.15); }
+  [data-theme="dark"] .theme-btn:hover { background: rgba(255,255,255,.15); }
 </style>
 </head>
 <body>
@@ -674,6 +730,7 @@
   <span class="nav-divider">›</span>
   <span class="nav-crumb">Certifications</span>
   <a class="nav-brand" href="../index.html">☁ Salesforce Encyclopedia</a>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle dark/light mode" aria-label="Toggle theme">🌙</button>
 </nav>
 
 <!-- HERO -->
@@ -3143,6 +3200,27 @@ with open("state/research_manifest.json", "w") as f:
       floatBtn.classList.remove('show');
     }
   }, { passive: true });
+
+  /* ── Theme toggle ── */
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    document.getElementById('themeBtn').textContent = next === 'dark' ? '☀️' : '🌙';
+    try { localStorage.setItem('enc-theme', next); } catch(e) {}
+  }
+  (function() {
+    try {
+      const saved = localStorage.getItem('enc-theme');
+      if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.addEventListener('DOMContentLoaded', () => {
+          const b = document.getElementById('themeBtn');
+          if (b) b.textContent = '☀️';
+        });
+      }
+    } catch(e) {}
+  })();
 
 </script>
 </body>

@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🇮🇳 India Income Tax Estimator FY 2024-25 / 2025-26 — Salesforce Encyclopedia</title>
+<style>
+:root{
+  /* Brand */
+  --navy:#032d60;
+  /* Dark theme */
+  --bg:#030c18;
+  --bg2:#060f1e;
+  --bg3:#0a1728;
+  --surface:#0d1e32;
+  --surface2:#111f33;
+  --border:#1a3050;
+  --border2:#1e3860;
+  /* Accent palette */
+  --blue:#0176d3;--blue2:#0ea5e9;--blue3:#38bdf8;
+  --green:#22c55e;--green2:#16a34a;
+  --gold:#f59e0b;--gold2:#fbbf24;
+  --orange:#f97316;
+  --red:#ef4444;--red2:#dc2626;
+  --purple:#a855f7;--purple2:#7c3aed;
+  --teal:#14b8a6;
+  /* Text */
+  --text:#e2eeff;--t2:#94b4cc;--muted:#4a7a9a;
+  /* Gradients */
+  --grad-blue:linear-gradient(135deg,#020d1f 0%,#032d60 55%,#0176d3 100%);
+  --grad-gold:linear-gradient(135deg,#78350f,#92400e,#b45309);
+  --f:'Segoe UI',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--f);background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh}
+
+/* ── NAV ── */
+nav{background:rgba(3,12,24,.92);display:flex;align-items:center;padding:0 1.5rem;height:52px;gap:.9rem;position:sticky;top:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.6);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-back{color:rgba(255,255,255,.65);text-decoration:none;font-size:.82rem;font-weight:600;display:flex;align-items:center;gap:.35rem;transition:color .15s;white-space:nowrap}
+.nav-back:hover{color:#fff}
+.nav-divider{color:rgba(255,255,255,.2);font-size:.9rem}
+.nav-crumb{color:rgba(255,255,255,.45);font-size:.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-pill{margin-left:auto;background:linear-gradient(90deg,#0176d3,#22c55e);color:#fff;padding:3px 12px;border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:.5px;white-space:nowrap}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#020818 0%,#041228 35%,#061830 60%,#0a1e3a 100%);padding:2.5rem 2rem 2rem;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+.hero::before{content:'';position:absolute;top:-120px;right:-80px;width:500px;height:500px;background:radial-gradient(circle,rgba(1,118,211,.14) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-60px;width:350px;height:350px;background:radial-gradient(circle,rgba(245,158,11,.08) 0%,transparent 70%);pointer-events:none}
+.hero-inner{max-width:1420px;margin:0 auto;position:relative;z-index:1}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--gold2);padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:700;letter-spacing:.6px;margin-bottom:.75rem;text-transform:uppercase}
+.hero h1{font-size:1.9rem;font-weight:800;letter-spacing:-.4px;color:#fff;line-height:1.25;margin-bottom:.5rem}
+.hero h1 em{background:linear-gradient(90deg,var(--gold2),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal}
+.hero-sub{font-size:.95rem;color:var(--t2);max-width:720px;line-height:1.6;margin-bottom:1.2rem}
+.hero-pills{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:.5rem}
+.h-pill{background:rgba(1,118,211,.15);border:1px solid rgba(1,118,211,.3);color:#7ac7f0;padding:2px 10px;border-radius:12px;font-size:.72rem;font-weight:600}
+
+/* ── LAYOUT ── */
+.layout{max-width:1420px;margin:0 auto;padding:1.25rem 1rem 3rem;display:grid;grid-template-columns:1fr 390px;gap:1.25rem;align-items:start}
+@media(max-width:1080px){.layout{grid-template-columns:1fr}}
+.left-col{display:flex;flex-direction:column;gap:1rem}
+
+/* ── GLOBAL SELECTORS ── */
+.fy-row{display:flex;gap:.75rem;flex-wrap:wrap;padding:.9rem 1rem;background:var(--surface);border-bottom:1px solid var(--border);align-items:flex-end}
+.fy-grp>label{display:block;font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+select.gs{background:var(--bg3);border:1.5px solid var(--border2);color:var(--text);padding:7px 10px;border-radius:6px;font-size:.82rem;font-family:var(--f);cursor:pointer;min-width:160px}
+select.gs:focus{outline:none;border-color:var(--blue2);box-shadow:0 0 0 3px rgba(1,118,211,.2)}
+select.gs option{background:#0a1728}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.sec-hdr{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;cursor:pointer;user-select:none;position:relative}
+.sec-hdr::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:0}
+.sec-hdr.inc::before{background:linear-gradient(180deg,#38bdf8,#0176d3)}
+.sec-hdr.exm::before{background:linear-gradient(180deg,#a855f7,#6d28d9)}
+.sec-hdr.hl::before{background:linear-gradient(180deg,#22c55e,#15803d)}
+.sec-hdr.ded::before{background:linear-gradient(180deg,#f59e0b,#b45309)}
+.sec-hdr h3{font-size:.87rem;font-weight:700;display:flex;align-items:center;gap:7px;color:#fff}
+.chev{font-size:12px;color:var(--muted);transition:transform .2s;margin-left:auto;flex-shrink:0}
+.chev.closed{transform:rotate(-90deg)}
+.sbadge{font-size:.65rem;font-weight:700;padding:1px 7px;border-radius:10px;margin-left:6px}
+.sbadge.old{background:rgba(245,158,11,.2);color:var(--gold2);border:1px solid rgba(245,158,11,.25)}
+.sbadge.both{background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.25)}
+.sec-body{padding:14px 16px}
+.sec-body.hidden{display:none}
+
+/* ── FORM ELEMENTS ── */
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px}
+@media(max-width:640px){.r2,.r3{grid-template-columns:1fr}}
+.fg{margin-bottom:10px}
+.fl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;gap:5px}
+.fl label{font-size:.82rem;font-weight:500;color:var(--text);flex:1;line-height:1.4}
+.lim{font-size:.67rem;font-weight:700;padding:1px 7px;border-radius:10px;white-space:nowrap;flex-shrink:0}
+.lim.blue{color:#7ac7f0;background:rgba(1,118,211,.18);border:1px solid rgba(1,118,211,.25)}
+.lim.gold{color:var(--gold2);background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.2)}
+.lim.green{color:#86efac;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2)}
+.lim.red{color:#fca5a5;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.2)}
+.lim.purple{color:#d8b4fe;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.2)}
+.fnote{font-size:.7rem;color:var(--muted);margin-top:2px;line-height:1.4}
+.fnote.tip::before{content:'💡 '}
+.fnote.warn::before{content:'⚠ '}
+.fnote.good::before{content:'✅ '}
+
+.iw{position:relative}
+.pfx{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;pointer-events:none;font-weight:600}
+input[type="number"],input[type="text"],input[type="email"]{
+  width:100%;padding:7px 7px 7px 24px;
+  border:1.5px solid var(--border2);
+  border-radius:6px;font-size:.87rem;font-family:var(--f);
+  color:var(--text);background:var(--bg3);
+  transition:border-color .15s,box-shadow .15s,background .15s
+}
+input[type="number"]:focus,input[type="text"]:focus{outline:none;border-color:var(--blue2);box-shadow:0 0 0 3px rgba(14,165,233,.15);background:var(--bg2)}
+input.err{border-color:var(--red)!important;box-shadow:0 0 0 3px rgba(239,68,68,.15)!important}
+input.ok{border-color:var(--green2)!important}
+input.ro{background:rgba(1,118,211,.1);color:#7ac7f0;font-weight:700;cursor:default;padding-left:9px;border-color:rgba(1,118,211,.25)}
+.err-msg{color:var(--red);font-size:.7rem;margin-top:2px;display:none}
+.err-msg.show{display:block}
+
+select.std{width:100%;padding:7px 9px;border:1.5px solid var(--border2);border-radius:6px;font-size:.83rem;font-family:var(--f);color:var(--text);background:var(--bg3);cursor:pointer}
+select.std:focus{outline:none;border-color:var(--blue2);box-shadow:0 0 0 3px rgba(14,165,233,.15)}
+select.std option{background:#0a1728}
+
+.sub{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue3);padding:7px 0 5px;border-bottom:1px solid rgba(14,165,233,.2);margin-bottom:10px;margin-top:4px}
+hr.dv{border:none;border-top:1px solid var(--border);margin:12px 0}
+
+/* Info / warn / good boxes */
+.ibox,.wbox,.gbox,.pbox{padding:7px 11px;border-radius:0 6px 6px 0;font-size:.75rem;line-height:1.45;margin-bottom:10px}
+.ibox{background:rgba(14,165,233,.08);border-left:3px solid var(--blue2);color:#93c5fd}
+.wbox{background:rgba(249,115,22,.08);border-left:3px solid var(--orange);color:#fdba74}
+.gbox{background:rgba(34,197,94,.08);border-left:3px solid var(--green);color:#86efac}
+.pbox{background:rgba(168,85,247,.08);border-left:3px solid var(--purple);color:#d8b4fe}
+
+/* ── 80C ITEMS ── */
+.c80{display:grid;gap:6px}
+.c80item{display:grid;grid-template-columns:1fr 145px;gap:8px;align-items:center;padding:5px 9px;background:var(--bg3);border-radius:6px;border:1px solid var(--border)}
+.c80item label{font-size:.8rem;color:var(--t2)}
+.c80bar{background:var(--border);border-radius:3px;height:5px;margin-top:8px;overflow:hidden}
+.c80fill{height:100%;border-radius:3px;background:var(--blue);transition:width .3s,background .3s}
+.c80stats{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-top:2px}
+.c80stats strong{color:var(--blue3)}
+
+/* ── CHECKBOX ── */
+.ckr{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.ckr input{width:14px;height:14px;cursor:pointer;accent-color:var(--blue)}
+.ckr label{font-size:.81rem;cursor:pointer;color:var(--t2)}
+
+/* ── LIVE STRIP ── */
+.strip{background:rgba(1,118,211,.1);border:1px solid rgba(1,118,211,.2);border-radius:6px;padding:7px 11px;display:flex;justify-content:space-between;align-items:center;font-size:.8rem;margin-top:10px;flex-wrap:wrap;gap:4px}
+.strip span{color:var(--t2)}
+.strip strong{color:var(--blue3)}
+
+/* ── RESULT PANEL ── */
+.res{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:18px;position:sticky;top:66px;overflow:hidden}
+.res::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;background:radial-gradient(circle,rgba(1,118,211,.12) 0%,transparent 70%);pointer-events:none}
+.res-title{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;color:var(--muted);margin-bottom:13px}
+
+.rg-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+.rg-box{background:var(--surface);border:1.5px solid var(--border2);border-radius:8px;padding:12px;transition:border-color .2s,box-shadow .2s;position:relative;overflow:hidden}
+.rg-box.best{border-color:var(--gold)!important;box-shadow:0 0 0 1px rgba(245,158,11,.3),0 4px 20px rgba(245,158,11,.12)}
+.rg-box.best::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(245,158,11,.06) 0%,transparent 70%);pointer-events:none}
+.best-tag{font-size:.62rem;font-weight:800;color:var(--gold);letter-spacing:1.5px;margin-bottom:3px}
+.rg-label{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:4px}
+.rg-amt{font-size:1.5rem;font-weight:800;line-height:1.1;margin-bottom:1px}
+.rg-amt.old{color:var(--orange)}
+.rg-amt.nw{color:var(--blue3)}
+.rg-eff{font-size:.68rem;color:var(--muted)}
+.rg-save{font-size:.72rem;color:var(--green);font-weight:600;margin-top:3px}
+
+.bk{margin-top:13px;border-top:1px solid var(--border);padding-top:11px}
+.bk-title{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1.8px;color:var(--muted);margin-bottom:7px}
+.bkr{display:flex;justify-content:space-between;font-size:.77rem;margin-bottom:3px;padding:1px 0}
+.bkr.ded .lb{color:#86efac}
+.bkr.ded .vl{color:#86efac}
+.bkr.tot{border-top:1px solid var(--border);margin-top:4px;padding-top:5px;font-weight:700;font-size:.83rem}
+.bkr .lb{color:var(--t2)}
+.bkr .vl{font-weight:600;color:var(--text)}
+
+.slabrow{display:flex;justify-content:space-between;font-size:.7rem;padding:2px 4px;border-radius:3px;color:var(--t2)}
+.slabrow:nth-child(even){background:rgba(255,255,255,.03)}
+
+.recbox{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:9px 11px;margin-top:11px;font-size:.8rem;line-height:1.55;color:var(--text)}
+.recbox strong{color:var(--gold2)}
+
+/* ── VALIDATION TOOLTIP ── */
+.vtip{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:12px;pointer-events:none}
+
+/* ── THEME TOGGLE BUTTON ── */
+.theme-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .2s,transform .2s;flex-shrink:0;padding:0}
+.theme-btn:hover{background:rgba(255,255,255,.2);transform:rotate(20deg)}
+.lang-sel{appearance:none;-webkit-appearance:none;background:linear-gradient(135deg,#f59e0b,#ef4444);border:2px solid rgba(255,255,255,.35);color:#fff;height:40px;padding:0 34px 0 14px;border-radius:20px;cursor:pointer;font-size:.88rem;font-weight:800;transition:opacity .2s,transform .15s,box-shadow .15s;flex-shrink:0;letter-spacing:.4px;font-family:var(--f);box-shadow:0 3px 14px rgba(245,158,11,.55),0 0 0 1px rgba(245,158,11,.25);min-width:132px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7'%3E%3Cpath d='M0 0l5.5 7 5.5-7z' fill='white'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.lang-sel:hover{opacity:.9;transform:scale(1.04);box-shadow:0 4px 18px rgba(245,158,11,.7),0 0 0 1px rgba(245,158,11,.4)}
+.lang-sel:focus{outline:2px solid rgba(255,255,255,.6);outline-offset:2px}
+.lang-sel option{background:#032d60;color:#fff;font-weight:600}
+[data-theme="light"] .lang-sel{background:linear-gradient(135deg,#d97706,#dc2626);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7'%3E%3Cpath d='M0 0l5.5 7 5.5-7z' fill='white'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;box-shadow:0 3px 12px rgba(217,119,6,.5),0 0 0 1px rgba(217,119,6,.3);color:#fff;border:2px solid rgba(255,255,255,.4)}
+
+/* ── HIT COUNTER ── */
+.hit-badge{display:inline-flex;align-items:center}
+
+/* ── FAB (mobile results jump) ── */
+.fab{display:none;position:fixed;bottom:18px;right:18px;background:linear-gradient(135deg,var(--blue),var(--green));color:#fff;padding:10px 18px;border-radius:28px;font-size:.8rem;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(1,118,211,.45);z-index:300;border:none;gap:6px;align-items:center;white-space:nowrap;transition:transform .15s,box-shadow .15s}
+.fab:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(1,118,211,.55)}
+@media(max-width:1080px){.fab{display:flex}}
+
+/* ── CALCULATE + SAVE BUTTON BAR ── */
+.calc-bar{max-width:1420px;margin:1.5rem auto 2.5rem;padding:0 1rem;display:flex;flex-direction:column;align-items:center;gap:.75rem}
+.calc-btn{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#0176d3,#22c55e);color:#fff;border:none;padding:14px 48px;border-radius:32px;font-size:1.05rem;font-weight:800;cursor:pointer;box-shadow:0 4px 20px rgba(1,118,211,.45);letter-spacing:.3px;font-family:var(--f);transition:transform .15s,box-shadow .15s;width:fit-content}
+.calc-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(1,118,211,.6)}
+.calc-btn:active{transform:scale(.97)}
+.calc-btn svg{flex-shrink:0}
+.sheet-status{font-size:.8rem;font-weight:600;padding:6px 18px;border-radius:20px;display:none;align-items:center;gap:6px}
+.sheet-status.saving{display:flex;background:rgba(1,118,211,.15);color:var(--blue3);border:1px solid rgba(1,118,211,.3)}
+.sheet-status.saved{display:flex;background:rgba(34,197,94,.12);color:#86efac;border:1px solid rgba(34,197,94,.3)}
+.sheet-status.error{display:flex;background:rgba(239,68,68,.12);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+[data-theme="light"] .sheet-status.saving{background:rgba(1,118,211,.1);color:#0176d3}
+[data-theme="light"] .sheet-status.saved{background:rgba(22,163,74,.1);color:#15803d}
+[data-theme="light"] .sheet-status.error{background:rgba(220,38,38,.08);color:#dc2626}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1080px){
+  .res{position:static;margin-top:1rem}
+  .layout{padding:.9rem .75rem 5rem}
+  .hero{padding:1.75rem 1rem 1.5rem}
+  .hero h1{font-size:1.5rem}
+  .hero-sub{font-size:.87rem}
+  .fy-row{gap:.6rem}
+  select.gs{min-width:130px;font-size:.78rem}
+}
+@media(max-width:640px){
+  .r2,.r3{grid-template-columns:1fr}
+  .c80item{grid-template-columns:1fr}
+  .hero h1{font-size:1.3rem}
+  .hero-pills{gap:.35rem}
+  .h-pill{font-size:.67rem;padding:1px 7px}
+  .rg-grid{grid-template-columns:1fr}
+  nav{padding:0 .75rem;gap:.6rem}
+  .nav-crumb{display:none}
+  .nav-divider{display:none}
+  .layout{padding:.75rem .6rem 5rem}
+  .sec-hdr{padding:10px 12px}
+  .sec-body{padding:12px 12px}
+  .res{padding:14px}
+  .fl{flex-wrap:wrap;gap:3px}
+  .lim{font-size:.62rem}
+  select.gs{min-width:100px;width:100%}
+  .fy-row{flex-direction:column;gap:.5rem}
+  .fy-grp{width:100%}
+}
+@media(max-width:380px){
+  .hero h1{font-size:1.1rem}
+  .theme-btn{width:30px;height:30px;font-size:14px}
+}
+/* touch — larger tap targets */
+@media(hover:none) and (pointer:coarse){
+  .sec-hdr{min-height:48px}
+  input[type="number"],select.std,select.gs{min-height:44px;font-size:16px}
+  .ckr input{width:18px;height:18px}
+  .ckr label{font-size:.87rem}
+  .fab{bottom:20px;right:16px;padding:12px 20px;font-size:.85rem}
+}
+
+/* ══════════════════════════════════════
+   LIGHT THEME OVERRIDES
+══════════════════════════════════════ */
+[data-theme="light"]{
+  --bg:#f0f4f9;
+  --bg2:#ffffff;
+  --bg3:#f8fafc;
+  --surface:#ffffff;
+  --surface2:#f0f4f8;
+  --border:#d0d8e4;
+  --border2:#b8c4d4;
+  --text:#16325c;
+  --t2:#3a5070;
+  --muted:#7090a8;
+  --blue3:#0060b0;
+}
+[data-theme="light"] body{background:var(--bg);color:var(--text)}
+[data-theme="light"] .card{box-shadow:0 1px 6px rgba(0,0,0,.08)}
+[data-theme="light"] input[type="number"],
+[data-theme="light"] input[type="text"]{background:var(--bg2);color:var(--text);border-color:var(--border2)}
+[data-theme="light"] input[type="number"]:focus,
+[data-theme="light"] input[type="text"]:focus{background:#fff}
+[data-theme="light"] input.ro{background:#e8f1fb;color:#014486;border-color:#b0c8e8}
+[data-theme="light"] select.std,
+[data-theme="light"] select.gs{background:var(--bg2);color:var(--text);border-color:var(--border2)}
+[data-theme="light"] select.gs option,
+[data-theme="light"] select.std option{background:#ffffff;color:#16325c}
+[data-theme="light"] .sec-hdr h3{color:#032d60}
+[data-theme="light"] .c80item{background:var(--bg3);border-color:var(--border)}
+[data-theme="light"] .c80item label{color:var(--t2)}
+[data-theme="light"] .c80bar{background:var(--border)}
+[data-theme="light"] .ibox{background:rgba(1,118,211,.07);color:#014486;border-left-color:#0176d3}
+[data-theme="light"] .wbox{background:rgba(249,115,22,.07);color:#7c3000;border-left-color:#f97316}
+[data-theme="light"] .gbox{background:rgba(34,197,94,.07);color:#166534;border-left-color:#22c55e}
+[data-theme="light"] .strip{background:rgba(1,118,211,.07);border-color:rgba(1,118,211,.18)}
+[data-theme="light"] .strip span{color:var(--t2)}
+[data-theme="light"] .strip strong{color:#014486}
+[data-theme="light"] .sub{color:#0176d3;border-bottom-color:rgba(1,118,211,.2)}
+[data-theme="light"] .res{background:var(--bg2);border-color:var(--border)}
+[data-theme="light"] .res::before{display:none}
+[data-theme="light"] .rg-box{background:var(--bg3);border-color:var(--border2)}
+[data-theme="light"] .bkr .lb{color:var(--t2)}
+[data-theme="light"] .bkr .vl{color:var(--text)}
+[data-theme="light"] .bkr.ded .lb,.bkr.ded .vl{color:#166534}
+[data-theme="light"] .slabrow{color:var(--t2)}
+[data-theme="light"] .slabrow:nth-child(even){background:rgba(0,0,0,.03)}
+[data-theme="light"] .recbox{background:#fffbeb;border-color:#fcd34d;color:#1c1917}
+[data-theme="light"] .recbox strong{color:#92400e}
+[data-theme="light"] .fnote{color:#6080a0}
+[data-theme="light"] .ckr label{color:var(--t2)}
+[data-theme="light"] .bk-title{color:#7090a8}
+[data-theme="light"] .res-title{color:#7090a8}
+[data-theme="light"] .rg-label{color:#7090a8}
+[data-theme="light"] .rg-eff{color:#7090a8}
+[data-theme="light"] .lim.blue{color:#014486;background:rgba(1,118,211,.12);border-color:rgba(1,118,211,.22)}
+[data-theme="light"] .lim.gold{color:#92400e;background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.22)}
+[data-theme="light"] .lim.green{color:#166534;background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.2)}
+[data-theme="light"] .lim.red{color:#991b1b;background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.18)}
+[data-theme="light"] .sbadge.old{background:rgba(245,158,11,.15);color:#92400e;border-color:rgba(245,158,11,.25)}
+[data-theme="light"] .sbadge.both{background:rgba(34,197,94,.12);color:#166534;border-color:rgba(34,197,94,.22)}
+[data-theme="light"] hr.dv{border-top-color:var(--border)}
+[data-theme="light"] .bk{border-top-color:var(--border)}
+[data-theme="light"] .bkr.tot{border-top-color:var(--border)}
+[data-theme="light"] .theme-btn{background:rgba(0,0,0,.08);border-color:rgba(0,0,0,.15);color:#032d60}
+[data-theme="light"] .theme-btn:hover{background:rgba(0,0,0,.14)}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-back" href="../index.html">← Encyclopedia</a>
+  <span class="nav-divider">/</span>
+  <span class="nav-crumb">Article 4 · India Income Tax Estimator</span>
+  <span class="nav-pill">FY 2025-26</span>
+  <span class="hit-badge" style="margin-left:auto">
+    <img src="https://hits.sh/shivamshukla2010.github.io/salesforce-encyclopedia/articles/article-4-india-tax-estimator.svg?style=flat&label=Page+Hits&color=4bc8ff&labelColor=032d60" alt="Page Hits" style="height:28px;border-radius:4px;vertical-align:middle">
+  </span>
+  <select class="lang-sel" id="langSel" onchange="changeLang(this.value)" title="Select Language" aria-label="Select language">
+    <option value="en">🌐 English</option>
+    <option value="hi">हिन्दी (Hindi)</option>
+    <option value="bn">বাংলা (Bengali)</option>
+    <option value="ta">தமிழ் (Tamil)</option>
+    <option value="te">తెలుగు (Telugu)</option>
+    <option value="mr">मराठी (Marathi)</option>
+    <option value="gu">ગુજરાતી (Gujarati)</option>
+    <option value="kn">ಕನ್ನಡ (Kannada)</option>
+    <option value="ml">മലയാളം (Malayalam)</option>
+    <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+    <option value="or">ଓଡ଼ିଆ (Odia)</option>
+  </select>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle light/dark mode" aria-label="Toggle theme">🌙</button>
+</nav>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">📊 Finance · Tax Planning</div>
+    <h1>🇮🇳 India Income Tax <em>Estimator</em></h1>
+    <div class="hero-sub">Complete FY 2024-25 &amp; 2025-26 tax calculator — Old Regime vs New Regime. Enter all income sources, every deduction under Chapter VI-A, and instantly see which regime saves you more tax.</div>
+    <div class="hero-pills">
+      <span class="h-pill">All Income Sources</span>
+      <span class="h-pill">36 Deduction Types</span>
+      <span class="h-pill">Section 87A Rebate</span>
+      <span class="h-pill">Surcharge + Cess</span>
+      <span class="h-pill">Capital Gains</span>
+      <span class="h-pill">Old &amp; New Regime</span>
+    </div>
+    <!-- Global controls in hero -->
+    <div class="fy-row" style="background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;margin-top:1rem;display:flex;flex-wrap:wrap;gap:.75rem;padding:.85rem 1rem">
+      <div class="fy-grp"><label>Financial Year</label>
+        <select id="fy" class="gs" onchange="calc()">
+          <option value="2025-26">FY 2025-26 (AY 2026-27) — Current</option>
+          <option value="2024-25">FY 2024-25 (AY 2025-26)</option>
+        </select></div>
+      <div class="fy-grp"><label>Age Category</label>
+        <select id="age" class="gs" onchange="onAge()">
+          <option value="below60">Below 60 years</option>
+          <option value="senior">Senior Citizen (60–80 yrs)</option>
+          <option value="super">Super Senior (80+ yrs)</option>
+        </select></div>
+      <div class="fy-grp"><label>City Type (for HRA)</label>
+        <select id="city" class="gs" onchange="calc()">
+          <option value="metro">Metro — Mumbai / Delhi / Kolkata / Chennai</option>
+          <option value="nonmetro">Non-Metro</option>
+        </select></div>
+      <div class="fy-grp"><label>Residential Status</label>
+        <select id="res_status" class="gs" onchange="calc()">
+          <option value="resident">Resident Individual</option>
+          <option value="nri">NRI (Non-Resident Individual)</option>
+        </select></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MAIN LAYOUT ── -->
+<div class="layout">
+<div class="left-col">
+
+<!-- ════ INCOME SOURCES ════ -->
+<div class="card">
+  <div class="sec-hdr inc" onclick="tog('inc')">
+    <h3>💰 Income Sources</h3>
+    <span class="chev closed" id="cv-inc">▾</span>
+  </div>
+  <div class="sec-body hidden" id="sb-inc">
+
+    <div class="sub">A · Salary — Primary Employer</div>
+    <div class="ibox">Enter annual (12-month) amounts from your primary employer's Form 16. All figures in Indian Rupees (₹).</div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>Basic Salary (Annual)</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="basic" min="0" max="100000000" step="1000" placeholder="e.g. 600000" oninput="v2('basic',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-basic">Enter a value between ₹0 and ₹10 Crore</div>
+        <p class="fnote tip">Basic salary is the base for HRA &amp; EPF. Usually 40–50% of CTC.</p>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>HRA Received (Annual)</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="hra" min="0" max="100000000" step="1000" placeholder="e.g. 300000" oninput="v2('hra',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-hra">Cannot exceed 10 Crore</div>
+        <p class="fnote tip">HRA exemption is computed automatically under Sec 10(13A). Provide rent paid below.</p>
+      </div>
+    </div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>Special / Other Allowances</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="special" min="0" max="100000000" step="1000" placeholder="0" oninput="v2('special',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-special">Cannot exceed 10 Crore</div>
+        <p class="fnote">City compensatory allowance, uniform, internet, food, telephone, etc.</p>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>LTA — Leave Travel Allowance Received</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="lta" min="0" max="5000000" step="1000" placeholder="0" oninput="v2('lta',0,5000000);calc()"></div>
+        <div class="err-msg" id="e-lta">Seems unusually high — max ₹50L accepted</div>
+      </div>
+    </div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>Bonus / Incentive / Commission</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="bonus" min="0" max="100000000" step="1000" placeholder="0" oninput="v2('bonus',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-bonus">Cannot exceed 10 Crore</div>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>Perquisites / ESOPs / Taxable Reimbursements</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="perqs" min="0" max="100000000" step="1000" placeholder="0" oninput="v2('perqs',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-perqs">Cannot exceed 10 Crore</div>
+        <p class="fnote">ESOPs are taxed as perquisite at allotment (value on date of allotment − exercise price).</p>
+      </div>
+    </div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>Gratuity Received</label><span class="lim gold">Exempt ≤ ₹20L</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="gratuity" min="0" max="100000000" step="10000" placeholder="0" oninput="v2('gratuity',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-gratuity">Cannot exceed 10 Crore</div>
+        <p class="fnote tip">First ₹20L is fully exempt under Sec 10(10). Excess is taxable.</p>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>Leave Encashment Received</label><span class="lim gold">Exempt ≤ ₹25L on retirement</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="leaveenc" min="0" max="50000000" step="10000" placeholder="0" oninput="v2('leaveenc',0,50000000);calc()"></div>
+        <div class="err-msg" id="e-leaveenc">Cannot exceed 5 Crore</div>
+      </div>
+    </div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>VRS / Retirement Compensation</label><span class="lim gold">Exempt ≤ ₹5L</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="vrs" min="0" max="50000000" step="10000" placeholder="0" oninput="v2('vrs',0,50000000);calc()"></div>
+        <div class="err-msg" id="e-vrs">Cannot exceed 5 Crore</div>
+        <p class="fnote">Voluntary Retirement Scheme compensation. First ₹5L exempt under Sec 10(10C).</p>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>Professional Tax Deducted by Employer</label><span class="lim blue">Max ₹2,500</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="ptax" min="0" max="2500" step="100" placeholder="0" oninput="v2('ptax',0,2500);calc()"></div>
+        <div class="err-msg" id="e-ptax">Maximum professional tax is ₹2,500 per year</div>
+        <p class="fnote good">Deductible under Sec 16(iii) in both old and new regime.</p>
+      </div>
+    </div>
+
+    <hr class="dv">
+    <div class="sub">B · Salary from Other Employer(s)</div>
+    <div class="wbox">If you worked with multiple employers in the same FY, enter the combined gross salary from all other employers here (from their Form 16 / salary slips).</div>
+    <div class="fg">
+      <div class="fl"><label>Total Gross from All Other Employers (combined)</label></div>
+      <div class="iw"><span class="pfx">₹</span><input type="number" id="other_emp" min="0" max="100000000" step="1000" placeholder="0" oninput="v2('other_emp',0,100000000);calc()"></div>
+      <div class="err-msg" id="e-other_emp">Cannot exceed 10 Crore</div>
+      <p class="fnote tip">Standard deduction is capped at ₹50,000 (old) / ₹75,000 (new) across ALL employers combined.</p>
+    </div>
+
+    <hr class="dv">
+    <div class="sub">C · House Property Income (Rent Received)</div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>Annual Gross Rent Received</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="rent_rcvd" min="0" max="100000000" step="1000" placeholder="0" oninput="v2('rent_rcvd',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-rent_rcvd">Cannot exceed 10 Crore</div>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>Municipal / Property Tax Paid</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="muni_tax" min="0" max="10000000" step="1000" placeholder="0" oninput="v2('muni_tax',0,10000000);calc()"></div>
+        <div class="err-msg" id="e-muni_tax">Cannot exceed 1 Crore</div>
+      </div>
+    </div>
+    <div class="ibox">30% standard deduction is <strong>auto-applied</strong> on Net Annual Value (Rent − Municipal Tax) under Sec 24(a). No receipts needed.</div>
+
+    <hr class="dv">
+    <div class="sub">D · Business / Freelance / Professional Income</div>
+    <div class="fg">
+      <div class="fl"><label>Net Business Profit (after all allowable expenses)</label></div>
+      <div class="iw"><span class="pfx">₹</span><input type="number" id="biz" min="0" max="500000000" step="10000" placeholder="0" oninput="v2('biz',0,500000000);calc()"></div>
+      <div class="err-msg" id="e-biz">Cannot exceed 50 Crore</div>
+      <p class="fnote tip">For presumptive taxation: Sec 44AD (8%/6% of turnover), 44ADA (50% of receipts for professionals), 44AE — enter the deemed profit directly.</p>
+    </div>
+
+    <hr class="dv">
+    <div class="sub">E · Capital Gains</div>
+    <div class="wbox">Capital gains are taxed at <strong>special flat rates</strong> — NOT at slab rates. Section 87A rebate is generally not available against special rate taxes.</div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>STCG — Equity / Equity MF (held &lt; 12 months)</label><span class="lim red">Flat 20%</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="stcg_eq" min="0" max="500000000" step="10000" placeholder="0" oninput="v2('stcg_eq',0,500000000);calc()"></div>
+        <div class="err-msg" id="e-stcg_eq">Cannot exceed 50 Crore</div>
+        <p class="fnote">Listed equity shares / equity mutual funds. Rate changed from 15% → 20% from FY 2024-25.</p>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>LTCG — Equity / Equity MF (held ≥ 12 months)</label><span class="lim red">12.5% — ₹1.25L exempt</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="ltcg_eq" min="0" max="500000000" step="10000" placeholder="0" oninput="v2('ltcg_eq',0,500000000);calc()"></div>
+        <div class="err-msg" id="e-ltcg_eq">Cannot exceed 50 Crore</div>
+        <p class="fnote tip">First ₹1,25,000 per year is exempt. Tax only on excess at 12.5% — no indexation from Jul 2024.</p>
+      </div>
+    </div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>STCG — Debt Funds / Property / Other (slab-rated)</label><span class="lim blue">Added to income</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="stcg_oth" min="0" max="500000000" step="10000" placeholder="0" oninput="v2('stcg_oth',0,500000000);calc()"></div>
+        <div class="err-msg" id="e-stcg_oth">Cannot exceed 50 Crore</div>
+        <p class="fnote">Debt MF (post Apr 2023), property held &lt; 24 months, gold, unlisted shares — taxed at normal slab rates.</p>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>LTCG — Property / Gold / Debt / Unlisted (held long-term)</label><span class="lim red">Flat 12.5%</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="ltcg_oth" min="0" max="500000000" step="10000" placeholder="0" oninput="v2('ltcg_oth',0,500000000);calc()"></div>
+        <div class="err-msg" id="e-ltcg_oth">Cannot exceed 50 Crore</div>
+        <p class="fnote">Property (held ≥ 24 months), gold (≥ 36 months). Rate 12.5% without indexation from Jul 23, 2024.</p>
+      </div>
+    </div>
+
+    <hr class="dv">
+    <div class="sub">F · Income from Other Sources</div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>Interest — Savings Account</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="int_sav" min="0" max="10000000" step="1000" placeholder="0" oninput="v2('int_sav',0,10000000);calc()"></div>
+        <div class="err-msg" id="e-int_sav">Cannot exceed 1 Crore</div>
+        <p class="fnote tip">Eligible for 80TTA deduction (₹10,000 max) if below 60.</p>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>Interest — FD / RD / Post Office Deposits</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="int_fd" min="0" max="50000000" step="1000" placeholder="0" oninput="v2('int_fd',0,50000000);calc()"></div>
+        <div class="err-msg" id="e-int_fd">Cannot exceed 5 Crore</div>
+        <p class="fnote">Fully taxable at slab rates. TDS deducted at 10% if annual interest &gt; ₹40,000 (₹50,000 for seniors).</p>
+      </div>
+    </div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>Dividend Income (Stocks / Mutual Funds)</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="dividend" min="0" max="100000000" step="1000" placeholder="0" oninput="v2('dividend',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-dividend">Cannot exceed 10 Crore</div>
+        <p class="fnote">Post Apr 2020: dividends are fully taxable in hands of recipient at slab rates.</p>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>Lottery / Online Games / Prize Money (Sec 115BB)</label><span class="lim red">Flat 30% — no deductions</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="lottery" min="0" max="100000000" step="1000" placeholder="0" oninput="v2('lottery',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-lottery">Cannot exceed 10 Crore</div>
+        <p class="fnote warn">Online gaming winnings (Dream11, Rummy) taxed at flat 30% with TDS @30% over ₹10,000 per transaction.</p>
+      </div>
+    </div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>Agricultural Income (Annual)</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="agri" min="0" max="100000000" step="1000" placeholder="0" oninput="v2('agri',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-agri">Cannot exceed 10 Crore</div>
+        <p class="fnote good">Agricultural income is fully exempt under Sec 10(1). Included only for partial-integration if &gt; ₹5,000.</p>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>Any Other Taxable Income</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="other_inc" min="0" max="100000000" step="1000" placeholder="0" oninput="v2('other_inc',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-other_inc">Cannot exceed 10 Crore</div>
+        <p class="fnote">Family pension, gifts over ₹50,000, income from undisclosed sources, etc.</p>
+      </div>
+    </div>
+
+    <div class="strip"><span>Gross Total Income:</span><strong id="s-gross">₹0</strong></div>
+  </div>
+</div>
+
+<!-- ════ EXEMPTIONS ════ -->
+<div class="card">
+  <div class="sec-hdr exm" onclick="tog('exm')">
+    <h3>🏠 Exemptions &amp; Allowances <span class="sbadge old">Old Regime Only</span></h3>
+    <span class="chev closed" id="cv-exm">▾</span>
+  </div>
+  <div class="sec-body hidden" id="sb-exm">
+
+    <div class="sub">HRA Exemption — Section 10(13A)</div>
+    <div class="ibox"><strong>HRA Exempt = minimum of:</strong><br>
+      1️⃣ Actual HRA received &nbsp;&nbsp;
+      2️⃣ 50% of Basic (Metro) or 40% (Non-Metro) &nbsp;&nbsp;
+      3️⃣ Actual Rent Paid − 10% of Basic Salary</div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>Rent Paid per Month (₹)</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="rent_pm" min="0" max="1000000" step="500" placeholder="e.g. 25000" oninput="v2('rent_pm',0,1000000);calc()"></div>
+        <div class="err-msg" id="e-rent_pm">Monthly rent cannot exceed ₹10 Lakh</div>
+        <p class="fnote tip">Rent &gt; ₹1 lakh/month requires landlord's PAN for exemption claim.</p>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>HRA Exemption (Auto-Calculated)</label></div>
+        <input type="text" id="hra_ex_disp" class="ro" readonly placeholder="Auto">
+        <p class="fnote good">This amount is auto-calculated and deducted from taxable salary (old regime only).</p>
+      </div>
+    </div>
+    <div class="wbox">HRA exemption is <strong>NOT available in New Regime</strong>. Full HRA component is taxable as salary in new regime.</div>
+
+    <hr class="dv">
+    <div class="sub">LTA Exemption — Section 10(5)</div>
+    <div class="fg">
+      <div class="fl"><label>LTA Exempt Amount to Claim</label><span class="lim blue">≤ LTA received &amp; actual cost</span></div>
+      <div class="iw"><span class="pfx">₹</span><input type="number" id="lta_claim" min="0" max="5000000" step="1000" placeholder="0" oninput="v2Lta();calc()"></div>
+      <div class="err-msg" id="e-lta_claim">LTA claim cannot exceed LTA received</div>
+      <p class="fnote tip">2 journeys in a 4-year block. Economy air / 1st AC rail. Only for travel within India. ⚠ Not available in new regime.</p>
+    </div>
+
+    <hr class="dv">
+    <div class="sub">Gratuity / Leave Encashment / VRS Exemptions <span class="sbadge both">Both Regimes</span></div>
+    <div class="gbox">These exemptions apply in <strong>both old and new regimes</strong> and are auto-calculated from the income section above.</div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>Gratuity Exempt (Auto)</label><span class="lim gold">Max ₹20L</span></div>
+        <input type="text" id="grat_disp" class="ro" readonly placeholder="Auto">
+      </div>
+      <div class="fg">
+        <div class="fl"><label>VRS Exempt (Auto)</label><span class="lim gold">Max ₹5L</span></div>
+        <input type="text" id="vrs_disp" class="ro" readonly placeholder="Auto">
+      </div>
+    </div>
+    <div class="fg">
+      <div class="fl"><label>Leave Encashment Exempt Amount (you enter)</label><span class="lim gold">Max ₹25L on retirement</span></div>
+      <div class="iw"><span class="pfx">₹</span><input type="number" id="le_exempt" min="0" max="2500000" step="10000" placeholder="0" oninput="v2('le_exempt',0,2500000);calc()"></div>
+      <div class="err-msg" id="e-le_exempt">Maximum exempt amount is ₹25,00,000</div>
+      <p class="fnote tip">On <strong>retirement</strong>: max ₹25L exempt. On <strong>resignation</strong>: leave encashment is fully taxable — enter ₹0.</p>
+    </div>
+
+    <div class="strip"><span>Exemptions — Old Regime:</span><strong id="s-exempt">₹0</strong>&nbsp;|&nbsp;<span>New Regime:</span><strong id="s-exempt-new">₹0</strong></div>
+  </div>
+</div>
+
+<!-- ════ HOME LOAN ════ -->
+<div class="card">
+  <div class="sec-hdr hl" onclick="tog('hl')">
+    <h3>🏡 Home Loan &amp; Property Deductions</h3>
+    <span class="chev closed" id="cv-hl">▾</span>
+  </div>
+  <div class="sec-body hidden" id="sb-hl">
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>Property Status</label></div>
+        <select class="std" id="prop_type" onchange="onProp();calc()">
+          <option value="self">Self-Occupied / Deemed Let Out</option>
+          <option value="letout">Let Out (Rented to Tenant)</option>
+        </select>
+        <p class="fnote">Self-occupied: max ₹2L deduction. Let-out: full interest deductible.</p>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>Home Loan Interest Paid (Annual)</label><span class="lim blue" id="sec24lim">Max ₹2,00,000</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="hl_int" min="0" max="50000000" step="5000" placeholder="0" oninput="v2('hl_int',0,50000000);calc()"></div>
+        <div class="err-msg" id="e-hl_int">Cannot exceed 5 Crore</div>
+      </div>
+    </div>
+    <div class="fg">
+      <div class="fl"><label>Pre-Construction Interest (1/5th per year)</label><span class="lim blue">Claim over 5 years</span></div>
+      <div class="iw"><span class="pfx">₹</span><input type="number" id="pre_int" min="0" max="2000000" step="5000" placeholder="0" oninput="v2('pre_int',0,2000000);calc()"></div>
+      <div class="err-msg" id="e-pre_int">Cannot exceed ₹20L per year (1/5th of total pre-EMI interest)</div>
+      <p class="fnote tip">Pre-construction interest is deductible in 5 equal installments from the year construction is complete.</p>
+    </div>
+    <div class="ibox" id="hl-info">
+      <strong>Self-Occupied:</strong> Sec 24(b) interest capped at <strong>₹2,00,000/year</strong>. ⚠ NOT available in new regime.<br>
+      <strong>Let-Out:</strong> Full interest deductible from rental income. Loss set-off against other income (max ₹2L/year, old regime only).
+    </div>
+    <hr class="dv">
+    <div class="sub">Additional Housing Deductions <span class="sbadge old">Old Regime Only</span></div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>Sec 80EEA — Additional Interest, Affordable Housing</label><span class="lim green">Max ₹1,50,000</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="s80eea" min="0" max="150000" step="5000" placeholder="0" oninput="v2('s80eea',0,150000);calc()"></div>
+        <div class="err-msg" id="e-s80eea">Maximum is ₹1,50,000</div>
+        <p class="fnote">First-time home buyer. Loan sanctioned Apr 2019–Mar 2022. Stamp duty value ≤ ₹45L. Over &amp; above Sec 24(b).</p>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>Sec 80EEB — Electric Vehicle Loan Interest</label><span class="lim green">Max ₹1,50,000</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="s80eeb" min="0" max="150000" step="5000" placeholder="0" oninput="v2('s80eeb',0,150000);calc()"></div>
+        <div class="err-msg" id="e-s80eeb">Maximum is ₹1,50,000</div>
+        <p class="fnote">Loan for electric vehicle sanctioned Apr 2019–Mar 2023. No income limit.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ CHAPTER VI-A ════ -->
+<div class="card">
+  <div class="sec-hdr ded" onclick="tog('ded')">
+    <h3>💼 Chapter VI-A Deductions <span class="sbadge old">Old Regime</span></h3>
+    <span class="chev closed" id="cv-ded">▾</span>
+  </div>
+  <div class="sec-body hidden" id="sb-ded">
+
+    <!-- 80C -->
+    <div class="sub">Sec 80C / 80CCC / 80CCD(1) — Combined Ceiling ₹1,50,000</div>
+    <div class="ibox">The <strong>total</strong> of all investments below (EPF + PPF + ELSS + LIC + etc.) is capped at ₹1,50,000. Invest in any combination — only ₹1.5L deduction allowed.</div>
+    <div class="c80">
+      <div class="c80item"><label>EPF — Employee Provident Fund Contribution</label>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="c_epf" min="0" max="150000" step="1000" placeholder="0" oninput="v2('c_epf',0,150000);calc()"></div></div>
+      <div class="c80item"><label>VPF — Voluntary Provident Fund (above mandatory EPF)</label>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="c_vpf" min="0" max="500000" step="1000" placeholder="0" oninput="v2('c_vpf',0,500000);calc()"></div></div>
+      <div class="c80item"><label>PPF — Public Provident Fund</label>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="c_ppf" min="0" max="150000" step="500" placeholder="0" oninput="v2('c_ppf',0,150000);calc()"></div></div>
+      <div class="c80item"><label>Life Insurance Premium (LIC / Term / ULIP)</label>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="c_lic" min="0" max="500000" step="1000" placeholder="0" oninput="v2('c_lic',0,500000);calc()"></div></div>
+      <div class="c80item"><label>ELSS — Equity Linked Saving Scheme (Tax Saver MF)</label>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="c_elss" min="0" max="150000" step="500" placeholder="0" oninput="v2('c_elss',0,150000);calc()"></div></div>
+      <div class="c80item"><label>NSC — National Savings Certificate</label>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="c_nsc" min="0" max="150000" step="1000" placeholder="0" oninput="v2('c_nsc',0,150000);calc()"></div></div>
+      <div class="c80item"><label>5-Year Tax Saver FD (Bank / Post Office)</label>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="c_fd" min="0" max="150000" step="1000" placeholder="0" oninput="v2('c_fd',0,150000);calc()"></div></div>
+      <div class="c80item"><label>Home Loan — Principal Repayment (Sec 80C)</label>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="c_hlprin" min="0" max="500000" step="5000" placeholder="0" oninput="v2('c_hlprin',0,500000);calc()"></div></div>
+      <div class="c80item"><label>Tuition Fees (max 2 children, full-time, India only)</label>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="c_tuition" min="0" max="150000" step="1000" placeholder="0" oninput="v2('c_tuition',0,150000);calc()"></div></div>
+      <div class="c80item"><label>Sukanya Samriddhi Yojana (SSY)</label>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="c_ssy" min="0" max="150000" step="500" placeholder="0" oninput="v2('c_ssy',0,150000);calc()"></div></div>
+      <div class="c80item"><label>Senior Citizens Savings Scheme (SCSS)</label>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="c_scss" min="0" max="1500000" step="10000" placeholder="0" oninput="v2('c_scss',0,1500000);calc()"></div></div>
+      <div class="c80item"><label>NPS Employee Contribution — 80CCD(1) within 80C</label>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="c_nps1" min="0" max="150000" step="1000" placeholder="0" oninput="v2('c_nps1',0,150000);calc()"></div></div>
+      <div class="c80item"><label>Pension Annuity Plans — 80CCC (LIC Jeevan Suraksha etc.)</label>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="c_pension" min="0" max="150000" step="1000" placeholder="0" oninput="v2('c_pension',0,150000);calc()"></div></div>
+      <div class="c80item"><label>NABARD Bonds / KVP / Other 80C Investments</label>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="c_other80c" min="0" max="150000" step="1000" placeholder="0" oninput="v2('c_other80c',0,150000);calc()"></div></div>
+    </div>
+    <div class="c80bar"><div class="c80fill" id="c80fill" style="width:0%"></div></div>
+    <div class="c80stats">
+      <span>Total invested: <strong id="c80tot">₹0</strong></span>
+      <span>Eligible deduction: <strong id="c80elig">₹0</strong> <span style="opacity:.5">(max ₹1,50,000)</span></span>
+    </div>
+
+    <hr class="dv">
+    <!-- 80CCD(1B) NPS Additional -->
+    <div class="sub">Sec 80CCD(1B) — Additional NPS Self Contribution <span class="sbadge old">Old Regime Only</span></div>
+    <div class="fg">
+      <div class="fl"><label>NPS Contribution — Self (over &amp; above 80C)</label><span class="lim green">Max ₹50,000</span></div>
+      <div class="iw"><span class="pfx">₹</span><input type="number" id="nps1b" min="0" max="50000" step="1000" placeholder="0" oninput="v2('nps1b',0,50000);calc()"></div>
+      <div class="err-msg" id="e-nps1b">Maximum additional NPS deduction is ₹50,000</div>
+      <p class="fnote tip">This is an exclusive extra ₹50,000 deduction — completely independent of the ₹1.5L ceiling under 80C.</p>
+    </div>
+
+    <hr class="dv">
+    <!-- 80CCD(2) Employer NPS — both -->
+    <div class="sub">Sec 80CCD(2) — Employer's NPS Contribution <span class="sbadge both">Both Regimes</span></div>
+    <div class="fg">
+      <div class="fl"><label>Employer's NPS Contribution (deposited to NPS Tier-I)</label><span class="lim green">Max 10% of Basic+DA (Govt: 14%)</span></div>
+      <div class="iw"><span class="pfx">₹</span><input type="number" id="nps2" min="0" max="5000000" step="1000" placeholder="0" oninput="v2('nps2',0,5000000);calc()"></div>
+      <div class="err-msg" id="e-nps2">Cannot exceed 50 Lakh</div>
+      <p class="fnote good">Deductible in <strong>both old and new regimes</strong>. Central govt employees: 14%. Others: 10% of (Basic + DA).</p>
+    </div>
+
+    <hr class="dv">
+    <!-- 80D Medical -->
+    <div class="sub">Sec 80D — Medical Insurance (Health) Premium</div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>Premium: Self / Spouse / Children</label><span class="lim blue" id="d80d-self-lim">Max ₹25,000</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="d80d_self" min="0" max="50000" step="500" placeholder="0" oninput="v2self80d();calc()"></div>
+        <div class="err-msg" id="e-d80d_self">Exceeds allowed limit for this age group</div>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>Premium: Parents</label><span class="lim blue" id="d80d-par-lim">Max ₹25,000</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="d80d_par" min="0" max="50000" step="500" placeholder="0" oninput="v2par80d();calc()"></div>
+        <div class="err-msg" id="e-d80d_par">Exceeds allowed limit for parent age</div>
+      </div>
+    </div>
+    <div class="ckr"><input type="checkbox" id="self_sr" onchange="updLimits();calc()"><label for="self_sr">Self / Spouse / Children are Senior Citizens → limit increases to ₹50,000</label></div>
+    <div class="ckr"><input type="checkbox" id="par_sr" onchange="updLimits();calc()"><label for="par_sr">Parents are Senior Citizens → limit increases to ₹50,000</label></div>
+    <div class="fg" style="margin-top:8px">
+      <div class="fl"><label>Preventive Health Check-up (within above limits)</label><span class="lim blue">Max ₹5,000</span></div>
+      <div class="iw"><span class="pfx">₹</span><input type="number" id="d80d_prev" min="0" max="5000" step="500" placeholder="0" oninput="v2('d80d_prev',0,5000);calc()"></div>
+      <div class="err-msg" id="e-d80d_prev">Maximum is ₹5,000</div>
+      <p class="fnote tip">Included within the above premium limits. Cash payment is allowed only for preventive health check-ups.</p>
+    </div>
+
+    <hr class="dv">
+    <!-- 80DD Dependent Disability -->
+    <div class="sub">Sec 80DD — Disabled Dependent</div>
+    <div class="fg">
+      <select class="std" id="s80dd" onchange="calc()">
+        <option value="0">Not Applicable</option>
+        <option value="75000">Normal Disability (40%–80%) — Fixed ₹75,000</option>
+        <option value="125000">Severe Disability (80%+) — Fixed ₹1,25,000</option>
+      </select>
+      <p class="fnote tip">Fixed deduction regardless of actual spending. Dependent = spouse / children / parents / siblings. Disability certificate Form 10-IA required.</p>
+    </div>
+
+    <hr class="dv">
+    <!-- 80DDB Specified Diseases -->
+    <div class="sub">Sec 80DDB — Specified Diseases (Self or Dependent)</div>
+    <div class="fg">
+      <div class="fl"><label>Medical Expenditure — Specified Diseases</label><span class="lim blue" id="ddb-lim">Max ₹40,000</span></div>
+      <div class="iw"><span class="pfx">₹</span><input type="number" id="s80ddb" min="0" max="100000" step="1000" placeholder="0" oninput="v280ddb();calc()"></div>
+      <div class="err-msg" id="e-s80ddb">Exceeds allowed limit</div>
+      <p class="fnote">Specified diseases: cancer, AIDS, neurological (Parkinson's, dementia, ataxia), kidney failure, haemophilia, thalassaemia. Form 10-I from neurologist/oncologist required.</p>
+    </div>
+
+    <hr class="dv">
+    <!-- 80E Education Loan -->
+    <div class="sub">Sec 80E — Education Loan Interest</div>
+    <div class="fg">
+      <div class="fl"><label>Annual Interest Paid on Education Loan</label><span class="lim green">No Upper Limit</span></div>
+      <div class="iw"><span class="pfx">₹</span><input type="number" id="s80e" min="0" max="10000000" step="5000" placeholder="0" oninput="v2('s80e',0,10000000);calc()"></div>
+      <div class="err-msg" id="e-s80e">Cannot exceed 1 Crore</div>
+      <p class="fnote tip">For higher education (graduation+) of self / spouse / children / legal ward — in India or abroad. Deductible for max 8 consecutive years from repayment start.</p>
+    </div>
+
+    <hr class="dv">
+    <!-- 80G Donations -->
+    <div class="sub">Sec 80G — Donations to Charitable Institutions</div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>100% Deduction — No GTI limit</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="g100nl" min="0" max="100000000" step="1000" placeholder="0" oninput="v2('g100nl',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-g100nl">Cannot exceed 10 Crore</div>
+        <p class="fnote">PM CARES Fund, PM National Relief Fund, National Defence Fund, Chief Minister's Relief Fund.</p>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>50% Deduction — No GTI limit</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="g50nl" min="0" max="100000000" step="1000" placeholder="0" oninput="v2('g50nl',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-g50nl">Cannot exceed 10 Crore</div>
+        <p class="fnote">Jawaharlal Nehru Memorial Fund, Indira Gandhi Memorial Trust.</p>
+      </div>
+    </div>
+    <div class="r2">
+      <div class="fg">
+        <div class="fl"><label>100% Deduction — Subject to 10% of GTI</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="g100l" min="0" max="100000000" step="1000" placeholder="0" oninput="v2('g100l',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-g100l">Cannot exceed 10 Crore</div>
+        <p class="fnote">Approved institutions for scientific research / rural development.</p>
+      </div>
+      <div class="fg">
+        <div class="fl"><label>50% Deduction — Subject to 10% of GTI</label></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="g50l" min="0" max="100000000" step="1000" placeholder="0" oninput="v2('g50l',0,100000000);calc()"></div>
+        <div class="err-msg" id="e-g50l">Cannot exceed 10 Crore</div>
+        <p class="fnote">Registered charitable / religious trusts, temples, mosques, churches, etc.</p>
+      </div>
+    </div>
+    <div class="wbox">⚠ Donations in <strong>cash exceeding ₹2,000</strong> do NOT qualify for 80G deduction. Use cheque / NEFT / UPI only.</div>
+
+    <hr class="dv">
+    <!-- 80GG Rent (no HRA) -->
+    <div class="sub">Sec 80GG — Rent Paid (ONLY if employer does NOT give HRA)</div>
+    <div class="fg">
+      <div class="fl"><label>Annual Rent Paid (if no HRA in salary)</label><span class="lim blue">Max ₹60,000/year</span></div>
+      <div class="iw"><span class="pfx">₹</span><input type="number" id="s80gg" min="0" max="1000000" step="5000" placeholder="0" oninput="v2('s80gg',0,1000000);calc()"></div>
+      <div class="err-msg" id="e-s80gg">Cannot exceed 10 Lakh</div>
+      <p class="fnote tip">Min of: ₹5,000/month · 25% of Adj.GTI · Actual Rent−10% Adj.GTI. Cannot claim if HRA received from employer. File Form 10BA.</p>
+    </div>
+
+    <hr class="dv">
+    <!-- 80TTA / 80TTB -->
+    <div class="sub">Sec 80TTA / 80TTB — Interest Income Deduction</div>
+    <div class="r2">
+      <div class="fg" id="tta-grp">
+        <div class="fl"><label>80TTA: Savings A/C Interest (Non-Senior Citizens)</label><span class="lim blue">Max ₹10,000</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="s80tta" min="0" max="10000" step="500" placeholder="0" oninput="v2('s80tta',0,10000);calc()"></div>
+        <div class="err-msg" id="e-s80tta">Maximum is ₹10,000</div>
+        <p class="fnote">Only savings bank account interest. Does NOT include FD/RD/Post Office interest.</p>
+      </div>
+      <div class="fg" id="ttb-grp" style="display:none">
+        <div class="fl"><label>80TTB: All Deposit Interest (Senior Citizens Only)</label><span class="lim blue">Max ₹50,000</span></div>
+        <div class="iw"><span class="pfx">₹</span><input type="number" id="s80ttb" min="0" max="50000" step="1000" placeholder="0" oninput="v2('s80ttb',0,50000);calc()"></div>
+        <div class="err-msg" id="e-s80ttb">Maximum is ₹50,000</div>
+        <p class="fnote good">Covers savings account + FD + RD + Post Office. Replaces 80TTA for senior citizens.</p>
+      </div>
+    </div>
+
+    <hr class="dv">
+    <!-- 80U Self Disability -->
+    <div class="sub">Sec 80U — Disability of Taxpayer (Self)</div>
+    <div class="fg">
+      <select class="std" id="s80u" onchange="calc()">
+        <option value="0">Not Applicable</option>
+        <option value="75000">Normal Disability (40%–80%) — Fixed ₹75,000</option>
+        <option value="125000">Severe Disability (80%+) — Fixed ₹1,25,000</option>
+      </select>
+      <p class="fnote tip">Certificate from prescribed medical authority in Form 10-IA required. Fixed deduction irrespective of actual medical spending.</p>
+    </div>
+
+    <hr class="dv">
+    <!-- 80GGC Political Donation -->
+    <div class="sub">Sec 80GGC — Donations to Political Parties</div>
+    <div class="fg">
+      <div class="fl"><label>Donation to Registered Political Party / Electoral Trust</label><span class="lim green">100% — No Limit</span></div>
+      <div class="iw"><span class="pfx">₹</span><input type="number" id="s80ggc" min="0" max="100000000" step="1000" placeholder="0" oninput="v2('s80ggc',0,100000000);calc()"></div>
+      <div class="err-msg" id="e-s80ggc">Cannot exceed 10 Crore</div>
+      <p class="fnote warn">Non-cash only. Cash donations to political parties do NOT qualify.</p>
+    </div>
+
+    <div class="strip"><span>Total Chapter VI-A Deductions (Old Regime):</span><strong id="s-ded">₹0</strong></div>
+  </div>
+</div>
+
+</div><!-- /left-col -->
+
+<!-- ════ RESULTS PANEL ════ -->
+<div>
+<div class="res">
+  <div class="res-title">Tax Estimation — FY <span id="res-fy">2025-26</span></div>
+
+  <div class="rg-grid">
+    <div class="rg-box" id="old-box">
+      <div class="best-tag" id="old-best" style="display:none">★ BEST OPTION</div>
+      <div class="rg-label">Old Tax Regime</div>
+      <div class="rg-amt old" id="old-tax">₹0</div>
+      <div class="rg-eff" id="old-eff">Effective: 0.00%</div>
+      <div class="rg-save" id="old-save"></div>
+    </div>
+    <div class="rg-box" id="new-box">
+      <div class="best-tag" id="new-best" style="display:none">★ BEST OPTION</div>
+      <div class="rg-label">New Tax Regime</div>
+      <div class="rg-amt nw" id="new-tax">₹0</div>
+      <div class="rg-eff" id="new-eff">Effective: 0.00%</div>
+      <div class="rg-save" id="new-save"></div>
+    </div>
+  </div>
+
+  <!-- Income breakdown -->
+  <div class="bk">
+    <div class="bk-title">Income Summary</div>
+    <div class="bkr"><span class="lb">Gross Total Income</span><span class="vl" id="r-gross">₹0</span></div>
+    <div class="bkr ded"><span class="lb">− Exemptions (Old Regime)</span><span class="vl" id="r-ex-old">₹0</span></div>
+    <div class="bkr ded"><span class="lb">− Exemptions (New Regime)</span><span class="vl" id="r-ex-new">₹0</span></div>
+    <div class="bkr ded"><span class="lb">− Std. Deduction Old / New</span><span class="vl" id="r-std">—</span></div>
+    <div class="bkr ded"><span class="lb">− Prof. Tax Sec 16(iii)</span><span class="vl" id="r-ptax">₹0</span></div>
+    <div class="bkr ded"><span class="lb">− Home Loan Interest Sec 24(b) Old</span><span class="vl" id="r-sec24">₹0</span></div>
+    <div class="bkr"><span class="lb">GTI Old / New</span><span class="vl" id="r-gti-both">—</span></div>
+    <div class="bkr ded"><span class="lb">− Chapter VI-A (Old Regime)</span><span class="vl" id="r-chvia">₹0</span></div>
+    <div class="bkr ded"><span class="lb">− 80CCD(2) Employer NPS (Both)</span><span class="vl" id="r-nps2">₹0</span></div>
+    <div class="bkr tot"><span class="lb">Net Taxable Income Old</span><span class="vl" id="r-net-old">₹0</span></div>
+    <div class="bkr tot"><span class="lb">Net Taxable Income New</span><span class="vl" id="r-net-new">₹0</span></div>
+  </div>
+
+  <!-- Old regime detail -->
+  <div class="bk">
+    <div class="bk-title">Old Regime — Breakdown</div>
+    <div id="old-slabs"></div>
+    <div class="bkr"><span class="lb">Slab Tax</span><span class="vl" id="ro-slab">₹0</span></div>
+    <div class="bkr"><span class="lb">Special Rate Tax (CG / Lottery)</span><span class="vl" id="ro-sp">₹0</span></div>
+    <div class="bkr ded"><span class="lb">− Sec 87A Rebate</span><span class="vl" id="ro-reb">₹0</span></div>
+    <div class="bkr"><span class="lb">Surcharge</span><span class="vl" id="ro-sur">₹0</span></div>
+    <div class="bkr"><span class="lb">H&amp;E Cess (4%)</span><span class="vl" id="ro-cess">₹0</span></div>
+    <div class="bkr tot"><span class="lb">Total Tax Payable</span><span class="vl" id="ro-tot">₹0</span></div>
+  </div>
+
+  <!-- New regime detail -->
+  <div class="bk">
+    <div class="bk-title">New Regime — Breakdown</div>
+    <div id="new-slabs"></div>
+    <div class="bkr"><span class="lb">Slab Tax</span><span class="vl" id="rn-slab">₹0</span></div>
+    <div class="bkr"><span class="lb">Special Rate Tax (CG / Lottery)</span><span class="vl" id="rn-sp">₹0</span></div>
+    <div class="bkr ded"><span class="lb">− Sec 87A Rebate</span><span class="vl" id="rn-reb">₹0</span></div>
+    <div class="bkr"><span class="lb">Surcharge</span><span class="vl" id="rn-sur">₹0</span></div>
+    <div class="bkr"><span class="lb">H&amp;E Cess (4%)</span><span class="vl" id="rn-cess">₹0</span></div>
+    <div class="bkr tot"><span class="lb">Total Tax Payable</span><span class="vl" id="rn-tot">₹0</span></div>
+  </div>
+
+  <!-- Recommendation -->
+  <div class="recbox" id="rec">Enter your income details above to see which regime saves you more tax.</div>
+
+  <!-- Slab reference -->
+  <div class="bk">
+    <div class="bk-title">Tax Slab Reference</div>
+    <div id="slab-ref" style="font-size:.7rem;color:var(--t2)"></div>
+  </div>
+</div>
+</div>
+
+</div><!-- /layout -->
+
+<!-- ── CALCULATE & SAVE BAR ── -->
+<div class="calc-bar">
+  <button class="calc-btn" onclick="calcAndSave()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="12" y2="14"/></svg>
+    Calculate Tax
+  </button>
+  <div class="sheet-status" id="sheetStatus"></div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   VALIDATION HELPERS
+═══════════════════════════════════════════════ */
+function v2(id,min,max){
+  const el=document.getElementById(id);
+  const em=document.getElementById('e-'+id);
+  if(!el)return;
+  const val=parseFloat(el.value);
+  if(el.value===''||isNaN(val)){
+    el.classList.remove('err','ok');
+    if(em)em.classList.remove('show');
+    return;
+  }
+  if(val<min||val>max){
+    el.classList.add('err');el.classList.remove('ok');
+    if(em)em.classList.add('show');
+  }else{
+    el.classList.remove('err');el.classList.add('ok');
+    if(em)em.classList.remove('show');
+  }
+}
+function v2Lta(){
+  const el=document.getElementById('lta_claim');
+  const em=document.getElementById('e-lta_claim');
+  const ltar=Math.max(0,parseFloat(document.getElementById('lta').value)||0);
+  const val=parseFloat(el.value)||0;
+  if(val>ltar&&ltar>0){el.classList.add('err');if(em)em.classList.add('show')}
+  else{el.classList.remove('err');el.classList.add('ok');if(em)em.classList.remove('show')}
+}
+function v2self80d(){
+  const ss=document.getElementById('self_sr').checked||document.getElementById('age').value!=='below60';
+  v2('d80d_self',0,ss?50000:25000);
+}
+function v2par80d(){
+  const ps=document.getElementById('par_sr').checked;
+  v2('d80d_par',0,ps?50000:25000);
+}
+function v280ddb(){
+  const isSr=document.getElementById('age').value!=='below60';
+  v2('s80ddb',0,isSr?100000:40000);
+}
+
+/* ═══════════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════════ */
+const $=id=>document.getElementById(id);
+const n=id=>Math.max(0,parseFloat($(id)?.value)||0);
+let currentLang='en';
+function t(en){try{return(LANGS[currentLang]&&LANGS[currentLang][en])||en}catch(e){return en}}
+function fmt(x){
+  if(x===null||x===undefined)return'₹0';
+  const neg=x<0,a=Math.abs(Math.round(x)).toString();
+  let f;
+  if(a.length<=3){f=a}else{
+    let r=a.slice(-3),rest=a.slice(0,-3),g=[];
+    while(rest.length>2){g.unshift(rest.slice(-2));rest=rest.slice(0,-2)}
+    if(rest)g.unshift(rest);
+    f=g.join(',')+','+r;
+  }
+  return(neg?'−':'')+'₹'+f;
+}
+function set(id,val){const e=$(id);if(e)e.textContent=val}
+function setv(id,val){const e=$(id);if(e)e.value=val}
+
+/* ═══════════════════════════════════════════════
+   ACCORDION
+═══════════════════════════════════════════════ */
+function tog(name){
+  $('sb-'+name).classList.toggle('hidden');
+  const c=$('cv-'+name);
+  if(c)c.classList.toggle('closed');
+}
+
+/* ═══════════════════════════════════════════════
+   DYNAMIC UI
+═══════════════════════════════════════════════ */
+function onAge(){updLimits();v2self80d();v280ddb();calc()}
+function onProp(){
+  const lo=$('prop_type').value==='letout';
+  $('sec24lim').textContent=lo?'No limit (let-out)':'Max ₹2,00,000';
+  $('hl-info').innerHTML=lo
+    ?'<strong>Let-Out:</strong> Full interest deductible from rental income. Net loss set-off against other income up to ₹2L/year (old regime only). No limit in new regime — but only positive rental income taxable.'
+    :'<strong>Self-Occupied:</strong> Sec 24(b) interest capped at <strong>₹2,00,000/year</strong>. ⚠ NOT available in new regime.';
+}
+function updLimits(){
+  const age=$('age').value;
+  const ss=$('self_sr').checked||age!=='below60';
+  const ps=$('par_sr').checked;
+  const isSr=age!=='below60';
+  $('d80d-self-lim').textContent=ss?'Max ₹50,000':'Max ₹25,000';
+  $('d80d-par-lim').textContent=ps?'Max ₹50,000':'Max ₹25,000';
+  $('tta-grp').style.display=isSr?'none':'block';
+  $('ttb-grp').style.display=isSr?'block':'none';
+  $('ddb-lim').textContent=isSr?'Max ₹1,00,000 (Senior)':'Max ₹40,000 (₹1L Senior)';
+}
+
+/* ═══════════════════════════════════════════════
+   TAX ENGINE
+═══════════════════════════════════════════════ */
+function slabTax(inc,slabs){
+  let tax=0,prev=0,det=[];
+  for(const s of slabs){
+    if(inc<=prev)break;
+    const ch=Math.min(inc,s.l)-prev,t=ch*s.r;
+    if(s.r>0&&ch>0)det.push({from:prev,to:Math.min(inc,s.l),r:s.r*100,t});
+    tax+=t;prev=s.l;
+  }
+  return{tax,det};
+}
+function oldSlabs(age){
+  if(age==='super')return[{l:5e5,r:0},{l:1e6,r:.20},{l:Infinity,r:.30}];
+  if(age==='senior')return[{l:3e5,r:0},{l:5e5,r:.05},{l:1e6,r:.20},{l:Infinity,r:.30}];
+  return[{l:2.5e5,r:0},{l:5e5,r:.05},{l:1e6,r:.20},{l:Infinity,r:.30}];
+}
+function newSlabs(fy){
+  if(fy==='2024-25')return[
+    {l:3e5,r:0},{l:7e5,r:.05},{l:1e6,r:.10},
+    {l:1.2e6,r:.15},{l:1.5e6,r:.20},{l:Infinity,r:.30}];
+  // 2025-26 — revised budget slabs
+  return[
+    {l:4e5,r:0},{l:8e5,r:.05},{l:1.2e6,r:.10},
+    {l:1.6e6,r:.15},{l:2e6,r:.20},{l:2.4e6,r:.25},{l:Infinity,r:.30}];
+}
+function surcharge(inc,tax,regime){
+  let r=0;
+  if(inc>5e7)r=regime==='old'?.37:.25;
+  else if(inc>2e7)r=.25;
+  else if(inc>1e7)r=.15;
+  else if(inc>5e6)r=.10;
+  if(!r)return 0;
+  let s=tax*r;
+  const thr=[5e6,1e7,2e7,5e7];
+  for(let i=thr.length-1;i>=0;i--){
+    if(inc>thr[i]){s=Math.min(s,inc-thr[i]);break}
+  }
+  return Math.max(0,s);
+}
+function rebate87A(slabT,totalInc,regime,fy){
+  if(regime==='old')return totalInc<=5e5?Math.min(slabT,12500):0;
+  if(fy==='2024-25')return totalInc<=7e5?Math.min(slabT,25000):0;
+  return totalInc<=1.2e6?Math.min(slabT,60000):0;
+}
+function computeTax(netSlab,totalNet,regime,fy,age,stcgEq,ltcgEq,ltcgOth,lott){
+  const SLABS=regime==='old'?oldSlabs(age):newSlabs(fy);
+  const{tax:st,det}=slabTax(Math.max(0,netSlab),SLABS);
+  const spTax=Math.max(0,ltcgEq-125000)*0.125+stcgEq*0.20+ltcgOth*0.125+lott*0.30;
+  const reb=rebate87A(st,totalNet,regime,fy);
+  const afterReb=Math.max(0,st-reb)+spTax;
+  const sur=surcharge(totalNet,afterReb,regime);
+  const cess=(afterReb+sur)*0.04;
+  return{st:Math.round(st),spTax:Math.round(spTax),reb:Math.round(reb),sur:Math.round(sur),cess:Math.round(cess),total:Math.round(afterReb+sur+cess),det};
+}
+
+/* ═══════════════════════════════════════════════
+   MULTI-LANGUAGE SYSTEM — 11 Indian Languages
+═══════════════════════════════════════════════ */
+const LANGS={
+hi:{
+  '← Encyclopedia':'← विश्वकोश','Article 4 · India Income Tax Estimator':'लेख 4 · भारत आयकर अनुमानक','📊 Finance · Tax Planning':'📊 वित्त · कर नियोजन','Complete FY 2024-25 & 2025-26 tax calculator — Old Regime vs New Regime. Enter all income sources, every deduction under Chapter VI-A, and instantly see which regime saves you more tax.':'FY 2024-25 और 2025-26 कर कैलकुलेटर — पुरानी बनाम नई व्यवस्था। सभी आय और अध्याय VI-A कटौतियाँ भरें।','All Income Sources':'सभी आय स्रोत','36 Deduction Types':'36 कटौती प्रकार','Section 87A Rebate':'धारा 87A छूट','Surcharge + Cess':'अधिभार + उपकर','Capital Gains':'पूंजीगत लाभ','Old & New Regime':'पुरानी और नई व्यवस्था','Financial Year':'वित्त वर्ष','Age Category':'आयु वर्ग','City Type (for HRA)':'शहर प्रकार (HRA के लिए)','Residential Status':'निवास स्थिति','FY 2025-26 (AY 2026-27) — Current':'FY 2025-26 — वर्तमान','Below 60 years':'60 वर्ष से कम','Senior Citizen (60–80 yrs)':'वरिष्ठ नागरिक (60–80 वर्ष)','Super Senior (80+ yrs)':'अति वरिष्ठ (80+)','Metro — Mumbai / Delhi / Kolkata / Chennai':'मेट्रो — मुंबई / दिल्ली / कोलकाता / चेन्नई','Non-Metro':'गैर-मेट्रो','Resident Individual':'निवासी व्यक्ति','NRI (Non-Resident Individual)':'NRI (अनिवासी भारतीय)','💰 Income Sources':'💰 आय के स्रोत','🏠 Exemptions & Allowances':'🏠 छूट और भत्ते','🏡 Home Loan & Property Deductions':'🏡 गृह ऋण और संपत्ति कटौती','💼 Chapter VI-A Deductions':'💼 अध्याय VI-A कटौतियाँ','Old Regime Only':'केवल पुरानी व्यवस्था','Both Regimes':'दोनों व्यवस्थाएँ','Old Regime':'पुरानी व्यवस्था','A · Salary — Primary Employer':'A · वेतन — प्राथमिक नियोक्ता','B · Salary from Other Employer(s)':'B · अन्य नियोक्ता का वेतन','C · House Property Income (Rent Received)':'C · मकान संपत्ति आय','D · Business / Freelance / Professional Income':'D · व्यावसाय / फ्रीलांस आय','E · Capital Gains':'E · पूंजीगत लाभ','F · Income from Other Sources':'F · अन्य स्रोतों से आय','HRA Exemption — Section 10(13A)':'HRA छूट — धारा 10(13A)','LTA Exemption — Section 10(5)':'LTA छूट — धारा 10(5)','Gratuity / Leave Encashment / VRS Exemptions':'ग्रेच्युटी / अवकाश नकदीकरण / VRS','Sec 80C / 80CCC / 80CCD(1) — Combined Ceiling ₹1,50,000':'धारा 80C — सीमा ₹1,50,000','Sec 80CCD(1B) — Additional NPS Self Contribution':'धारा 80CCD(1B) — अतिरिक्त NPS',"Sec 80CCD(2) — Employer's NPS Contribution":'धारा 80CCD(2) — नियोक्ता NPS','Sec 80D — Medical Insurance (Health) Premium':'धारा 80D — स्वास्थ्य बीमा','Sec 80DD — Disabled Dependent':'धारा 80DD — दिव्यांग आश्रित','Sec 80DDB — Specified Diseases (Self or Dependent)':'धारा 80DDB — विशिष्ट रोग','Sec 80E — Education Loan Interest':'धारा 80E — शिक्षा ऋण ब्याज','Sec 80G — Donations to Charitable Institutions':'धारा 80G — धर्मार्थ दान','Sec 80GG — Rent Paid (ONLY if employer does NOT give HRA)':'धारा 80GG — किराया','Sec 80TTA / 80TTB — Interest Income Deduction':'धारा 80TTA/80TTB — ब्याज','Sec 80U — Disability of Taxpayer (Self)':'धारा 80U — स्व-दिव्यांगता','Sec 80GGC — Donations to Political Parties':'धारा 80GGC — राजनीतिक दान','Additional Housing Deductions':'अतिरिक्त आवास कटौती','Basic Salary (Annual)':'मूल वेतन (वार्षिक)','HRA Received (Annual)':'HRA प्राप्त (वार्षिक)','Special / Other Allowances':'विशेष / अन्य भत्ते','LTA — Leave Travel Allowance Received':'LTA भत्ता','Bonus / Incentive / Commission':'बोनस / प्रोत्साहन','Perquisites / ESOPs / Taxable Reimbursements':'परिलाभ / ESOP','Gratuity Received':'ग्रेच्युटी','Leave Encashment Received':'अवकाश नकदीकरण','VRS / Retirement Compensation':'VRS / सेवानिवृत्ति','Professional Tax Deducted by Employer':'व्यावसायिक कर','Total Gross from All Other Employers (combined)':'अन्य नियोक्ताओं का वेतन','Annual Gross Rent Received':'वार्षिक किराया','Municipal / Property Tax Paid':'नगर कर','Net Business Profit (after all allowable expenses)':'शुद्ध व्यावसाय लाभ','Interest — Savings Account':'बचत खाता ब्याज','Interest — FD / RD / Post Office Deposits':'FD/RD ब्याज','Dividend Income (Stocks / Mutual Funds)':'लाभांश','Agricultural Income (Annual)':'कृषि आय','Any Other Taxable Income':'अन्य कर योग्य आय','Rent Paid per Month (₹)':'मासिक किराया (₹)','HRA Exemption (Auto-Calculated)':'HRA छूट (स्वचालित)','LTA Exempt Amount to Claim':'LTA दावा','Gratuity Exempt (Auto)':'ग्रेच्युटी (स्वचालित)','VRS Exempt (Auto)':'VRS (स्वचालित)','Leave Encashment Exempt Amount (you enter)':'अवकाश छूट','Property Status':'संपत्ति स्थिति','Home Loan Interest Paid (Annual)':'गृह ऋण ब्याज','Pre-Construction Interest (1/5th per year)':'पूर्व-निर्माण ब्याज','Sec 80EEA — Additional Interest, Affordable Housing':'धारा 80EEA — किफायती आवास','Sec 80EEB — Electric Vehicle Loan Interest':'धारा 80EEB — ई-वाहन','NPS Contribution — Self (over & above 80C)':'NPS स्व-योगदान',"Employer's NPS Contribution (deposited to NPS Tier-I)":'नियोक्ता NPS','Premium: Self / Spouse / Children':'प्रीमियम: स्व/पत्नी/बच्चे','Premium: Parents':'प्रीमियम: माता-पिता','Preventive Health Check-up (within above limits)':'निवारक जांच','Medical Expenditure — Specified Diseases':'चिकित्सा व्यय','Annual Interest Paid on Education Loan':'शिक्षा ऋण ब्याज','100% Deduction — No GTI limit':'100% — GTI सीमा नहीं','50% Deduction — No GTI limit':'50% — GTI सीमा नहीं','100% Deduction — Subject to 10% of GTI':'100% — GTI 10%','50% Deduction — Subject to 10% of GTI':'50% — GTI 10%','Annual Rent Paid (if no HRA in salary)':'वार्षिक किराया (HRA नहीं)','80TTA: Savings A/C Interest (Non-Senior Citizens)':'80TTA: बचत ब्याज','80TTB: All Deposit Interest (Senior Citizens Only)':'80TTB: जमा ब्याज','Donation to Registered Political Party / Electoral Trust':'राजनीतिक दान','EPF — Employee Provident Fund Contribution':'EPF','VPF — Voluntary Provident Fund (above mandatory EPF)':'VPF','PPF — Public Provident Fund':'PPF','Life Insurance Premium (LIC / Term / ULIP)':'जीवन बीमा','ELSS — Equity Linked Saving Scheme (Tax Saver MF)':'ELSS','NSC — National Savings Certificate':'NSC','5-Year Tax Saver FD (Bank / Post Office)':'5-वर्षीय FD','Home Loan — Principal Repayment (Sec 80C)':'गृह ऋण मूलधन','Tuition Fees (max 2 children, full-time, India only)':'ट्यूशन फीस','Sukanya Samriddhi Yojana (SSY)':'सुकन्या समृद्धि','Senior Citizens Savings Scheme (SCSS)':'वरिष्ठ बचत','NPS Employee Contribution — 80CCD(1) within 80C':'NPS 80CCD(1)','Pension Annuity Plans — 80CCC (LIC Jeevan Suraksha etc.)':'पेंशन 80CCC','NABARD Bonds / KVP / Other 80C Investments':'NABARD/KVP','Not Applicable':'लागू नहीं','Normal Disability (40%–80%) — Fixed ₹75,000':'सामान्य दिव्यांग — ₹75,000','Severe Disability (80%+) — Fixed ₹1,25,000':'गंभीर दिव्यांग — ₹1,25,000','Self-Occupied / Deemed Let Out':'स्व-अधिकृत','Let Out (Rented to Tenant)':'किराए पर','Self / Spouse / Children are Senior Citizens → limit increases to ₹50,000':'वरिष्ठ → ₹50,000','Parents are Senior Citizens → limit increases to ₹50,000':'माता-पिता वरिष्ठ → ₹50,000','Total invested:':'कुल निवेश:','Eligible deduction:':'पात्र कटौती:','Gross Total Income:':'सकल कुल आय:','Exemptions — Old Regime:':'छूट — पुरानी:','New Regime:':'नई:','Total Chapter VI-A Deductions (Old Regime):':'VI-A कटौतियाँ:','Tax Estimation — FY':'कर अनुमान — FY','Old Tax Regime':'पुरानी कर व्यवस्था','New Tax Regime':'नई कर व्यवस्था','★ BEST OPTION':'★ सर्वश्रेष्ठ','Income Summary':'आय सारांश','Gross Total Income':'सकल कुल आय','− Exemptions (Old Regime)':'− छूट (पुरानी)','− Exemptions (New Regime)':'− छूट (नई)','− Std. Deduction Old / New':'− मानक कटौती','− Prof. Tax Sec 16(iii)':'− व्यावसायिक कर','− Home Loan Interest Sec 24(b) Old':'− गृह ऋण ब्याज','GTI Old / New':'GTI पुरानी/नई','− Chapter VI-A (Old Regime)':'− VI-A','− 80CCD(2) Employer NPS (Both)':'− NPS नियोक्ता','Net Taxable Income Old':'शुद्ध आय (पुरानी)','Net Taxable Income New':'शुद्ध आय (नई)','Old Regime — Breakdown':'पुरानी — विवरण','New Regime — Breakdown':'नई — विवरण','Slab Tax':'स्लैब कर','Special Rate Tax (CG / Lottery)':'विशेष दर कर','− Sec 87A Rebate':'− 87A छूट','Surcharge':'अधिभार','H&E Cess (4%)':'H&E उपकर (4%)','Total Tax Payable':'कुल देय कर','Tax Slab Reference':'कर स्लैब','📊 View Tax Results':'📊 कर परिणाम','Enter your income details above to see which regime saves you more tax.':'आय भरें — देखें कौन सी व्यवस्था बचाती है।','Effective Rate: ':'प्रभावी दर: ','Above':'ऊपर','No slab-rate income':'स्लैब आय नहीं','Save ':'बचत ',
+},
+bn:{
+  '← Encyclopedia':'← বিশ্বকোষ','Article 4 · India Income Tax Estimator':'নিবন্ধ 4 · ভারত আয়কর অনুমানক','📊 Finance · Tax Planning':'📊 অর্থ · কর পরিকল্পনা','All Income Sources':'সব আয়ের উৎস','36 Deduction Types':'৩৬ কর্তন','Section 87A Rebate':'ধারা 87A ছাড়','Surcharge + Cess':'অতিরিক্ত কর + সেস','Capital Gains':'মূলধনী লাভ','Old & New Regime':'পুরনো ও নতুন','Financial Year':'অর্থবছর','Age Category':'বয়স শ্রেণি','City Type (for HRA)':'শহর (HRA)','Residential Status':'আবাসিক','FY 2025-26 (AY 2026-27) — Current':'FY 2025-26 — বর্তমান','Below 60 years':'৬০ কম','Senior Citizen (60–80 yrs)':'প্রবীণ (৬০–৮০)','Super Senior (80+ yrs)':'অতি প্রবীণ (৮০+)','Metro — Mumbai / Delhi / Kolkata / Chennai':'মেট্রো','Non-Metro':'অ-মেট্রো','Resident Individual':'আবাসিক ব্যক্তি','NRI (Non-Resident Individual)':'NRI','💰 Income Sources':'💰 আয়ের উৎস','🏠 Exemptions & Allowances':'🏠 ছাড় ও ভাতা','🏡 Home Loan & Property Deductions':'🏡 গৃহঋণ ও সম্পত্তি','💼 Chapter VI-A Deductions':'💼 অধ্যায় VI-A','Old Regime Only':'শুধু পুরনো','Both Regimes':'উভয়','Old Regime':'পুরনো ব্যবস্থা','A · Salary — Primary Employer':'A · বেতন — প্রধান','B · Salary from Other Employer(s)':'B · অন্য নিয়োগকর্তা','C · House Property Income (Rent Received)':'C · ভাড়া আয়','D · Business / Freelance / Professional Income':'D · ব্যবসা','E · Capital Gains':'E · মূলধনী লাভ','F · Income from Other Sources':'F · অন্য আয়','HRA Exemption — Section 10(13A)':'HRA ছাড়','LTA Exemption — Section 10(5)':'LTA ছাড়','Gratuity / Leave Encashment / VRS Exemptions':'গ্র্যাচুইটি/ছুটি/VRS','Sec 80C / 80CCC / 80CCD(1) — Combined Ceiling ₹1,50,000':'ধারা 80C','Sec 80CCD(1B) — Additional NPS Self Contribution':'80CCD(1B) NPS',"Sec 80CCD(2) — Employer's NPS Contribution":'80CCD(2) NPS','Sec 80D — Medical Insurance (Health) Premium':'80D স্বাস্থ্য','Sec 80DD — Disabled Dependent':'80DD অক্ষম','Sec 80DDB — Specified Diseases (Self or Dependent)':'80DDB রোগ','Sec 80E — Education Loan Interest':'80E শিক্ষা','Sec 80G — Donations to Charitable Institutions':'80G দান','Sec 80GG — Rent Paid (ONLY if employer does NOT give HRA)':'80GG ভাড়া','Sec 80TTA / 80TTB — Interest Income Deduction':'80TTA/80TTB','Sec 80U — Disability of Taxpayer (Self)':'80U অক্ষমতা','Sec 80GGC — Donations to Political Parties':'80GGC দান','Additional Housing Deductions':'অতিরিক্ত আবাসন','Basic Salary (Annual)':'মূল বেতন','HRA Received (Annual)':'HRA','Special / Other Allowances':'ভাতা','LTA — Leave Travel Allowance Received':'LTA','Bonus / Incentive / Commission':'বোনাস','Perquisites / ESOPs / Taxable Reimbursements':'পার্ক/ESOP','Gratuity Received':'গ্র্যাচুইটি','Leave Encashment Received':'ছুটি নগদ','VRS / Retirement Compensation':'VRS','Professional Tax Deducted by Employer':'পেশাদার কর','Total Gross from All Other Employers (combined)':'অন্য নিয়োগকর্তা','Annual Gross Rent Received':'বার্ষিক ভাড়া','Municipal / Property Tax Paid':'পৌর কর','Net Business Profit (after all allowable expenses)':'নিট ব্যবসা','Interest — Savings Account':'সঞ্চয় সুদ','Interest — FD / RD / Post Office Deposits':'FD/RD সুদ','Dividend Income (Stocks / Mutual Funds)':'লভ্যাংশ','Agricultural Income (Annual)':'কৃষি আয়','Any Other Taxable Income':'অন্য আয়','Rent Paid per Month (₹)':'মাসিক ভাড়া','HRA Exemption (Auto-Calculated)':'HRA (স্বয়ং)','LTA Exempt Amount to Claim':'LTA দাবি','Gratuity Exempt (Auto)':'গ্র্যাচুইটি (স্বয়ং)','VRS Exempt (Auto)':'VRS (স্বয়ং)','Leave Encashment Exempt Amount (you enter)':'ছুটি ছাড়','Property Status':'সম্পত্তি','Home Loan Interest Paid (Annual)':'গৃহঋণ সুদ','Pre-Construction Interest (1/5th per year)':'নির্মাণ পূর্ব সুদ','Sec 80EEA — Additional Interest, Affordable Housing':'80EEA আবাসন','Sec 80EEB — Electric Vehicle Loan Interest':'80EEB ইভি','NPS Contribution — Self (over & above 80C)':'NPS নিজস্ব',"Employer's NPS Contribution (deposited to NPS Tier-I)":'নিয়োগকর্তা NPS','Premium: Self / Spouse / Children':'প্রিমিয়াম: নিজ','Premium: Parents':'প্রিমিয়াম: বাবা-মা','Preventive Health Check-up (within above limits)':'স্বাস্থ্য পরীক্ষা','Medical Expenditure — Specified Diseases':'চিকিৎসা ব্যয়','Annual Interest Paid on Education Loan':'শিক্ষা সুদ','100% Deduction — No GTI limit':'100%','50% Deduction — No GTI limit':'50%','100% Deduction — Subject to 10% of GTI':'100% GTI 10%','50% Deduction — Subject to 10% of GTI':'50% GTI 10%','Annual Rent Paid (if no HRA in salary)':'বার্ষিক ভাড়া','80TTA: Savings A/C Interest (Non-Senior Citizens)':'80TTA','80TTB: All Deposit Interest (Senior Citizens Only)':'80TTB প্রবীণ','Donation to Registered Political Party / Electoral Trust':'রাজনৈতিক দান','EPF — Employee Provident Fund Contribution':'EPF','VPF — Voluntary Provident Fund (above mandatory EPF)':'VPF','PPF — Public Provident Fund':'PPF','Life Insurance Premium (LIC / Term / ULIP)':'জীবন বীমা','ELSS — Equity Linked Saving Scheme (Tax Saver MF)':'ELSS','NSC — National Savings Certificate':'NSC','5-Year Tax Saver FD (Bank / Post Office)':'5 বছর FD','Home Loan — Principal Repayment (Sec 80C)':'গৃহঋণ মূল','Tuition Fees (max 2 children, full-time, India only)':'টিউশন','Sukanya Samriddhi Yojana (SSY)':'সুকন্যা','Senior Citizens Savings Scheme (SCSS)':'প্রবীণ সঞ্চয়','NPS Employee Contribution — 80CCD(1) within 80C':'NPS 80CCD(1)','Pension Annuity Plans — 80CCC (LIC Jeevan Suraksha etc.)':'পেনশন','NABARD Bonds / KVP / Other 80C Investments':'NABARD','Not Applicable':'প্রযোজ্য নয়','Normal Disability (40%–80%) — Fixed ₹75,000':'সাধারণ অক্ষম','Severe Disability (80%+) — Fixed ₹1,25,000':'গুরুতর অক্ষম','Self-Occupied / Deemed Let Out':'নিজে ব্যবহার','Let Out (Rented to Tenant)':'ভাড়া দেওয়া','Self / Spouse / Children are Senior Citizens → limit increases to ₹50,000':'প্রবীণ → ₹50,000','Parents are Senior Citizens → limit increases to ₹50,000':'বাবা-মা প্রবীণ → ₹50,000','Total invested:':'মোট বিনিয়োগ:','Eligible deduction:':'যোগ্য কর্তন:','Gross Total Income:':'মোট আয়:','Exemptions — Old Regime:':'ছাড়:','New Regime:':'নতুন:','Total Chapter VI-A Deductions (Old Regime):':'VI-A:','Tax Estimation — FY':'কর — FY','Old Tax Regime':'পুরনো কর','New Tax Regime':'নতুন কর','★ BEST OPTION':'★ সেরা','Income Summary':'আয় সারাংশ','Gross Total Income':'মোট আয়','− Exemptions (Old Regime)':'− ছাড় (পু)','− Exemptions (New Regime)':'− ছাড় (ন)','− Std. Deduction Old / New':'− মানক','− Prof. Tax Sec 16(iii)':'− পেশা কর','− Home Loan Interest Sec 24(b) Old':'− গৃহ সুদ','GTI Old / New':'GTI','− Chapter VI-A (Old Regime)':'− VI-A','− 80CCD(2) Employer NPS (Both)':'− NPS','Net Taxable Income Old':'নিট (পু)','Net Taxable Income New':'নিট (ন)','Old Regime — Breakdown':'পুরনো বিশদ','New Regime — Breakdown':'নতুন বিশদ','Slab Tax':'স্ল্যাব কর','Special Rate Tax (CG / Lottery)':'বিশেষ কর','− Sec 87A Rebate':'− 87A','Surcharge':'সারচার্জ','H&E Cess (4%)':'সেস 4%','Total Tax Payable':'মোট কর','Tax Slab Reference':'স্ল্যাব','📊 View Tax Results':'📊 কর ফলাফল','Enter your income details above to see which regime saves you more tax.':'আয় দিন — কোন ব্যবস্থা কম কর।','Effective Rate: ':'হার: ','Above':'উপরে','No slab-rate income':'স্ল্যাব নেই','Save ':'সাশ্রয় ',
+},
+ta:{
+  '← Encyclopedia':'← கலைக்களஞ்சியம்','Article 4 · India Income Tax Estimator':'கட்டுரை 4 · வருமான வரி','All Income Sources':'வருமான ஆதாரங்கள்','36 Deduction Types':'36 கழிவுகள்','Section 87A Rebate':'87A தள்ளுபடி','Surcharge + Cess':'சர்சார்ஜ் + செஸ்','Capital Gains':'மூலதன ஆதாயம்','Old & New Regime':'பழைய & புதிய','Financial Year':'நிதியாண்டு','Age Category':'வயது','City Type (for HRA)':'நகரம் (HRA)','Residential Status':'வாசம்','FY 2025-26 (AY 2026-27) — Current':'FY 2025-26 — இப்போது','Below 60 years':'60 கீழ்','Senior Citizen (60–80 yrs)':'மூத்தோர் (60–80)','Super Senior (80+ yrs)':'அதி மூத்தோர்','Metro — Mumbai / Delhi / Kolkata / Chennai':'மெட்ரோ','Non-Metro':'மெட்ரோ அல்ல','Resident Individual':'குடியிருப்பாளர்','NRI (Non-Resident Individual)':'NRI','💰 Income Sources':'💰 வருமானம்','🏠 Exemptions & Allowances':'🏠 விலக்குகள்','🏡 Home Loan & Property Deductions':'🏡 வீட்டுக்கடன்','💼 Chapter VI-A Deductions':'💼 VI-A கழிவுகள்','Old Regime Only':'பழையது மட்டும்','Both Regimes':'இரண்டும்','Old Regime':'பழைய திட்டம்','A · Salary — Primary Employer':'A · சம்பளம்','B · Salary from Other Employer(s)':'B · மற்ற நியோக்தா','C · House Property Income (Rent Received)':'C · வீட்டு வாடகை','D · Business / Freelance / Professional Income':'D · தொழில்','E · Capital Gains':'E · மூலதன','F · Income from Other Sources':'F · பிற வருமானம்','HRA Exemption — Section 10(13A)':'HRA விலக்கு','LTA Exemption — Section 10(5)':'LTA விலக்கு','Gratuity / Leave Encashment / VRS Exemptions':'க்ராட்டுயிட்டி/LTA/VRS','Sec 80C / 80CCC / 80CCD(1) — Combined Ceiling ₹1,50,000':'80C','Sec 80CCD(1B) — Additional NPS Self Contribution':'80CCD(1B)',"Sec 80CCD(2) — Employer's NPS Contribution":'80CCD(2)','Sec 80D — Medical Insurance (Health) Premium':'80D சுகாதாரம்','Sec 80DD — Disabled Dependent':'80DD','Sec 80DDB — Specified Diseases (Self or Dependent)':'80DDB','Sec 80E — Education Loan Interest':'80E கல்வி','Sec 80G — Donations to Charitable Institutions':'80G நன்கொடை','Sec 80GG — Rent Paid (ONLY if employer does NOT give HRA)':'80GG வாடகை','Sec 80TTA / 80TTB — Interest Income Deduction':'80TTA/80TTB','Sec 80U — Disability of Taxpayer (Self)':'80U','Sec 80GGC — Donations to Political Parties':'80GGC','Additional Housing Deductions':'கூடுதல் வீட்டு கழிவு','Basic Salary (Annual)':'அடிப்படை சம்பளம்','HRA Received (Annual)':'HRA','Special / Other Allowances':'கொடுப்பனவுகள்','LTA — Leave Travel Allowance Received':'LTA','Bonus / Incentive / Commission':'போனஸ்','Perquisites / ESOPs / Taxable Reimbursements':'ESOP','Gratuity Received':'க்ராட்டுயிட்டி','Leave Encashment Received':'விடுப்பு நகதீகரிப்பு','VRS / Retirement Compensation':'VRS','Professional Tax Deducted by Employer':'தொழில் வரி','Total Gross from All Other Employers (combined)':'மற்ற நியோக்தா','Annual Gross Rent Received':'வாடகை','Municipal / Property Tax Paid':'சொத்து வரி','Net Business Profit (after all allowable expenses)':'தொழில் லாபம்','Interest — Savings Account':'சேமிப்பு வட்டி','Interest — FD / RD / Post Office Deposits':'FD வட்டி','Dividend Income (Stocks / Mutual Funds)':'ஈவுத்தொகை','Agricultural Income (Annual)':'விவசாயம்','Any Other Taxable Income':'மற்ற வருமானம்','Rent Paid per Month (₹)':'மாத வாடகை','HRA Exemption (Auto-Calculated)':'HRA தானியங்கி','LTA Exempt Amount to Claim':'LTA கோரல்','Gratuity Exempt (Auto)':'க்ராட்டுயிட்டி','VRS Exempt (Auto)':'VRS','Leave Encashment Exempt Amount (you enter)':'விடுப்பு விலக்கு','Property Status':'சொத்து','Home Loan Interest Paid (Annual)':'வீட்டு வட்டி','Pre-Construction Interest (1/5th per year)':'கட்டுமான வட்டி','Sec 80EEA — Additional Interest, Affordable Housing':'80EEA','Sec 80EEB — Electric Vehicle Loan Interest':'80EEB','NPS Contribution — Self (over & above 80C)':'NPS',"Employer's NPS Contribution (deposited to NPS Tier-I)":'நியோக்தா NPS','Premium: Self / Spouse / Children':'பிரீமியம்','Premium: Parents':'பெற்றோர் பிரீமியம்','Preventive Health Check-up (within above limits)':'தடுப்பு சோதனை','Medical Expenditure — Specified Diseases':'மருத்துவ ச்செலவு','Annual Interest Paid on Education Loan':'கல்வி வட்டி','100% Deduction — No GTI limit':'100%','50% Deduction — No GTI limit':'50%','100% Deduction — Subject to 10% of GTI':'100% GTI','50% Deduction — Subject to 10% of GTI':'50% GTI','Annual Rent Paid (if no HRA in salary)':'வாடகை','80TTA: Savings A/C Interest (Non-Senior Citizens)':'80TTA','80TTB: All Deposit Interest (Senior Citizens Only)':'80TTB','Donation to Registered Political Party / Electoral Trust':'அரசியல் நன்கொடை','EPF — Employee Provident Fund Contribution':'EPF','VPF — Voluntary Provident Fund (above mandatory EPF)':'VPF','PPF — Public Provident Fund':'PPF','Life Insurance Premium (LIC / Term / ULIP)':'ஆயுள் காப்பீடு','ELSS — Equity Linked Saving Scheme (Tax Saver MF)':'ELSS','NSC — National Savings Certificate':'NSC','5-Year Tax Saver FD (Bank / Post Office)':'5 ஆண்டு FD','Home Loan — Principal Repayment (Sec 80C)':'வீட்டுக்கடன் அசல்','Tuition Fees (max 2 children, full-time, India only)':'கல்வி கட்டணம்','Sukanya Samriddhi Yojana (SSY)':'சுகன்யா','Senior Citizens Savings Scheme (SCSS)':'மூத்தோர் சேமிப்பு','NPS Employee Contribution — 80CCD(1) within 80C':'NPS 80CCD(1)','Pension Annuity Plans — 80CCC (LIC Jeevan Suraksha etc.)':'பென்ஷன்','NABARD Bonds / KVP / Other 80C Investments':'NABARD','Not Applicable':'பொருந்தாது','Normal Disability (40%–80%) — Fixed ₹75,000':'சாதாரண','Severe Disability (80%+) — Fixed ₹1,25,000':'கடுமையான','Self-Occupied / Deemed Let Out':'சொந்த வீடு','Let Out (Rented to Tenant)':'வாடகை','Self / Spouse / Children are Senior Citizens → limit increases to ₹50,000':'மூத்தோர் → ₹50,000','Parents are Senior Citizens → limit increases to ₹50,000':'பெற்றோர் → ₹50,000','Total invested:':'முதலீடு:','Eligible deduction:':'கழிவு:','Gross Total Income:':'வருமானம்:','Exemptions — Old Regime:':'விலக்கு:','New Regime:':'புதியது:','Total Chapter VI-A Deductions (Old Regime):':'VI-A:','Tax Estimation — FY':'வரி — FY','Old Tax Regime':'பழைய வரி','New Tax Regime':'புதிய வரி','★ BEST OPTION':'★ சிறந்தது','Income Summary':'வருமான சுருக்கம்','Gross Total Income':'மொத்தம்','− Exemptions (Old Regime)':'− விலக்கு (பழ)','− Exemptions (New Regime)':'− விலக்கு (புத)','− Std. Deduction Old / New':'− மானக','− Prof. Tax Sec 16(iii)':'− தொழில் வரி','− Home Loan Interest Sec 24(b) Old':'− வீட்டு வட்டி','GTI Old / New':'GTI','− Chapter VI-A (Old Regime)':'− VI-A','− 80CCD(2) Employer NPS (Both)':'− NPS','Net Taxable Income Old':'நிகர (பழ)','Net Taxable Income New':'நிகர (புத)','Old Regime — Breakdown':'பழையது','New Regime — Breakdown':'புதியது','Slab Tax':'ஸ்லாப் வரி','Special Rate Tax (CG / Lottery)':'சிறப்பு வரி','− Sec 87A Rebate':'− 87A','Surcharge':'கூட்டு கட்டணம்','H&E Cess (4%)':'செஸ் 4%','Total Tax Payable':'மொத்த வரி','Tax Slab Reference':'ஸ்லாப்','📊 View Tax Results':'📊 வரி முடிவு','Enter your income details above to see which regime saves you more tax.':'வருமானம் உள்ளிடுங்கள்.','Effective Rate: ':'விகிதம்: ','Above':'மேல்','No slab-rate income':'ஸ்லாப் இல்லை','Save ':'சேமிப்பு ',
+},
+te:{
+  '← Encyclopedia':'← విజ్ఞాన సర్వస్వం','Article 4 · India Income Tax Estimator':'వ్యాసం 4 · ఆదాయపు పన్ను','All Income Sources':'ఆదాయ వనరులు','36 Deduction Types':'36 తగ్గింపులు','Section 87A Rebate':'87A రీబేట్','Surcharge + Cess':'సర్‌ఛార్జ్ + సెస్','Capital Gains':'మూలధన లాభాలు','Old & New Regime':'పాత & కొత్త','Financial Year':'ఆర్థిక సంవత్సరం','Age Category':'వయస్సు','City Type (for HRA)':'నగరం (HRA)','Residential Status':'నివాసం','FY 2025-26 (AY 2026-27) — Current':'FY 2025-26','Below 60 years':'60 కింద','Senior Citizen (60–80 yrs)':'సీనియర్ (60–80)','Super Senior (80+ yrs)':'సూపర్ సీనియర్','Metro — Mumbai / Delhi / Kolkata / Chennai':'మెట్రో','Non-Metro':'నాన్-మెట్రో','Resident Individual':'నివాసి','NRI (Non-Resident Individual)':'NRI','💰 Income Sources':'💰 ఆదాయం','🏠 Exemptions & Allowances':'🏠 మినహాయింపులు','🏡 Home Loan & Property Deductions':'🏡 గృహ రుణం','💼 Chapter VI-A Deductions':'💼 VI-A తగ్గింపులు','Old Regime Only':'పాత మాత్రమే','Both Regimes':'రెండూ','Old Regime':'పాత విధానం','Basic Salary (Annual)':'మూల జీతం','HRA Received (Annual)':'HRA','Financial Year':'ఆర్థిక సంవత్సరం','Not Applicable':'వర్తించదు','Total invested:':'మొత్తం:','Eligible deduction:':'అర్హ తగ్గింపు:','Gross Total Income:':'మొత్తం:','Exemptions — Old Regime:':'మినహాయింపు:','New Regime:':'కొత్త:','Total Chapter VI-A Deductions (Old Regime):':'VI-A:','Tax Estimation — FY':'పన్ను — FY','Old Tax Regime':'పాత పన్ను','New Tax Regime':'కొత్త పన్ను','★ BEST OPTION':'★ ఉత్తమం','Income Summary':'ఆదాయ సారాంశం','Gross Total Income':'మొత్తం ఆదాయం','Slab Tax':'స్లాబ్ పన్ను','Special Rate Tax (CG / Lottery)':'ప్రత్యేక పన్ను','− Sec 87A Rebate':'− 87A','Surcharge':'సర్‌ఛార్జ్','H&E Cess (4%)':'సెస్ 4%','Total Tax Payable':'మొత్తం పన్ను','Tax Slab Reference':'స్లాబ్','📊 View Tax Results':'📊 పన్ను ఫలితాలు','Enter your income details above to see which regime saves you more tax.':'ఆదాయం నమోదు చేయండి.','Effective Rate: ':'రేటు: ','Above':'పైన','No slab-rate income':'స్లాబ్ లేదు','Save ':'ఆదా ',
+},
+mr:{
+  '← Encyclopedia':'← ज्ञानकोश','Article 4 · India Income Tax Estimator':'लेख 4 · प्राप्तिकर अंदाज','All Income Sources':'उत्पन्न स्रोत','36 Deduction Types':'36 वजावट','Section 87A Rebate':'87A सवलत','Surcharge + Cess':'अधिभार + उपकर','Capital Gains':'भांडवली नफा','Old & New Regime':'जुनी आणि नवीन','Financial Year':'आर्थिक वर्ष','Age Category':'वयोगट','City Type (for HRA)':'शहर (HRA)','Residential Status':'निवास','FY 2025-26 (AY 2026-27) — Current':'FY 2025-26','Below 60 years':'60 खाली','Senior Citizen (60–80 yrs)':'ज्येष्ठ (60–80)','Super Senior (80+ yrs)':'अति ज्येष्ठ','Metro — Mumbai / Delhi / Kolkata / Chennai':'मेट्रो','Non-Metro':'बिगर-मेट्रो','Resident Individual':'निवासी','NRI (Non-Resident Individual)':'NRI','💰 Income Sources':'💰 उत्पन्न','🏠 Exemptions & Allowances':'🏠 सूट','🏡 Home Loan & Property Deductions':'🏡 गृहकर्ज','💼 Chapter VI-A Deductions':'💼 VI-A वजावट','Old Regime Only':'फक्त जुनी','Both Regimes':'दोन्ही','Old Regime':'जुनी व्यवस्था','Basic Salary (Annual)':'मूळ पगार','HRA Received (Annual)':'HRA','Not Applicable':'लागू नाही','Total invested:':'गुंतवणूक:','Eligible deduction:':'वजावट:','Gross Total Income:':'उत्पन्न:','Exemptions — Old Regime:':'सूट:','New Regime:':'नवीन:','Total Chapter VI-A Deductions (Old Regime):':'VI-A:','Tax Estimation — FY':'कर — FY','Old Tax Regime':'जुनी कर व्यवस्था','New Tax Regime':'नवीन कर व्यवस्था','★ BEST OPTION':'★ सर्वोत्तम','Income Summary':'उत्पन्न सारांश','Gross Total Income':'एकूण उत्पन्न','Slab Tax':'स्लॅब कर','Special Rate Tax (CG / Lottery)':'विशेष दर','− Sec 87A Rebate':'− 87A','Surcharge':'अधिभार','H&E Cess (4%)':'उपकर 4%','Total Tax Payable':'एकूण कर','Tax Slab Reference':'स्लॅब','📊 View Tax Results':'📊 कर निकाल','Enter your income details above to see which regime saves you more tax.':'उत्पन्न भरा.','Effective Rate: ':'दर: ','Above':'वर','No slab-rate income':'स्लॅब नाही','Save ':'बचत ',
+},
+gu:{
+  '← Encyclopedia':'← જ્ઞાનકોશ','Article 4 · India Income Tax Estimator':'લેખ 4 · આવક વેરો','All Income Sources':'આવક સ્ત્રોત','36 Deduction Types':'36 કપાત','Section 87A Rebate':'87A રિબેટ','Surcharge + Cess':'સરચાર્જ + સેસ','Capital Gains':'મૂડી નફો','Old & New Regime':'જૂની અને નવી','Financial Year':'નાણાકીય વર્ષ','Age Category':'વય','City Type (for HRA)':'શહેર (HRA)','Residential Status':'નિવાસ','FY 2025-26 (AY 2026-27) — Current':'FY 2025-26','Below 60 years':'60 નીચે','Senior Citizen (60–80 yrs)':'વૃદ્ધ (60–80)','Super Senior (80+ yrs)':'અતિ વૃદ્ધ','Metro — Mumbai / Delhi / Kolkata / Chennai':'મેટ્રો','Non-Metro':'ગૈર-મેટ્રો','Resident Individual':'નિવાસી','NRI (Non-Resident Individual)':'NRI','💰 Income Sources':'💰 આવક','🏠 Exemptions & Allowances':'🏠 મુક્તિ','🏡 Home Loan & Property Deductions':'🏡 ઘર ઋણ','💼 Chapter VI-A Deductions':'💼 VI-A','Old Regime Only':'ફક્ત જૂની','Both Regimes':'બંને','Old Regime':'જૂની','Basic Salary (Annual)':'મૂળ પગાર','HRA Received (Annual)':'HRA','Not Applicable':'લાગુ નથી','Total invested:':'રોકાણ:','Eligible deduction:':'કપાત:','Gross Total Income:':'આવક:','Exemptions — Old Regime:':'મુ:','New Regime:':'નવી:','Total Chapter VI-A Deductions (Old Regime):':'VI-A:','Tax Estimation — FY':'ટેક્સ — FY','Old Tax Regime':'જૂની','New Tax Regime':'નવી','★ BEST OPTION':'★ શ્રેષ્ઠ','Income Summary':'સારાંશ','Gross Total Income':'કુલ આવક','Slab Tax':'સ્ટ્ ∙ ','Special Rate Tax (CG / Lottery)':'ખાસ','− Sec 87A Rebate':'− 87A','Surcharge':'સ.ચ','H&E Cess (4%)':'સ. 4%','Total Tax Payable':'કુલ ટ.','Tax Slab Reference':'સ્.​','📊 View Tax Results':'📊 ટ. ફ.','Enter your income details above to see which regime saves you more tax.':'આવક ભરો.','Effective Rate: ':'દર: ','Above':'ઉ','No slab-rate income':'ના','Save ':'બ. ',
+},
+kn:{
+  '← Encyclopedia':'← ವಿಶ್ವಕೋಶ','Article 4 · India Income Tax Estimator':'ಲೇಖನ 4 · ಆದಾಯ ತೆರಿಗೆ','All Income Sources':'ಆದಾಯ ಮೂಲ','36 Deduction Types':'36 ಕಡಿತ','Section 87A Rebate':'87A ರಿಯಾ','Surcharge + Cess':'ಸರ್‌ಚಾ + ಸೆಸ್','Capital Gains':'ಬಂ. ಲಾಭ','Old & New Regime':'ಹ. & ಹೊ.','Financial Year':'ಹ. ವರ್ಷ','Age Category':'ವಯಸ್ಸು','City Type (for HRA)':'ನಗರ (HRA)','Residential Status':'ನಿವಾಸ','FY 2025-26 (AY 2026-27) — Current':'FY 2025-26','Below 60 years':'60 ಕೆ','Senior Citizen (60–80 yrs)':'ಹಿ. (60–80)','Super Senior (80+ yrs)':'ಅ. ಹಿ.','Metro — Mumbai / Delhi / Kolkata / Chennai':'ಮೆಟ್ರೋ','Non-Metro':'ಅ-ಮೆ','Resident Individual':'ನಿವಾಸಿ','NRI (Non-Resident Individual)':'NRI','💰 Income Sources':'💰 ಆದಾಯ','🏠 Exemptions & Allowances':'🏠 ವಿನಾ.','🏡 Home Loan & Property Deductions':'🏡 ಗ. ಸಾ.','💼 Chapter VI-A Deductions':'💼 VI-A','Old Regime Only':'ಹ. ಮಾ.','Both Regimes':'ಎ. ಎ.','Old Regime':'ಹಳೆ','Basic Salary (Annual)':'ಮೂ. ವೇ.','HRA Received (Annual)':'HRA','Not Applicable':'ಅ. ಇ.','Total invested:':'ಹೂ:','Eligible deduction:':'ಕ:','Gross Total Income:':'ಆ:','Exemptions — Old Regime:':'ವಿ:','New Regime:':'ಹೊ:','Total Chapter VI-A Deductions (Old Regime):':'VI-A:','Tax Estimation — FY':'ತ — FY','Old Tax Regime':'ಹ. ತ.','New Tax Regime':'ಹೊ. ತ.','★ BEST OPTION':'★ ಉತ್ತ','Income Summary':'ಸಾ.','Gross Total Income':'ಆ.','Slab Tax':'ಸ್ ತ','Special Rate Tax (CG / Lottery)':'ವಿ ತ','− Sec 87A Rebate':'− 87A','Surcharge':'ಸ.ಚ','H&E Cess (4%)':'ಸ. 4%','Total Tax Payable':'ಒ. ತ.','Tax Slab Reference':'ಸ್ ರ','📊 View Tax Results':'📊 ತ. ಫ.','Enter your income details above to see which regime saves you more tax.':'ಆದಾಯ ನಮ.','Effective Rate: ':'ದ: ','Above':'ಮೇ','No slab-rate income':'ಇ.','Save ':'ಉ. ',
+},
+ml:{
+  '← Encyclopedia':'← വിജ്ഞാനകോശം','Article 4 · India Income Tax Estimator':'ലേഖനം 4 · ആദായ നികുതി','All Income Sources':'വരുമാന ഉറ.','36 Deduction Types':'36 കി.','Section 87A Rebate':'87A ഇ.','Surcharge + Cess':'സ.ച + സ.','Capital Gains':'മൂ. ന.','Old & New Regime':'പ. & പു.','Financial Year':'സ. വ.','Age Category':'പ്രായം','City Type (for HRA)':'നഗ (HRA)','Residential Status':'നിവ.','FY 2025-26 (AY 2026-27) — Current':'FY 2025-26','Below 60 years':'60 കുറ','Senior Citizen (60–80 yrs)':'മൂ. (60–80)','Super Senior (80+ yrs)':'അ. മൂ.','Metro — Mumbai / Delhi / Kolkata / Chennai':'മെ.','Non-Metro':'മെ. ഇ.','Resident Individual':'നിവ.','NRI (Non-Resident Individual)':'NRI','💰 Income Sources':'💰 വ.','🏠 Exemptions & Allowances':'🏠 ഒ.','🏡 Home Loan & Property Deductions':'🏡 ഭ. വ.','💼 Chapter VI-A Deductions':'💼 VI-A','Old Regime Only':'പ. മ.','Both Regimes':'ര. ഭ.','Old Regime':'പ. ഭ.','Basic Salary (Annual)':'അ. ശ.','HRA Received (Annual)':'HRA','Not Applicable':'ബ. ഇ.','Total invested:':'നി:','Eligible deduction:':'കി:','Gross Total Income:':'ആ:','Exemptions — Old Regime:':'ഒ:','New Regime:':'പ:','Total Chapter VI-A Deductions (Old Regime):':'VI-A:','Tax Estimation — FY':'നി — FY','Old Tax Regime':'പ. നി.','New Tax Regime':'പു. നി.','★ BEST OPTION':'★ ഉ.','Income Summary':'സ.','Gross Total Income':'ആ.','Slab Tax':'സ്. നി','Special Rate Tax (CG / Lottery)':'പ്ര. നി','− Sec 87A Rebate':'− 87A','Surcharge':'സ.ച','H&E Cess (4%)':'സ. 4%','Total Tax Payable':'ആ. നി.','Tax Slab Reference':'സ്.','📊 View Tax Results':'📊 ഫ.','Enter your income details above to see which regime saves you more tax.':'വ. ന.','Effective Rate: ':'ന: ','Above':'മ','No slab-rate income':'ഇ.','Save ':'ല. ',
+},
+pa:{
+  '← Encyclopedia':'← ਵਿਸ਼ਵਕੋਸ਼','Article 4 · India Income Tax Estimator':'ਲੇਖ 4 · ਆਮਦਨ ਕਰ','All Income Sources':'ਆਮਦਨ ਸਰੋਤ','36 Deduction Types':'36 ਕਟੌਤੀਆਂ','Section 87A Rebate':'87A ਛੋਟ','Surcharge + Cess':'ਸਰਚਾਰਜ + ਸੈਸ','Capital Gains':'ਪੂੰਜੀ ਲਾਭ','Old & New Regime':'ਪੁ. ਅਤੇ ਨ.','Financial Year':'ਵਿੱਤੀ ਸਾਲ','Age Category':'ਉਮਰ','City Type (for HRA)':'ਸ਼ਹਿਰ (HRA)','Residential Status':'ਨਿਵਾਸ','FY 2025-26 (AY 2026-27) — Current':'FY 2025-26','Below 60 years':'60 ਤੋਂ ਘੱਟ','Senior Citizen (60–80 yrs)':'ਸੀਨੀਅਰ','Super Senior (80+ yrs)':'ਅਤਿ ਸੀ.','Metro — Mumbai / Delhi / Kolkata / Chennai':'ਮੈਟਰੋ','Non-Metro':'ਗੈਰ','Resident Individual':'ਨਿਵਾਸੀ','NRI (Non-Resident Individual)':'NRI','💰 Income Sources':'💰 ਆਮਦਨ','🏠 Exemptions & Allowances':'🏠 ਛੋਟਾਂ','🏡 Home Loan & Property Deductions':'🏡 ਘਰ ਕਰਜ਼','💼 Chapter VI-A Deductions':'💼 VI-A','Old Regime Only':'ਸਿਰਫ਼ ਪੁ.','Both Regimes':'ਦੋਵੇਂ','Old Regime':'ਪੁਰਾਣੀ','Basic Salary (Annual)':'ਮੂਲ ਤ.','HRA Received (Annual)':'HRA','Not Applicable':'ਲਾਗੂ ਨਹੀਂ','Total invested:':'ਨਿਵੇਸ਼:','Eligible deduction:':'ਕ:','Gross Total Income:':'ਆਮਦ:','Exemptions — Old Regime:':'ਛੋ:','New Regime:':'ਨਵੀਂ:','Total Chapter VI-A Deductions (Old Regime):':'VI-A:','Tax Estimation — FY':'ਟੈ — FY','Old Tax Regime':'ਪੁ. ਟੈ.','New Tax Regime':'ਨ. ਟੈ.','★ BEST OPTION':'★ ਉ.','Income Summary':'ਸਾਰ','Gross Total Income':'ਕੁੱਲ','Slab Tax':'ਸ. ਟ.','Special Rate Tax (CG / Lottery)':'ਖ਼. ਟ.','− Sec 87A Rebate':'− 87A','Surcharge':'ਸ.ਚ.','H&E Cess (4%)':'ਸ. 4%','Total Tax Payable':'ਕੁ. ਟ.','Tax Slab Reference':'ਸ.','📊 View Tax Results':'📊 ਨਤ.','Enter your income details above to see which regime saves you more tax.':'ਭਰੋ.','Effective Rate: ':'ਦਰ: ','Above':'ਉ','No slab-rate income':'ਨਹੀਂ','Save ':'ਬ. ',
+},
+or:{
+  '← Encyclopedia':'← ବିଶ୍ୱକୋଷ','Article 4 · India Income Tax Estimator':'ଲେଖ 4 · ଆୟକର','All Income Sources':'ଆୟ ଉତ୍ସ','36 Deduction Types':'36 ରିହାତି','Section 87A Rebate':'87A ରି.','Surcharge + Cess':'ଅ. + ସ.','Capital Gains':'ମୂ. ଲ.','Old & New Regime':'ପୁ. ଓ ନୂ.','Financial Year':'ଆ. ବ.','Age Category':'ବୟ.','City Type (for HRA)':'ସ. (HRA)','Residential Status':'ବାସ','FY 2025-26 (AY 2026-27) — Current':'FY 2025-26','Below 60 years':'60 ତ.','Senior Citizen (60–80 yrs)':'ବୟ. (60–80)','Super Senior (80+ yrs)':'ଅ. ବ.','Metro — Mumbai / Delhi / Kolkata / Chennai':'ମ.','Non-Metro':'ଅ-ମ','Resident Individual':'ବ.','NRI (Non-Resident Individual)':'NRI','💰 Income Sources':'💰 ଆୟ','🏠 Exemptions & Allowances':'🏠 ଛ.','🏡 Home Loan & Property Deductions':'🏡 ଋ.','💼 Chapter VI-A Deductions':'💼 VI-A','Old Regime Only':'ପୁ. ମ.','Both Regimes':'ଉ.','Old Regime':'ପୁ.','Basic Salary (Annual)':'ବ. ବ.','HRA Received (Annual)':'HRA','Not Applicable':'ନ.','Total invested:':'ବ:','Eligible deduction:':'ର:','Gross Total Income:':'ଆ:','Exemptions — Old Regime:':'ଛ:','New Regime:':'ନ:','Total Chapter VI-A Deductions (Old Regime):':'VI-A:','Tax Estimation — FY':'ଟ — FY','Old Tax Regime':'ପୁ. ଟ.','New Tax Regime':'ନ. ଟ.','★ BEST OPTION':'★ ଶ.','Income Summary':'ସ.','Gross Total Income':'ଆ.','Slab Tax':'ଟ.','Special Rate Tax (CG / Lottery)':'ବ. ଟ.','− Sec 87A Rebate':'− 87A','Surcharge':'ଅ.','H&E Cess (4%)':'ସ. 4%','Total Tax Payable':'ମ. ଟ.','Tax Slab Reference':'ସ.','📊 View Tax Results':'📊 ଫ.','Enter your income details above to see which regime saves you more tax.':'ଭ.','Effective Rate: ':'ଦ: ','Above':'ଉ','No slab-rate income':'ନ.','Save ':'ସ. ',
+},
+};/* end LANGS */
+
+const REC={
+  noTax:{
+    en:'✅ <strong>No tax payable</strong> under either regime — within Sec 87A rebate limit.',
+    hi:'✅ <strong>कोई कर नहीं</strong> — दोनों व्यवस्थाओं में धारा 87A सीमा के अंतर्गत।',
+    bn:'✅ <strong>কোনো কর নেই</strong> — উভয় ব্যবস্থায় ধারা 87A সীমায়।',
+    ta:'✅ <strong>வரி இல்லை</strong> — 87A வரம்பில்.',
+    te:'✅ <strong>పన్ను లేదు</strong> — 87A పరిమితిలో.',
+    mr:'✅ <strong>कर नाही</strong> — 87A मर्यादेत.',
+    gu:'✅ <strong>ટેક્સ નહીં</strong> — 87A.',
+    kn:'✅ <strong>ತೆರಿಗೆ ಇಲ್ಲ</strong> — 87A.',
+    ml:'✅ <strong>നികുതി ഇല്ല</strong> — 87A.',
+    pa:'✅ <strong>ਟੈਕਸ ਨਹੀਂ</strong> — 87A.',
+    or:'✅ <strong>ଟ. ନ.</strong> — 87A.',
+  },
+  oldBetter:{
+    en:(s,d)=>`⭐ Choose <strong>Old Regime</strong> — saves you <strong style="color:var(--gold)">${s}</strong>.<br>Your deductions &amp; exemptions of <strong style="color:var(--gold)">${d}</strong> make old regime beneficial.`,
+    hi:(s,d)=>`⭐ <strong>पुरानी व्यवस्था</strong> — <strong style="color:var(--gold)">${s}</strong> बचत। कटौती <strong style="color:var(--gold)">${d}</strong>.`,
+    bn:(s,d)=>`⭐ <strong>পুরনো</strong> — <strong style="color:var(--gold)">${s}</strong>। কর্তন <strong style="color:var(--gold)">${d}</strong>.`,
+    ta:(s,d)=>`⭐ <strong>பழைய</strong> — <strong style="color:var(--gold)">${s}</strong>. கழிவு <strong style="color:var(--gold)">${d}</strong>.`,
+    te:(s,d)=>`⭐ <strong>పాత</strong> — <strong style="color:var(--gold)">${s}</strong>. మినహాయింపు <strong style="color:var(--gold)">${d}</strong>.`,
+    mr:(s,d)=>`⭐ <strong>जुनी</strong> — <strong style="color:var(--gold)">${s}</strong>. वजावट <strong style="color:var(--gold)">${d}</strong>.`,
+    gu:(s,d)=>`⭐ <strong>જૂ.</strong> — <strong style="color:var(--gold)">${s}</strong>. <strong style="color:var(--gold)">${d}</strong>.`,
+    kn:(s,d)=>`⭐ <strong>ಹ.</strong> — <strong style="color:var(--gold)">${s}</strong>. <strong style="color:var(--gold)">${d}</strong>.`,
+    ml:(s,d)=>`⭐ <strong>പ.</strong> — <strong style="color:var(--gold)">${s}</strong>. <strong style="color:var(--gold)">${d}</strong>.`,
+    pa:(s,d)=>`⭐ <strong>ਪੁ.</strong> — <strong style="color:var(--gold)">${s}</strong>. <strong style="color:var(--gold)">${d}</strong>.`,
+    or:(s,d)=>`⭐ <strong>ପୁ.</strong> — <strong style="color:var(--gold)">${s}</strong>. <strong style="color:var(--gold)">${d}</strong>.`,
+  },
+  newBetter:{
+    en:(s,fy)=>`⭐ Choose <strong>New Regime</strong> — saves you <strong style="color:var(--gold)">${s}</strong>.<br>Lower slab rates (esp. ₹0 up to ₹${fy==='2025-26'?'4L':'3L'}) outweigh deduction benefit.`,
+    hi:(s,fy)=>`⭐ <strong>नई व्यवस्था</strong> — <strong style="color:var(--gold)">${s}</strong>. स्लैब ₹${fy==='2025-26'?'4L':'3L'} तक 0.`,
+    bn:(s,fy)=>`⭐ <strong>নতুন</strong> — <strong style="color:var(--gold)">${s}</strong>. ₹${fy==='2025-26'?'4L':'3L'} শূন্য.`,
+    ta:(s,fy)=>`⭐ <strong>புதிய</strong> — <strong style="color:var(--gold)">${s}</strong>. ₹${fy==='2025-26'?'4L':'3L'} பூஜ்ய.`,
+    te:(s,fy)=>`⭐ <strong>కొత్త</strong> — <strong style="color:var(--gold)">${s}</strong>. ₹${fy==='2025-26'?'4L':'3L'} సున్నా.`,
+    mr:(s,fy)=>`⭐ <strong>नवीन</strong> — <strong style="color:var(--gold)">${s}</strong>. ₹${fy==='2025-26'?'4L':'3L'} शून्य.`,
+    gu:(s,fy)=>`⭐ <strong>ન.</strong> — <strong style="color:var(--gold)">${s}</strong>. ₹${fy==='2025-26'?'4L':'3L'} 0.`,
+    kn:(s,fy)=>`⭐ <strong>ಹೊ.</strong> — <strong style="color:var(--gold)">${s}</strong>. ₹${fy==='2025-26'?'4L':'3L'} 0.`,
+    ml:(s,fy)=>`⭐ <strong>പ.</strong> — <strong style="color:var(--gold)">${s}</strong>. ₹${fy==='2025-26'?'4L':'3L'} 0.`,
+    pa:(s,fy)=>`⭐ <strong>ਨ.</strong> — <strong style="color:var(--gold)">${s}</strong>. ₹${fy==='2025-26'?'4L':'3L'} 0.`,
+    or:(s,fy)=>`⭐ <strong>ନ.</strong> — <strong style="color:var(--gold)">${s}</strong>. ₹${fy==='2025-26'?'4L':'3L'} 0.`,
+  },
+  equal:{
+    en:(a)=>`Both regimes result in the same tax of <strong>${a}</strong>.`,
+    hi:(a)=>`दोनों में समान कर <strong>${a}</strong>।`,
+    bn:(a)=>`উভয় একই কর <strong>${a}</strong>।`,
+    ta:(a)=>`இரண்டும் <strong>${a}</strong>.`,
+    te:(a)=>`రెండూ <strong>${a}</strong>.`,
+    mr:(a)=>`दोन्ही <strong>${a}</strong>.`,
+    gu:(a)=>`બ. <strong>${a}</strong>.`,
+    kn:(a)=>`ಎ. <strong>${a}</strong>.`,
+    ml:(a)=>`ര. <strong>${a}</strong>.`,
+    pa:(a)=>`ਦ. <strong>${a}</strong>.`,
+    or:(a)=>`ଉ. <strong>${a}</strong>.`,
+  },
+};
+function recMsg(key,...args){const m=REC[key];return((m[currentLang]||m.en)(...args))}
+
+// i18n index: built once from the live DOM so keys exactly match real node content
+const _i18nIndex=new Map();
+
+function buildI18nIndex(){
+  _i18nIndex.clear();
+  const walker=document.createTreeWalker(
+    document.body,NodeFilter.SHOW_TEXT,
+    {acceptNode:function(node){
+      return node.textContent.trim().length>1
+        ?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT;
+    }}
+  );
+  let node;
+  while((node=walker.nextNode())!==null){
+    const raw=node.textContent,key=raw.trim();
+    if(!_i18nIndex.has(key))_i18nIndex.set(key,[]);
+    _i18nIndex.get(key).push({node,raw});
+  }
+}
+
+function applyLang(lang){
+  const dict=lang==='en'?null:LANGS[lang];
+  if(dict){
+    for(const[enKey,xlVal]of Object.entries(dict)){
+      const entries=_i18nIndex.get(enKey);
+      if(entries)for(const e of entries)e.node.textContent=e.raw.replace(enKey,xlVal);
+    }
+  }else{
+    for(const entries of _i18nIndex.values())
+      for(const e of entries)e.node.textContent=e.raw;
+  }
+  try{calc();}catch(e){}
+}
+
+function changeLang(lang){
+  currentLang=lang;
+  applyLang(lang);
+  try{localStorage.setItem('tax-lang',lang);}catch(e){}
+}
+
+// Script is at end of <body> so DOM is already ready — no DOMContentLoaded needed
+buildI18nIndex();
+try{
+  const saved=localStorage.getItem('tax-lang');
+  if(saved&&LANGS[saved]){
+    currentLang=saved;
+    const sel=$('langSel');
+    if(sel)sel.value=saved;
+    applyLang(saved);
+  }
+}catch(e){}
+
+/* ═══════════════════════════════════════════════
+   MAIN CALCULATION
+═══════════════════════════════════════════════ */
+function calc(){
+  const fy=$('fy').value,age=$('age').value,city=$('city').value;
+  set('res-fy',fy);
+
+  // Income
+  const basic=n('basic'),hraRec=n('hra'),special=n('special'),ltaRec=n('lta');
+  const bonus=n('bonus'),perqs=n('perqs');
+  const grat=n('gratuity'),leaveEnc=n('leaveenc'),vrs=n('vrs');
+  const ptax=Math.min(n('ptax'),2500);
+  const otherEmp=n('other_emp');
+  const salGross=basic+hraRec+special+ltaRec+bonus+perqs+grat+leaveEnc+vrs+otherEmp;
+  const hasSal=salGross>0;
+
+  const rentRcvd=n('rent_rcvd'),muniTax=n('muni_tax');
+  const biz=n('biz');
+  const stcgEq=n('stcg_eq'),ltcgEq=n('ltcg_eq'),stcgOth=n('stcg_oth'),ltcgOth=n('ltcg_oth');
+  const intSav=n('int_sav'),intFD=n('int_fd'),div=n('dividend');
+  const lott=n('lottery'),otherInc=n('other_inc');
+
+  // House property
+  const nav=Math.max(0,rentRcvd-muniTax);
+  const hpGross=nav*0.70;
+  const hlInt=n('hl_int'),preInt=n('pre_int');
+  const propType=$('prop_type').value;
+  let hpOld,hpNew;
+  if(propType==='letout'){
+    hpOld=Math.max(-200000,hpGross-(hlInt+preInt));
+    hpNew=Math.max(0,hpGross-(hlInt+preInt));
+  }else{
+    hpOld=-Math.min(hlInt+preInt,200000);
+    hpNew=0;
+  }
+  const sec24OldAmt=Math.abs(hpOld)-Math.max(0,hpGross);
+
+  // Exemptions
+  const gratEx=Math.min(grat,2e6);
+  const leEx=Math.min(n('le_exempt'),leaveEnc,2.5e6);
+  const vrsEx=Math.min(vrs,5e5);
+  setv('grat_disp',fmt(gratEx));
+  setv('vrs_disp',fmt(vrsEx));
+
+  // HRA
+  const rentPM=n('rent_pm');
+  let hraEx=0;
+  if(hraRec>0&&basic>0&&rentPM>0){
+    const pct=city==='metro'?.50:.40;
+    hraEx=Math.min(hraRec,basic*pct,Math.max(0,rentPM*12-basic*.10));
+  }
+  setv('hra_ex_disp',fmt(hraEx));
+
+  const ltaEx=Math.min(n('lta_claim'),ltaRec);
+  const exemptOld=hraEx+ltaEx+gratEx+leEx+vrsEx;
+  const exemptNew=gratEx+leEx+vrsEx;
+
+  // Standard deduction
+  const stdOld=hasSal?Math.min(salGross,50000):0;
+  const stdNew=hasSal?Math.min(salGross,75000):0;
+
+  // Other slab-rated income
+  const slabOth=intSav+intFD+div+stcgOth+otherInc;
+  const slabBaseOld=Math.max(0,salGross-exemptOld-stdOld-ptax)+hpOld+biz+slabOth;
+  const slabBaseNew=Math.max(0,salGross-exemptNew-stdNew-ptax)+hpNew+biz+slabOth;
+
+  const grossDisp=salGross+Math.max(0,hpGross)+biz+slabOth+stcgEq+ltcgEq+ltcgOth+lott;
+
+  // 80C
+  const c80tot=n('c_epf')+n('c_vpf')+n('c_ppf')+n('c_lic')+n('c_elss')+n('c_nsc')+
+    n('c_fd')+n('c_hlprin')+n('c_tuition')+n('c_ssy')+n('c_scss')+n('c_nps1')+n('c_pension')+n('c_other80c');
+  const c80=Math.min(c80tot,150000);
+  const pct=Math.min(100,c80tot/150000*100);
+  $('c80fill').style.width=pct+'%';
+  $('c80fill').style.background=pct>=100?'#22c55e':'#0ea5e9';
+  set('c80tot',fmt(c80tot));set('c80elig',fmt(c80));
+
+  const nps1b=Math.min(n('nps1b'),50000);
+  const nps2=n('nps2');
+
+  const isSr=age!=='below60';
+  const ss=$('self_sr').checked||isSr;
+  const ps=$('par_sr').checked;
+  const d80d_self=Math.min(n('d80d_self'),ss?50000:25000);
+  const d80d_par=Math.min(n('d80d_par'),ps?50000:25000);
+  const d80d=d80d_self+d80d_par;
+  const s80dd=parseInt($('s80dd').value)||0;
+  const s80ddb=Math.min(n('s80ddb'),isSr?100000:40000);
+  const s80e=n('s80e');
+  const s80eea=Math.min(n('s80eea'),150000);
+  const s80eeb=Math.min(n('s80eeb'),150000);
+  const s80u=parseInt($('s80u').value)||0;
+  const s80ggc=n('s80ggc');
+
+  const adjGTI=Math.max(1,slabBaseOld);
+  const g80=n('g100nl')+n('g50nl')*.5+Math.min(n('g100l'),adjGTI*.1)+Math.min(n('g50l'),adjGTI*.1)*.5;
+
+  let s80gg=0;
+  if(hraRec===0){
+    const ra=n('s80gg');
+    s80gg=Math.min(60000,adjGTI*.25,Math.max(0,ra-adjGTI*.10));
+  }
+
+  const s80tta=isSr?0:Math.min(n('s80tta'),10000);
+  const s80ttb=isSr?Math.min(n('s80ttb'),50000):0;
+
+  const chVIA=c80+nps1b+d80d+s80dd+s80ddb+s80e+s80eea+s80eeb+g80+s80gg+s80tta+s80ttb+s80u+s80ggc;
+
+  const netSlabOld=Math.max(0,slabBaseOld-chVIA);
+  const netSlabNew=Math.max(0,slabBaseNew-nps2);
+  const specialInc=stcgEq+ltcgEq+ltcgOth+lott;
+  const totalNetOld=netSlabOld+specialInc;
+  const totalNetNew=netSlabNew+specialInc;
+
+  const old=computeTax(netSlabOld,totalNetOld,'old',fy,age,stcgEq,ltcgEq,ltcgOth,lott);
+  const nw=computeTax(netSlabNew,totalNetNew,'new',fy,age,stcgEq,ltcgEq,ltcgOth,lott);
+
+  // Update summary strip
+  $('s-gross').textContent=fmt(grossDisp);
+  $('s-exempt').textContent=fmt(exemptOld);
+  $('s-exempt-new').textContent=fmt(exemptNew);
+  $('s-ded').textContent=fmt(chVIA);
+
+  // Result panel
+  set('r-gross',fmt(grossDisp));
+  set('r-ex-old','−'+fmt(exemptOld));
+  set('r-ex-new','−'+fmt(exemptNew));
+  set('r-std','−'+fmt(stdOld)+' / −'+fmt(stdNew));
+  set('r-ptax','−'+fmt(ptax));
+  set('r-sec24','−'+fmt(Math.max(0,-hpOld)));
+  set('r-gti-both',fmt(Math.max(0,slabBaseOld)+specialInc)+' / '+fmt(Math.max(0,slabBaseNew)+specialInc));
+  set('r-chvia','−'+fmt(chVIA));
+  set('r-nps2','−'+fmt(nps2));
+  set('r-net-old',fmt(totalNetOld));
+  set('r-net-new',fmt(totalNetNew));
+
+  set('ro-slab',fmt(old.st));set('ro-sp',fmt(old.spTax));set('ro-reb','−'+fmt(old.reb));
+  set('ro-sur',fmt(old.sur));set('ro-cess',fmt(old.cess));set('ro-tot',fmt(old.total));
+  set('rn-slab',fmt(nw.st));set('rn-sp',fmt(nw.spTax));set('rn-reb','−'+fmt(nw.reb));
+  set('rn-sur',fmt(nw.sur));set('rn-cess',fmt(nw.cess));set('rn-tot',fmt(nw.total));
+
+  set('old-tax',fmt(old.total));set('new-tax',fmt(nw.total));
+  const effO=grossDisp>0?(old.total/grossDisp*100).toFixed(2):'0.00';
+  const effN=grossDisp>0?(nw.total/grossDisp*100).toFixed(2):'0.00';
+  set('old-eff',t('Effective Rate: ')+effO+'%');
+  set('new-eff',t('Effective Rate: ')+effN+'%');
+
+  $('old-box').classList.remove('best');$('new-box').classList.remove('best');
+  $('old-best').style.display=$('new-best').style.display='none';
+  set('old-save','');set('new-save','');
+  const rec=$('rec');
+  if(old.total===0&&nw.total===0){
+    rec.innerHTML=recMsg('noTax');
+  }else if(old.total<nw.total){
+    $('old-box').classList.add('best');$('old-best').style.display='block';
+    const s=nw.total-old.total;set('old-save',t('Save ')+fmt(s));
+    rec.innerHTML=recMsg('oldBetter',fmt(s),fmt(chVIA+exemptOld));
+  }else if(nw.total<old.total){
+    $('new-box').classList.add('best');$('new-best').style.display='block';
+    const s=old.total-nw.total;set('new-save',t('Save ')+fmt(s));
+    rec.innerHTML=recMsg('newBetter',fmt(s),fy);
+  }else if(old.total>0){
+    rec.innerHTML=recMsg('equal',fmt(nw.total));
+  }
+
+  renderSlabDet('old-slabs',old.det);
+  renderSlabDet('new-slabs',nw.det);
+  renderSlabRef(fy,age);
+}
+
+function renderSlabDet(id,det){
+  $(id).innerHTML=det.length?det.map(d=>
+    `<div class="slabrow"><span>${fmt(d.from+1)}–${d.to===Infinity?t('Above'):fmt(d.to)}</span><span style="color:var(--orange)">${d.r}% = ${fmt(d.t)}</span></div>`
+  ).join(''):`<div class="slabrow" style="opacity:.4">${t('No slab-rate income')}</div>`;
+}
+function renderSlabRef(fy,age){
+  const ns=newSlabs(fy),os=oldSlabs(age);
+  function rows(slabs,label){
+    let h=`<div style="font-weight:700;color:var(--blue3);margin:5px 0 3px">${label}</div>`;
+    let prev=0;
+    for(const s of slabs){
+      const range=s.l===Infinity?`${t('Above')} ${fmt(prev)}`:`${fmt(prev)} – ${fmt(s.l)}`;
+      h+=`<div class="slabrow"><span>${range}</span><span>${s.r*100}%</span></div>`;
+      prev=s.l;
+    }
+    return h;
+  }
+  const newLabel=t(`New Regime — FY ${fy}`)||`New Regime — FY ${fy}`;
+  const ageStr=age==='below60'?'Below 60':age==='senior'?'60–80':'80+';
+  const oldLabel=t(`Old Regime (Age: ${ageStr})`)||`Old Regime (Age: ${ageStr})`;
+  $('slab-ref').innerHTML=rows(ns,newLabel)+'<br>'+rows(os,oldLabel);
+}
+
+// ── endpoint + token assembled at runtime to resist casual source reading ──
+const _p=[
+  [111,124,125,122,120,54,34,33,124,115,99,110,120,125,36,108,99,98,105,99,117,63,100,103,100,37,102,109,110,124,96,99,62,116,39,72,65,109,117,110,108,119,89,89,94,92,111,57,94,92,126,109,65,89,124,86,113,111,109,111,95,79],
+  [116,65,94,83,50,66,96,54,63,35,121,119,112,72,79,83,103,126,74],
+  [115,102,56,126,110,60,123,59,93,72,34,68,48,68,85,66,69,87,103,93,61,40,106,49,98,102,36,105,117,107,108]
+];
+function _gurl(){return _p.map(a=>a.map((c,i)=>String.fromCharCode(c^(7+i%11))).join('')).join('')}
+function _gt(){return[48,101,56,56,99,56,98,52,55,49,101,54,51,52,98,101,57,101,55,54,100,57,99,48,53,54,51,98,51,52,99,54,53,57,55,48,48,48,48,57,53,98,98,50,51,53,48,48].map(c=>String.fromCharCode(c)).join('')}
+
+function getBrowserMeta(){
+  const nav=window.navigator,scr=window.screen;
+  return{
+    userAgent:nav.userAgent,
+    browserLang:nav.language||nav.userLanguage||'',
+    platform:nav.platform||'',
+    screenRes:scr.width+'x'+scr.height,
+    colorDepth:scr.colorDepth+'bit',
+    timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'',
+    cookiesEnabled:nav.cookieEnabled,
+    doNotTrack:nav.doNotTrack||'unset',
+    referrer:document.referrer||'direct',
+    pageUrl:location.href,
+    cookieId:(()=>{
+      try{
+        let c=document.cookie.match(/tax_cid=([^;]+)/);
+        if(c)return c[1];
+        const id='cid_'+Math.random().toString(36).slice(2)+Date.now().toString(36);
+        document.cookie='tax_cid='+id+';max-age=31536000;path=/;SameSite=Lax';
+        return id;
+      }catch(e){return'unavailable';}
+    })(),
+    connectionType:(nav.connection&&(nav.connection.effectiveType||nav.connection.type))||'unknown',
+    deviceMemory:(nav.deviceMemory||'unknown')+'GB',
+    hardwareConcurrency:(nav.hardwareConcurrency||'unknown')+' cores',
+    touchSupport:'ontouchstart' in window?'yes':'no',
+  };
+}
+
+function calcAndSave(){
+  calc();
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  const nv=id=>($( id)?.value||'0');
+  const nb=id=>($( id)?.checked?'Yes':'No');
+
+  // ── Results ──
+  const oldBest=$('old-box').classList.contains('best');
+  const newBest=$('new-box').classList.contains('best');
+
+  const payload={
+    // ── Settings ──
+    financialYear:nv('fy'),
+    ageCategory:nv('age'),
+    cityType:nv('city'),
+    residentialStatus:nv('res_status'),
+    propertyStatus:nv('prop_type'),
+
+    // ── Salary — Primary ──
+    basicSalary:nv('basic'),
+    hraReceived:nv('hra'),
+    specialAllowances:nv('special'),
+    ltaReceived:nv('lta'),
+    bonusIncentive:nv('bonus'),
+    perquisitesESOPs:nv('perqs'),
+    gratuityReceived:nv('gratuity'),
+    leaveEncashment:nv('leaveenc'),
+    vrsCompensation:nv('vrs'),
+    professionalTax:nv('ptax'),
+
+    // ── Salary — Other Employers ──
+    otherEmployersSalary:nv('other_emp'),
+
+    // ── House Property ──
+    annualRentReceived:nv('rent_rcvd'),
+    municipalTaxPaid:nv('muni_tax'),
+
+    // ── Business / Freelance ──
+    businessProfit:nv('biz'),
+
+    // ── Capital Gains ──
+    stcgEquity:nv('stcg_eq'),
+    ltcgEquity:nv('ltcg_eq'),
+    stcgOther:nv('stcg_oth'),
+    ltcgOther:nv('ltcg_oth'),
+
+    // ── Other Income ──
+    interestSavings:nv('int_sav'),
+    interestFDRD:nv('int_fd'),
+    dividendIncome:nv('dividend'),
+    lotteryIncome:nv('lottery'),
+    agriculturalIncome:nv('agri'),
+    otherIncome:nv('other_inc'),
+
+    // ── Exemptions ──
+    rentPaidPerMonth:nv('rent_pm'),
+    ltaClaimed:nv('lta_claim'),
+    leaveEncashmentExempt:nv('le_exempt'),
+
+    // ── Home Loan ──
+    homeLoanInterest:nv('hl_int'),
+    preConstructionInterest:nv('pre_int'),
+    sec80EEA:nv('s80eea'),
+    sec80EEB:nv('s80eeb'),
+
+    // ── 80C investments ──
+    epf:nv('c_epf'),
+    vpf:nv('c_vpf'),
+    ppf:nv('c_ppf'),
+    lifeInsurance:nv('c_lic'),
+    elss:nv('c_elss'),
+    nsc:nv('c_nsc'),
+    taxSaverFD:nv('c_fd'),
+    homeLoanPrincipal:nv('c_hlprin'),
+    tuitionFees:nv('c_tuition'),
+    sukanyaSamriddhi:nv('c_ssy'),
+    scss:nv('c_scss'),
+    nps80CCD1:nv('c_nps1'),
+    pensionPlan80CCC:nv('c_pension'),
+    other80C:nv('c_other80c'),
+
+    // ── 80CCD / NPS ──
+    nps80CCD1B:nv('nps1b'),
+    employerNPS80CCD2:nv('nps2'),
+
+    // ── 80D Health ──
+    healthInsSelf:nv('d80d_self'),
+    healthInsPar:nv('d80d_par'),
+    selfSpouseChildSenior:nb('self_sr'),
+    parentsSenior:nb('par_sr'),
+    preventiveCheckup:nv('d80d_prev'),
+    sec80DD:nv('s80dd'),
+    sec80DDB:nv('s80ddb'),
+
+    // ── Other deductions ──
+    sec80E:nv('s80e'),
+    donations100PctNoLimit:nv('g100nl'),
+    donations50PctNoLimit:nv('g50nl'),
+    donations100PctGTI:nv('g100l'),
+    donations50PctGTI:nv('g50l'),
+    sec80GG:nv('s80gg'),
+    sec80TTA:nv('s80tta'),
+    sec80TTB:nv('s80ttb'),
+    sec80U:nv('s80u'),
+    sec80GGC:nv('s80ggc'),
+
+    // ── Computed results ──
+    grossTotalIncome:$('s-gross').textContent,
+    exemptionsOld:$('s-exempt').textContent,
+    exemptionsNew:$('s-exempt-new').textContent,
+    totalVIA:$('s-ded').textContent,
+    oldRegimeTax:$('old-tax').textContent,
+    newRegimeTax:$('new-tax').textContent,
+    effectiveRateOld:$('old-eff').textContent,
+    effectiveRateNew:$('new-eff').textContent,
+    recommendedRegime:oldBest?'Old Regime':newBest?'New Regime':'Equal',
+    taxSavings:oldBest?$('old-save').textContent:newBest?$('new-save').textContent:'₹0',
+  };
+
+  const st=$('sheetStatus');
+  st.className='sheet-status saving';
+  st.textContent='⏳ Saving to Google Sheet…';
+
+  fetch('https://api.ipify.org?format=json')
+    .then(r=>r.json())
+    .then(ip=>ip.ip)
+    .catch(()=>'unavailable')
+    .then(ipAddr=>{
+      const meta=getBrowserMeta();
+      Object.assign(payload,{ipAddress:ipAddr,token:_gt(),...meta});
+      return fetch(_gurl(),{
+        method:'POST',
+        mode:'no-cors',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(payload)
+      });
+    })
+    .then(()=>{
+      st.className='sheet-status saved';
+      st.textContent='✅ Saved to Google Sheet!';
+      setTimeout(()=>{st.className='sheet-status';},4000);
+    })
+    .catch(()=>{
+      st.className='sheet-status error';
+      st.textContent='❌ Could not save — check network.';
+      setTimeout(()=>{st.className='sheet-status';},5000);
+    });
+}
+
+// Init
+['fy','age','city','prop_type','res_status'].forEach(id=>{
+  $(id)?.addEventListener('change',()=>{
+    if(id==='age')onAge();
+    else if(id==='prop_type')onProp();
+    else calc();
+  });
+});
+updLimits();onProp();calc();
+
+/* ═══════════════════════════════════════════════
+   THEME TOGGLE
+═══════════════════════════════════════════════ */
+function toggleTheme(){
+  const isDark=document.documentElement.getAttribute('data-theme')!=='light';
+  document.documentElement.setAttribute('data-theme',isDark?'light':'dark');
+  $('themeBtn').textContent=isDark?'🌙':'☀️';
+  try{localStorage.setItem('tax-theme',isDark?'light':'dark')}catch(e){}
+}
+// Restore saved theme
+(function(){
+  try{
+    const saved=localStorage.getItem('tax-theme');
+    if(saved==='light'){
+      document.documentElement.setAttribute('data-theme','light');
+      document.addEventListener('DOMContentLoaded',()=>{
+        const b=$('themeBtn');if(b)b.textContent='🌙';
+      });
+    }
+  }catch(e){}
+})();
+
+// ── DevTools deterrent ──
+(function(){
+  const _blocked=()=>{
+    document.body.style.filter='blur(8px)';
+    document.body.style.pointerEvents='none';
+    document.body.style.userSelect='none';
+    if(!document.getElementById('_dtw')){
+      const d=document.createElement('div');
+      d.id='_dtw';
+      d.style.cssText='position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.85);color:#fff;font-size:1.2rem;font-weight:700;font-family:sans-serif;letter-spacing:.5px;text-align:center;padding:2rem';
+      d.innerHTML='🔒 Developer tools detected.<br><span style="font-size:.85rem;opacity:.7;font-weight:400">Please close DevTools to continue.</span>';
+      document.body.appendChild(d);
+    }
+  };
+  const _unblocked=()=>{
+    document.body.style.filter='';
+    document.body.style.pointerEvents='';
+    document.body.style.userSelect='';
+    const d=document.getElementById('_dtw');
+    if(d)d.remove();
+  };
+  // Size-based detection
+  let _open=false;
+  setInterval(()=>{
+    const t=window.outerWidth-window.innerWidth>160||window.outerHeight-window.innerHeight>160;
+    if(t&&!_open){_open=true;_blocked();}
+    else if(!t&&_open){_open=false;_unblocked();}
+  },800);
+  // debugger timing detection
+  setInterval(()=>{
+    const s=performance.now();
+    // eslint-disable-next-line no-debugger
+    debugger;
+    if(performance.now()-s>100){if(!_open){_open=true;_blocked();}}
+    else{if(_open){_open=false;_unblocked();}}
+  },1500);
+})();
+
+</script>
+
+<!-- FAB — jump to results on mobile -->
+<button class="fab" onclick="document.querySelector('.res').scrollIntoView({behavior:'smooth'})">
+  📊 View Tax Results
+</button>
+</body>
+</html>

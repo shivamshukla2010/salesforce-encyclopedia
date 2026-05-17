@@ -398,6 +398,52 @@
   /* ── HIDDEN ───────────────────────────────────────── */
   .hidden { display: none !important; }
 
+  /* ── THEME TOGGLE ─────────────────────────────────── */
+  .theme-btn {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.22);
+    color: #fff;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    transition: background .2s, transform .2s;
+    flex-shrink: 0; padding: 0;
+    margin-left: .5rem;
+  }
+  .theme-btn:hover { background: rgba(255,255,255,.22); transform: rotate(20deg); }
+
+  /* ── DARK THEME OVERRIDES ──────────────────────────── */
+  [data-theme="dark"] {
+    --cloud:      #0a0f1a;
+    --white:      #111c2e;
+    --border:     #1e3050;
+    --text:       #d8eaff;
+    --text-muted: #7099bb;
+  }
+  [data-theme="dark"] body { background: var(--cloud); color: var(--text); }
+  [data-theme="dark"] .hero { background: linear-gradient(140deg,#020818 0%,#041228 55%,#0c2240 100%); }
+  [data-theme="dark"] .sidebar-section { background: var(--white); border-color: var(--border); }
+  [data-theme="dark"] .sidebar-title { background: rgba(1,118,211,.12); color: #7ac7f0; border-bottom-color: var(--border); }
+  [data-theme="dark"] .sidebar-list li a { color: var(--text-muted); border-bottom-color: rgba(255,255,255,.05); }
+  [data-theme="dark"] .sidebar-list li a:hover { background: rgba(1,118,211,.12); color: #7ac7f0; }
+  [data-theme="dark"] .sidebar-list li a.active-filter { background: #0176d3; color: #fff; }
+  [data-theme="dark"] .article-card { background: var(--white); border-color: var(--border); color: var(--text); }
+  [data-theme="dark"] .article-card:hover { border-color: #0176d3; box-shadow: 0 8px 28px rgba(1,118,211,.18); }
+  [data-theme="dark"] .card-title { color: var(--text); }
+  [data-theme="dark"] .card-desc { color: var(--text-muted); }
+  [data-theme="dark"] .card-date { color: var(--text-muted); }
+  [data-theme="dark"] .card-footer { border-top-color: rgba(255,255,255,.06); }
+  [data-theme="dark"] .card-tag { background: rgba(1,118,211,.15); color: #7ac7f0; }
+  [data-theme="dark"] .section-title { color: var(--text); }
+  [data-theme="dark"] .results-count { color: var(--text-muted); }
+  [data-theme="dark"] .sort-row { color: var(--text-muted); }
+  [data-theme="dark"] .sort-row select { background: var(--white); color: var(--text); border-color: var(--border); }
+  [data-theme="dark"] footer { background: #020c18; color: rgba(255,255,255,.45); }
+  [data-theme="dark"] .theme-btn { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.15); }
+  [data-theme="dark"] .theme-btn:hover { background: rgba(255,255,255,.15); }
+
   /* ── RESPONSIVE — iPad landscape (821–1180px) ──────── */
   @media (min-width: 821px) and (max-width: 1180px) {
     .page-wrap {
@@ -635,6 +681,7 @@
     </svg>
     <input type="text" id="searchInput" placeholder="Search articles…" oninput="filterArticles()">
   </div>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle dark/light mode" aria-label="Toggle theme">🌙</button>
 </nav>
 
 <!-- HERO -->
@@ -645,9 +692,9 @@
   <h1>The <em>Salesforce</em> Encyclopedia</h1>
   <p>A growing knowledge base covering deployment, architecture, testing, APIs, packages, AI models, and development best practices.</p>
   <div class="hero-stats">
-    <div class="hero-stat"><div class="num" id="totalArticles">3</div><div class="lbl">Articles</div></div>
-    <div class="hero-stat"><div class="num">45+</div><div class="lbl">Topics Covered</div></div>
-    <div class="hero-stat"><div class="num">8</div><div class="lbl">Categories</div></div>
+    <div class="hero-stat"><div class="num" id="totalArticles">4</div><div class="lbl">Articles</div></div>
+    <div class="hero-stat"><div class="num">55+</div><div class="lbl">Topics Covered</div></div>
+    <div class="hero-stat"><div class="num">9</div><div class="lbl">Categories</div></div>
     <div class="hero-stat">
       <a href="https://hits.sh/shivamshukla2010.github.io/salesforce-encyclopedia/index/" style="display:inline-block;text-decoration:none">
         <img src="https://hits.sh/shivamshukla2010.github.io/salesforce-encyclopedia/index.svg?style=flat&label=Page+Hits&color=4bc8ff&labelColor=032d60" alt="Page Hits" style="height:36px;border-radius:4px;vertical-align:middle">
@@ -664,10 +711,11 @@
     <div class="sidebar-section">
       <div class="sidebar-title">Categories</div>
       <ul class="sidebar-list" id="categoryList">
-        <li><a href="#" onclick="filterCategory('all', this)" class="active-filter">All Articles <span class="count" id="allCount">3</span></a></li>
+        <li><a href="#" onclick="filterCategory('all', this)" class="active-filter">All Articles <span class="count" id="allCount">4</span></a></li>
         <li><a href="#" onclick="filterCategory('devops', this)">DevOps &amp; Deployment <span class="count">1</span></a></li>
         <li><a href="#" onclick="filterCategory('ai', this)">AI Models <span class="count">1</span></a></li>
         <li><a href="#" onclick="filterCategory('certifications', this)">Certifications <span class="count">1</span></a></li>
+        <li><a href="#" onclick="filterCategory('finance', this)">Finance &amp; Tax <span class="count">1</span></a></li>
         <li><a href="#" onclick="filterCategory('testing', this)">Testing <span class="count">0</span></a></li>
         <li><a href="#" onclick="filterCategory('architecture', this)">Architecture <span class="count">0</span></a></li>
         <li><a href="#" onclick="filterCategory('packages', this)">Packages <span class="count">0</span></a></li>
@@ -688,6 +736,8 @@
         <li><a href="#">REST API</a></li>
         <li><a href="#">AI Models</a></li>
         <li><a href="#">Benchmarks</a></li>
+        <li><a href="#">Income Tax</a></li>
+        <li><a href="#">Old vs New Regime</a></li>
       </ul>
     </div>
 
@@ -697,6 +747,7 @@
         <li><a href="articles/article-1-sf-deployment.html" target="_blank">Deployment Reference ↗</a></li>
         <li><a href="articles/article-2-ai-model-comparison.html" target="_blank">AI Model Comparison ↗</a></li>
         <li><a href="articles/article-3-claude-certified-architect.html" target="_blank">Claude Architect Cert ↗</a></li>
+        <li><a href="articles/article-4-india-tax-estimator.html" target="_blank">India Tax Estimator ↗</a></li>
       </ul>
     </div>
   </aside>
@@ -716,7 +767,7 @@
       </div>
     </div>
 
-    <div class="results-count" id="resultsCount">Showing 3 articles</div>
+    <div class="results-count" id="resultsCount">Showing 4 articles</div>
 
     <div class="article-grid" id="articleGrid">
 
@@ -772,6 +823,25 @@
             <span class="card-tag">5 Domains</span>
             <span class="card-tag">12 Sample Qs</span>
             <span class="card-tag">Exam Prep</span>
+          </div>
+          <span class="card-open-btn">Open ↗</span>
+        </div>
+      </a>
+
+      <!-- ARTICLE 4 — live -->
+      <a class="article-card" href="articles/article-4-india-tax-estimator.html" target="_blank" data-category="finance" data-tags="india income tax estimator old regime new regime salary hra epf ppf 80c deductions capital gains 87a rebate surcharge cess fy2025-26 fy2024-25" data-date="20260517" data-title="India Income Tax Estimator FY 2025-26 Old Regime New Regime All Deductions">
+        <div class="card-band" style="background:linear-gradient(90deg,#f59e0b,#ef4444);"></div>
+        <div class="card-body">
+          <div class="card-category" style="color:#d97706;">Finance &amp; Tax</div>
+          <div class="card-title">🇮🇳 India Income Tax Estimator — FY 2024-25 &amp; 2025-26</div>
+          <div class="card-desc">Interactive calculator covering all income sources (salary, HRA, capital gains, rent, business), every Chapter VI-A deduction (80C, 80D, 80E, 80G, NPS, home loan), auto HRA exemption, Sec 87A rebate, surcharge, cess — with instant Old vs New Regime comparison and savings recommendation.</div>
+          <div class="card-date">17 May 2026</div>
+        </div>
+        <div class="card-footer">
+          <div class="card-tags">
+            <span class="card-tag">Old &amp; New Regime</span>
+            <span class="card-tag">36 Deductions</span>
+            <span class="card-tag">Interactive</span>
           </div>
           <span class="card-open-btn">Open ↗</span>
         </div>
@@ -884,6 +954,27 @@
     document.getElementById('resultsCount').textContent =
       `Showing ${count} article${count !== 1 ? 's' : ''}`;
   }
+
+  /* ── Theme toggle ── */
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    document.getElementById('themeBtn').textContent = next === 'dark' ? '☀️' : '🌙';
+    try { localStorage.setItem('enc-theme', next); } catch(e) {}
+  }
+  (function() {
+    try {
+      const saved = localStorage.getItem('enc-theme');
+      if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.addEventListener('DOMContentLoaded', () => {
+          const b = document.getElementById('themeBtn');
+          if (b) b.textContent = '☀️';
+        });
+      }
+    } catch(e) {}
+  })();
 
 </script>
 </body>
