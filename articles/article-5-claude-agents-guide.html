@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Agents: Complete Learning Guide — Encyclopedia</title>
+<style>
+  :root {
+    --blue:        #0176d3;
+    --blue-dark:   #014486;
+    --blue-light:  #e8f4fd;
+    --navy:        #032d60;
+    --cloud:       #f4f6f9;
+    --white:       #ffffff;
+    --border:      #d8dde6;
+    --text:        #16325c;
+    --text-muted:  #54698d;
+    --radius:      0.6rem;
+    --shadow-sm:   0 2px 6px rgba(0,0,0,.09);
+    --shadow-md:   0 4px 18px rgba(0,0,0,.13);
+
+    --c1: #d97706;   /* api/setup — amber */
+    --c2: #0176d3;   /* messages api — blue */
+    --c3: #7c3aed;   /* managed agents — purple */
+    --c4: #0b827c;   /* mcp — teal */
+    --c5: #2e844a;   /* subagents/hooks — green */
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Salesforce Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--cloud);
+    color: var(--text);
+  }
+
+  /* ── NAV ──────────────────────────────────────────── */
+  nav {
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    height: 52px;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    box-shadow: 0 2px 8px rgba(0,0,0,.3);
+    transition: height .3s, background .3s;
+  }
+  nav.scrolled {
+    height: 44px;
+    background: rgba(3,45,96,.88);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .nav-crumb  { color: rgba(255,255,255,.5); font-size: .82rem; }
+  .nav-brand  {
+    margin-left: auto;
+    font-size: .95rem;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+  }
+  .theme-btn {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.22);
+    color: #fff;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    transition: background .2s, transform .2s;
+    flex-shrink: 0; padding: 0;
+    margin-left: .75rem;
+  }
+  .theme-btn:hover { background: rgba(255,255,255,.22); transform: rotate(20deg); }
+
+  /* ── HERO ─────────────────────────────────────────── */
+  .article-hero {
+    background: linear-gradient(135deg, #0a0a23 0%, #1a0b40 40%, #032d60 100%);
+    padding: 3.5rem 2rem 2.5rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-orbs { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .hero-orbs span { position: absolute; border-radius: 50%; opacity: .12; }
+  .hero-orbs span:nth-child(1) { width: 400px; height: 400px; background: #7c3aed; top: -120px; left: -100px; }
+  .hero-orbs span:nth-child(2) { width: 260px; height: 260px; background: #0176d3; top: -30px; right: 80px; }
+  .hero-orbs span:nth-child(3) { width: 160px; height: 160px; background: #0b827c; bottom: -40px; right: -20px; }
+  .hero-orbs span:nth-child(4) { width: 120px; height: 120px; background: #d97706; bottom: 20px; left: 40%; }
+
+  .breadcrumb {
+    position: relative;
+    font-size: .75rem; opacity: .6; margin-bottom: .75rem;
+    display: flex; align-items: center; gap: .4rem;
+    animation: heroFadeUp .5s ease both;
+  }
+  .breadcrumb a { color: #fff; text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  .article-date {
+    position: relative;
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+    border-radius: 2rem; padding: .25rem .75rem; font-size: .75rem;
+    margin-bottom: .7rem; opacity: .9;
+    animation: heroFadeUp .5s .1s ease both;
+  }
+  .article-date::before { content: '📅'; font-size: .7rem; }
+
+  .article-hero h1 {
+    position: relative;
+    font-size: 2rem; font-weight: 800; letter-spacing: -.4px;
+    line-height: 1.25; max-width: 820px; margin-bottom: .75rem;
+    animation: heroFadeUp .6s .15s ease both;
+  }
+
+  .hero-pills {
+    position: relative;
+    display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: .9rem;
+    animation: heroFadeUp .6s .25s ease both;
+  }
+  .hero-pill {
+    display: flex; align-items: center; gap: .35rem;
+    padding: .25rem .75rem; border-radius: 2rem;
+    font-size: .73rem; font-weight: 700;
+    border: 1px solid rgba(255,255,255,.2);
+  }
+  .hero-pill .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .hero-pill.c1 { background: rgba(217,119,6,.22); color: #fcd34d; }
+  .hero-pill.c1 .dot { background: #d97706; }
+  .hero-pill.c2 { background: rgba(1,118,211,.22); color: #93c5fd; }
+  .hero-pill.c2 .dot { background: #0176d3; }
+  .hero-pill.c3 { background: rgba(124,58,237,.22); color: #c4b5fd; }
+  .hero-pill.c3 .dot { background: #7c3aed; }
+  .hero-pill.c4 { background: rgba(11,130,124,.22); color: #5eead4; }
+  .hero-pill.c4 .dot { background: #0b827c; }
+  .hero-pill.c5 { background: rgba(46,132,74,.22); color: #86efac; }
+  .hero-pill.c5 .dot { background: #2e844a; }
+
+  .article-meta {
+    position: relative;
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    font-size: .78rem; opacity: .75;
+    animation: heroFadeUp .6s .33s ease both;
+  }
+  .article-meta .tag {
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2);
+    border-radius: 2rem; padding: .15rem .65rem;
+    font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
+  }
+
+  @keyframes heroFadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── LAYOUT ───────────────────────────────────────── */
+  .article-wrap {
+    max-width: 1100px; margin: 0 auto;
+    padding: 2rem 1.5rem 5rem;
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* ── TOC ──────────────────────────────────────────── */
+  .toc-sidebar { position: sticky; top: 68px; }
+  .toc-box {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+    overflow: hidden; margin-bottom: 1rem;
+    opacity: 0; transform: translateX(18px);
+    transition: opacity .4s ease, transform .4s ease;
+  }
+  .toc-box.visible { opacity: 1; transform: translateX(0); }
+  .toc-box-header {
+    background: var(--blue-light); padding: .55rem .9rem;
+    font-size: .7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--blue-dark);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer; user-select: none;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .toc-box-body { max-height: 72vh; overflow-y: auto; }
+  .toc-group-label {
+    padding: .5rem .9rem .25rem; font-size: .68rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .8px; color: var(--blue);
+    background: #fafbfc; border-bottom: 1px solid #f0f3f7;
+  }
+  .toc-link {
+    display: block; padding: .38rem .9rem .38rem 1.2rem;
+    font-size: .8rem; color: var(--text-muted); text-decoration: none;
+    border-bottom: 1px solid #f9f9f9;
+    transition: background .12s, color .12s; line-height: 1.4;
+  }
+  .toc-link:hover { background: var(--blue-light); color: var(--blue); }
+  .toc-link.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+
+  /* ── SECTION DIVIDER ──────────────────────────────── */
+  .sec-divider {
+    display: flex; align-items: center; gap: .75rem;
+    margin: 2.5rem 0 1.2rem; scroll-margin-top: 80px;
+  }
+  .sec-divider:first-child { margin-top: 0; }
+  .sec-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .sec-divider h2 {
+    font-size: .8rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.2px; color: var(--blue);
+    flex: 1; white-space: nowrap;
+  }
+  .sec-divider::after {
+    content: ''; height: 2px;
+    background: linear-gradient(90deg, var(--blue) 0%, transparent 100%);
+    flex: 1; min-width: 20px;
+  }
+
+  /* ── PROSE CARD ───────────────────────────────────── */
+  .prose-card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+    padding: 1.4rem 1.5rem; margin-bottom: 1.2rem;
+    scroll-margin-top: 80px;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity .45s ease, transform .45s ease;
+    position: relative; overflow: hidden;
+  }
+  .prose-card.visible { opacity: 1; transform: translateY(0); }
+  .prose-card::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,.18) 50%, transparent 60%);
+    transform: translateX(-100%); transition: transform .55s ease; pointer-events: none;
+  }
+  .prose-card:hover::after { transform: translateX(100%); }
+
+  .prose-card h3 {
+    font-size: 1rem; font-weight: 700; color: var(--text);
+    margin-bottom: .7rem; display: flex; align-items: center; gap: .5rem;
+  }
+  .prose-card h4 {
+    font-size: .88rem; font-weight: 700; color: var(--text);
+    margin: 1rem 0 .4rem;
+  }
+  .prose-card p {
+    font-size: .885rem; color: var(--text-muted);
+    line-height: 1.75; margin-bottom: .7rem;
+  }
+  .prose-card p:last-child { margin-bottom: 0; }
+  .prose-card ul, .prose-card ol {
+    padding-left: 1.3rem; font-size: .885rem; color: var(--text-muted);
+    line-height: 1.75; margin-bottom: .75rem;
+  }
+  .prose-card li { margin-bottom: .3rem; }
+  .prose-card strong { color: var(--text); }
+  .prose-card code {
+    background: #f0f3f8; border: 1px solid var(--border); border-radius: .25rem;
+    padding: .05rem .35rem; font-size: .82rem;
+    font-family: 'SFMono-Regular', Consolas, monospace; color: #c7254e;
+  }
+
+  /* ── CODE BLOCK ───────────────────────────────────── */
+  .code-block {
+    background: #0d1117; border-radius: var(--radius);
+    border: 1px solid #30363d; margin: .9rem 0;
+    overflow: hidden;
+    opacity: 0; transform: translateY(16px);
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .code-block.visible { opacity: 1; transform: translateY(0); }
+  .code-header {
+    background: #161b22; border-bottom: 1px solid #30363d;
+    padding: .45rem 1rem;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: .5rem;
+  }
+  .code-lang {
+    font-size: .68rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .8px; color: #8b949e;
+  }
+  .code-label {
+    font-size: .7rem; color: #6e7681;
+  }
+  .code-body {
+    padding: 1rem 1.2rem;
+    overflow-x: auto;
+  }
+  .code-body pre {
+    font-family: 'SFMono-Regular', Consolas, 'Courier New', monospace;
+    font-size: .8rem;
+    line-height: 1.65;
+    color: #e6edf3;
+    margin: 0;
+    white-space: pre;
+  }
+  /* syntax colours */
+  .kw  { color: #ff7b72; }   /* keywords */
+  .fn  { color: #d2a8ff; }   /* functions */
+  .st  { color: #a5d6ff; }   /* strings */
+  .cm  { color: #8b949e; font-style: italic; } /* comments */
+  .nm  { color: #79c0ff; }   /* numbers / names */
+  .op  { color: #ff7b72; }   /* operators */
+  .pu  { color: #e6edf3; }   /* punctuation */
+
+  /* ── COMPARISON TABLE ─────────────────────────────── */
+  .comp-table-wrap {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+    overflow-x: auto; margin-bottom: 1.2rem;
+    scroll-margin-top: 80px;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .comp-table-wrap.visible { opacity: 1; transform: translateY(0); }
+  .comp-table {
+    width: 100%; border-collapse: collapse; font-size: .84rem; min-width: 480px;
+  }
+  .comp-table thead tr { background: var(--navy); color: #fff; }
+  .comp-table thead th {
+    padding: .8rem 1rem; text-align: left;
+    font-size: .75rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .8px; white-space: nowrap;
+  }
+  .comp-table tbody tr { border-bottom: 1px solid #f0f3f7; transition: background .1s; }
+  .comp-table tbody tr:hover { background: #f8fafc; }
+  .comp-table tbody tr:last-child { border-bottom: none; }
+  .comp-table td { padding: .65rem 1rem; vertical-align: middle; color: var(--text-muted); line-height: 1.5; }
+  .comp-table td:first-child { font-weight: 600; color: var(--text); white-space: nowrap; }
+  .comp-table .cat-row td {
+    background: var(--blue-light); color: var(--blue-dark);
+    font-size: .7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .8px; padding: .4rem 1rem;
+  }
+
+  /* ── PHASE CARDS (learning path) ─────────────────── */
+  .phase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: .85rem; margin-bottom: 1.5rem;
+  }
+  .phase-card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+    overflow: hidden;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .phase-card.visible { opacity: 1; transform: translateY(0); }
+  .phase-card-header {
+    padding: .85rem 1rem .7rem;
+    display: flex; flex-direction: column; gap: .3rem;
+  }
+  .phase-card-header.c1 { background: linear-gradient(135deg, #451a03, #b45309); color: #fff; }
+  .phase-card-header.c2 { background: linear-gradient(135deg, #032d60, #0176d3); color: #fff; }
+  .phase-card-header.c3 { background: linear-gradient(135deg, #3b0764, #5b21b6); color: #fff; }
+  .phase-card-header.c4 { background: linear-gradient(135deg, #042f2e, #0b827c); color: #fff; }
+  .phase-card-header.c5 { background: linear-gradient(135deg, #052e16, #2e844a); color: #fff; }
+  .phase-num { font-size: .68rem; font-weight: 700; opacity: .7; text-transform: uppercase; letter-spacing: .8px; }
+  .phase-title { font-size: .88rem; font-weight: 800; line-height: 1.3; }
+  .phase-card-body { padding: .75rem 1rem .8rem; }
+  .phase-hours {
+    font-size: 1.5rem; font-weight: 800; line-height: 1; margin-bottom: .3rem;
+  }
+  .phase-hours.c1 { color: var(--c1); }
+  .phase-hours.c2 { color: var(--c2); }
+  .phase-hours.c3 { color: var(--c3); }
+  .phase-hours.c4 { color: var(--c4); }
+  .phase-hours.c5 { color: var(--c5); }
+  .phase-hours-label { font-size: .7rem; color: var(--text-muted); margin-bottom: .5rem; }
+  .phase-steps { font-size: .75rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* ── GOTCHA CARDS ─────────────────────────────────── */
+  .gotcha-card {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+    overflow: hidden; margin-bottom: 1rem;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .gotcha-card.visible { opacity: 1; transform: translateY(0); }
+  .gotcha-header {
+    padding: .7rem 1.1rem; background: #fff8f0;
+    border-bottom: 1px solid #ffe4c4;
+    display: flex; align-items: center; gap: .6rem;
+  }
+  .gotcha-num {
+    background: #d97706; color: #fff; border-radius: .3rem;
+    padding: .12rem .55rem; font-size: .72rem; font-weight: 700; flex-shrink: 0;
+  }
+  .gotcha-title { font-size: .84rem; font-weight: 700; color: #92400e; }
+  .gotcha-body { padding: .9rem 1.1rem; }
+  .gotcha-body p { font-size: .83rem; color: var(--text-muted); line-height: 1.65; margin-bottom: .6rem; }
+  .gotcha-body p:last-child { margin-bottom: 0; }
+
+  /* ── CALLOUTS ─────────────────────────────────────── */
+  .callout {
+    border-radius: 0 .35rem .35rem 0; padding: .65rem 1rem;
+    margin: .8rem 0; font-size: .83rem; line-height: 1.6;
+  }
+  .callout.tip  { background: #e8f4fd; border-left: 3px solid var(--blue); color: #014486; }
+  .callout.warn { background: #fff8e1; border-left: 3px solid #f59e0b; color: #92400e; }
+  .callout.ok   { background: #f0fdf4; border-left: 3px solid #22c55e; color: #14532d; }
+  .callout.critical { background: #fef2f2; border-left: 3px solid #ef4444; color: #7f1d1d; }
+  .callout strong { font-weight: 700; }
+
+  /* ── REFS BOX ─────────────────────────────────────── */
+  .refs-box {
+    background: var(--white); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+    overflow: hidden; margin-top: 2rem;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity .45s ease, transform .45s ease;
+  }
+  .refs-box.visible { opacity: 1; transform: translateY(0); }
+  .refs-box-header {
+    background: var(--blue-light); padding: .55rem .9rem;
+    font-size: .7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--blue-dark);
+    border-bottom: 1px solid var(--border);
+  }
+  .refs-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0;
+  }
+  .ref-item {
+    padding: .6rem .9rem; border-bottom: 1px solid #f0f3f7;
+    border-right: 1px solid #f0f3f7;
+    display: flex; flex-direction: column; gap: .15rem;
+  }
+  .ref-item:nth-child(even) { border-right: none; }
+  .ref-label { font-size: .72rem; font-weight: 700; color: var(--text); }
+  .ref-item a {
+    font-size: .76rem; color: var(--blue); text-decoration: none;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .ref-item a:hover { text-decoration: underline; }
+
+  /* ── FOOTER ───────────────────────────────────────── */
+  footer {
+    background: var(--navy);
+    color: rgba(255,255,255,.55);
+    text-align: center;
+    padding: 1.5rem 2rem;
+    font-size: .78rem;
+  }
+  footer strong { color: rgba(255,255,255,.8); }
+  footer a { color: #4bc8ff; text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ── DARK THEME ───────────────────────────────────── */
+  [data-theme="dark"] {
+    --cloud:      #0a0f1a;
+    --white:      #111c2e;
+    --border:     #1e3050;
+    --text:       #d8eaff;
+    --text-muted: #7099bb;
+  }
+  [data-theme="dark"] body { background: var(--cloud); }
+  [data-theme="dark"] .article-hero { background: linear-gradient(135deg, #020a14 0%, #0b0520 40%, #041228 100%); }
+  [data-theme="dark"] .prose-card { background: var(--white); border-color: var(--border); }
+  [data-theme="dark"] .prose-card h3 { color: var(--text); }
+  [data-theme="dark"] .prose-card p, [data-theme="dark"] .prose-card ul { color: var(--text-muted); }
+  [data-theme="dark"] .prose-card strong { color: var(--text); }
+  [data-theme="dark"] .prose-card code { background: rgba(1,118,211,.12); border-color: var(--border); color: #79c0ff; }
+  [data-theme="dark"] .comp-table-wrap { background: var(--white); border-color: var(--border); }
+  [data-theme="dark"] .comp-table tbody tr:hover { background: rgba(1,118,211,.06); }
+  [data-theme="dark"] .comp-table td { color: var(--text-muted); }
+  [data-theme="dark"] .comp-table td:first-child { color: var(--text); }
+  [data-theme="dark"] .toc-box { background: var(--white); border-color: var(--border); }
+  [data-theme="dark"] .toc-box-header { background: rgba(1,118,211,.12); color: #7ac7f0; border-bottom-color: var(--border); }
+  [data-theme="dark"] .toc-link { color: var(--text-muted); border-bottom-color: rgba(255,255,255,.04); }
+  [data-theme="dark"] .toc-link:hover, [data-theme="dark"] .toc-link.active { background: rgba(1,118,211,.12); color: #7ac7f0; }
+  [data-theme="dark"] .toc-group-label { background: rgba(255,255,255,.03); color: #7ac7f0; border-bottom-color: rgba(255,255,255,.04); }
+  [data-theme="dark"] .gotcha-card { background: var(--white); border-color: var(--border); }
+  [data-theme="dark"] .gotcha-header { background: rgba(217,119,6,.1); border-bottom-color: rgba(217,119,6,.2); }
+  [data-theme="dark"] .phase-card { background: var(--white); border-color: var(--border); }
+  [data-theme="dark"] .code-block { border-color: #30363d; }
+  [data-theme="dark"] .callout.tip { background: rgba(1,118,211,.1); color: #93c5fd; }
+  [data-theme="dark"] .callout.warn { background: rgba(245,158,11,.1); color: #fcd34d; }
+  [data-theme="dark"] .callout.ok { background: rgba(34,197,94,.08); color: #86efac; }
+  [data-theme="dark"] .callout.critical { background: rgba(239,68,68,.1); color: #fca5a5; }
+  [data-theme="dark"] .refs-box { background: var(--white); border-color: var(--border); }
+  [data-theme="dark"] .refs-box-header { background: rgba(1,118,211,.12); color: #7ac7f0; border-bottom-color: var(--border); }
+  [data-theme="dark"] .ref-item { border-color: rgba(255,255,255,.05); }
+  [data-theme="dark"] .ref-label { color: var(--text); }
+  [data-theme="dark"] footer { background: #020c18; }
+
+  /* ── RESPONSIVE ───────────────────────────────────── */
+  @media (max-width: 860px) {
+    .article-wrap {
+      grid-template-columns: 1fr;
+      padding: 1.25rem 1rem 3.5rem;
+    }
+    .toc-sidebar { position: static; }
+    .toc-box-body { max-height: 260px; }
+    .article-hero h1 { font-size: 1.6rem; }
+    .phase-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+  }
+  @media (max-width: 560px) {
+    .article-hero { padding: 2.5rem 1rem 2rem; }
+    .article-hero h1 { font-size: 1.3rem; }
+    nav { padding: 0 .85rem; gap: .75rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <span class="nav-crumb">Claude Agents Guide</span>
+  <a class="nav-brand" href="../index.html">☁ Encyclopedia</a>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">🌙</button>
+</nav>
+
+<!-- HERO -->
+<div class="article-hero">
+  <div class="hero-orbs">
+    <span></span><span></span><span></span><span></span>
+  </div>
+
+  <div class="breadcrumb">
+    <a href="../index.html">Encyclopedia</a> › <span>AI &amp; Agents</span> › Article 5
+  </div>
+
+  <div class="article-date">19 May 2026</div>
+
+  <h1>🤖 Claude Agents: Complete Learning Guide — API Keys, Agent SDK, Subagents &amp; MCP</h1>
+
+  <div class="hero-pills">
+    <span class="hero-pill c1"><span class="dot"></span>API Setup</span>
+    <span class="hero-pill c2"><span class="dot"></span>Messages API</span>
+    <span class="hero-pill c3"><span class="dot"></span>Managed Agents</span>
+    <span class="hero-pill c4"><span class="dot"></span>MCP Servers</span>
+    <span class="hero-pill c5"><span class="dot"></span>Subagents &amp; Hooks</span>
+  </div>
+
+  <div class="article-meta">
+    <span class="tag">15 Sections</span>
+    <span class="tag">20+ Code Examples</span>
+    <span class="tag">Python &amp; TypeScript</span>
+    <span class="tag">~23 hrs to competency</span>
+    <span>· Article #5</span>
+    <img src="https://hits.sh/shivamshukla2010.github.io/salesforce-encyclopedia/articles/article-5-claude-agents-guide.svg?style=flat&label=Page+Hits&color=4bc8ff&labelColor=032d60" alt="Page Hits" style="height:28px;border-radius:4px;vertical-align:middle">
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="article-wrap">
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- ── SECTION 1: MENTAL MODEL ─────────────────── -->
+    <div class="sec-divider" id="s-mental-model">
+      <span class="sec-icon">🧠</span>
+      <h2>1 · Prerequisites &amp; Mental Model</h2>
+    </div>
+
+    <div class="callout tip">
+      <strong>Start here.</strong> There are two distinct things called "agents" in the Claude ecosystem. Understanding the difference before writing any code will save hours of confusion.
+    </div>
+
+    <div class="comp-table-wrap">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Claude Code CLI Subagents</th>
+            <th>Claude Managed Agents SDK</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>What it is</td><td>Isolated sub-Claude instances spawned inside a CLI session</td><td>Anthropic-hosted, long-running autonomous agent infrastructure</td></tr>
+          <tr><td>Where it runs</td><td>Your local machine / Claude Code session</td><td>Anthropic cloud or self-hosted sandbox</td></tr>
+          <tr><td>How you control it</td><td>Agent tool, <code>subagent_type</code> parameter</td><td>Python/TS SDK: <code>client.beta.agents.*</code></td></tr>
+          <tr><td>Use case</td><td>Parallelizing work inside a Claude Code session</td><td>Production agentic pipelines, autonomous task execution</td></tr>
+          <tr><td>Billing</td><td>Claude Code subscription tokens</td><td>API tokens per session</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose-card">
+      <h3>Prerequisites</h3>
+      <ul>
+        <li>Python 3.9+ or Node.js 18+ (for SDK use)</li>
+        <li>Claude Code CLI — <code>npm install -g @anthropic-ai/claude-code</code></li>
+        <li>An Anthropic account at <strong>console.anthropic.com</strong></li>
+        <li>Basic familiarity with async Python or TypeScript</li>
+      </ul>
+    </div>
+
+    <!-- ── SECTION 2: API KEY ──────────────────────── -->
+    <div class="sec-divider" id="s-api-key">
+      <span class="sec-icon">🔑</span>
+      <h2>2 · API Key Setup</h2>
+    </div>
+
+    <div class="prose-card">
+      <h3>Step 1 — Get Your API Key</h3>
+      <ol>
+        <li>Go to <strong>console.anthropic.com</strong></li>
+        <li>Sign in → <strong>Settings</strong> → <strong>API Keys</strong></li>
+        <li>Click <strong>Create Key</strong>, give it a name, copy it immediately — shown only once</li>
+      </ol>
+      <p style="margin-top:.75rem">Your key looks like: <code>sk-ant-api03-...</code></p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">bash</span><span class="code-label">macOS / Linux — add to shell profile</span></div>
+      <div class="code-body"><pre><span class="cm"># ~/.zshrc or ~/.bashrc</span>
+<span class="kw">export</span> ANTHROPIC_API_KEY=<span class="st">"sk-ant-api03-YOUR_KEY_HERE"</span>
+
+<span class="cm"># Reload it</span>
+source ~/.zshrc</pre></div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">bash</span><span class="code-label">.env file — add to .gitignore!</span></div>
+      <div class="code-body"><pre>ANTHROPIC_API_KEY=sk-ant-api03-YOUR_KEY_HERE</pre></div>
+    </div>
+
+    <div class="callout critical">
+      <strong>CRITICAL:</strong> Always add <code>.env</code> to <code>.gitignore</code>. Run <code>echo ".env" &gt;&gt; .gitignore</code> immediately after creating it. A leaked API key will be exploited within minutes.
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Verify the key works</span></div>
+      <div class="code-body"><pre>curl https://api.anthropic.com/v1/messages \
+  -H <span class="st">"x-api-key: $ANTHROPIC_API_KEY"</span> \
+  -H <span class="st">"anthropic-version: 2023-06-01"</span> \
+  -H <span class="st">"content-type: application/json"</span> \
+  -d <span class="st">'{"model":"claude-haiku-4-5-20251001","max_tokens":64,"messages":[{"role":"user","content":"ping"}]}'</span></pre></div>
+    </div>
+
+    <!-- ── SECTION 3: INSTALL ──────────────────────── -->
+    <div class="sec-divider" id="s-install">
+      <span class="sec-icon">📦</span>
+      <h2>3 · Install the SDKs</h2>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">bash</span><span class="code-label">Python</span></div>
+      <div class="code-body"><pre>pip install anthropic        <span class="cm"># Core SDK</span>
+pip install python-dotenv   <span class="cm"># .env file support</span></pre></div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">bash</span><span class="code-label">TypeScript / Node.js</span></div>
+      <div class="code-body"><pre>npm install @anthropic-ai/sdk
+npm install dotenv</pre></div>
+    </div>
+
+    <!-- ── SECTION 4: FIRST AGENT ─────────────────── -->
+    <div class="sec-divider" id="s-messages-api">
+      <span class="sec-icon">💬</span>
+      <h2>4 · Your First Agent — Messages API</h2>
+    </div>
+
+    <div class="callout tip">
+      Before the Managed Agents SDK, master this: the Messages API + tool use loop. It is the foundation every agent is built on.
+    </div>
+
+    <div class="prose-card">
+      <h3>4.1 · Single-Turn Agent</h3>
+      <p>The simplest possible agent: one message in, one response out.</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">python</span><span class="code-label">single-turn.py</span></div>
+      <div class="code-body"><pre><span class="kw">from</span> anthropic <span class="kw">import</span> Anthropic
+
+client = <span class="fn">Anthropic</span>()
+
+response = client.messages.<span class="fn">create</span>(
+    model=<span class="st">"claude-sonnet-4-6"</span>,
+    max_tokens=<span class="nm">1024</span>,
+    messages=[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"What is 2+2?"</span>}]
+)
+
+<span class="fn">print</span>(response.content[<span class="nm">0</span>].text)</pre></div>
+    </div>
+
+    <div class="prose-card">
+      <h3>4.2 · Multi-Turn Conversation Agent</h3>
+      <p>Maintain a <code>conversation_history</code> list and append each turn. Claude sees the full history on every call.</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">python</span><span class="code-label">multi-turn.py</span></div>
+      <div class="code-body"><pre>client = <span class="fn">Anthropic</span>()
+history = []
+
+<span class="kw">def</span> <span class="fn">chat</span>(user_message: <span class="fn">str</span>) -> <span class="fn">str</span>:
+    history.<span class="fn">append</span>({<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: user_message})
+    response = client.messages.<span class="fn">create</span>(
+        model=<span class="st">"claude-sonnet-4-6"</span>,
+        max_tokens=<span class="nm">2048</span>,
+        system=<span class="st">"You are a helpful assistant."</span>,
+        messages=history
+    )
+    reply = response.content[<span class="nm">0</span>].text
+    history.<span class="fn">append</span>({<span class="st">"role"</span>: <span class="st">"assistant"</span>, <span class="st">"content"</span>: reply})
+    <span class="kw">return</span> reply
+
+<span class="fn">print</span>(<span class="fn">chat</span>(<span class="st">"I'm learning agents."</span>))
+<span class="fn">print</span>(<span class="fn">chat</span>(<span class="st">"What should I learn first?"</span>))</pre></div>
+    </div>
+
+    <div class="prose-card">
+      <h3>4.3 · Tool Use / Agentic Loop</h3>
+      <p>This is the core agentic pattern. Define tools (functions), and Claude decides when to call them. The loop continues until <code>stop_reason == "end_turn"</code>.</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">python</span><span class="code-label">tool-use-loop.py</span></div>
+      <div class="code-body"><pre>tools = [{
+    <span class="st">"name"</span>: <span class="st">"get_weather"</span>,
+    <span class="st">"description"</span>: <span class="st">"Get current weather for a city"</span>,
+    <span class="st">"input_schema"</span>: {
+        <span class="st">"type"</span>: <span class="st">"object"</span>,
+        <span class="st">"properties"</span>: {<span class="st">"city"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>}},
+        <span class="st">"required"</span>: [<span class="st">"city"</span>]
+    }
+}]
+
+<span class="kw">def</span> <span class="fn">execute_tool</span>(name, inputs):
+    <span class="kw">if</span> name == <span class="st">"get_weather"</span>:
+        <span class="kw">return</span> <span class="fn">f</span><span class="st">"Weather in {inputs['city']}: 22°C, partly cloudy"</span>
+
+<span class="kw">def</span> <span class="fn">run_agent</span>(user_message):
+    messages = [{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: user_message}]
+    <span class="kw">while True</span>:
+        resp = client.messages.<span class="fn">create</span>(
+            model=<span class="st">"claude-sonnet-4-6"</span>, max_tokens=<span class="nm">4096</span>,
+            tools=tools, messages=messages
+        )
+        <span class="kw">if</span> resp.stop_reason == <span class="st">"end_turn"</span>:
+            <span class="kw">return</span> resp.content[<span class="nm">0</span>].text
+
+        messages.<span class="fn">append</span>({<span class="st">"role"</span>: <span class="st">"assistant"</span>, <span class="st">"content"</span>: resp.content})
+        results = []
+        <span class="kw">for</span> block <span class="kw">in</span> resp.content:
+            <span class="kw">if</span> block.<span class="fn">type</span> == <span class="st">"tool_use"</span>:
+                result = <span class="fn">execute_tool</span>(block.name, block.input)
+                results.<span class="fn">append</span>({
+                    <span class="st">"type"</span>: <span class="st">"tool_result"</span>,
+                    <span class="st">"tool_use_id"</span>: block.id,
+                    <span class="st">"content"</span>: result
+                })
+        messages.<span class="fn">append</span>({<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: results})</pre></div>
+    </div>
+
+    <div class="prose-card">
+      <h3>4.4 · Streaming Responses</h3>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">python</span><span class="code-label">streaming.py</span></div>
+      <div class="code-body"><pre><span class="kw">with</span> client.messages.<span class="fn">stream</span>(
+    model=<span class="st">"claude-sonnet-4-6"</span>, max_tokens=<span class="nm">1024</span>,
+    messages=[{<span class="st">"role"</span>: <span class="st">"user"</span>, <span class="st">"content"</span>: <span class="st">"Write a haiku about coding"</span>}]
+) <span class="kw">as</span> stream:
+    <span class="kw">for</span> text <span class="kw">in</span> stream.text_stream:
+        <span class="fn">print</span>(text, end=<span class="st">""</span>, flush=<span class="kw">True</span>)</pre></div>
+    </div>
+
+    <!-- ── SECTION 5: MANAGED AGENTS ─────────────── -->
+    <div class="sec-divider" id="s-managed-agents">
+      <span class="sec-icon">🚀</span>
+      <h2>5 · Claude Managed Agents SDK</h2>
+    </div>
+
+    <div class="prose-card">
+      <h3>Core Concepts</h3>
+      <ul>
+        <li><strong>Agent</strong> — Reusable config: model + system prompt + tools + MCP servers</li>
+        <li><strong>Environment</strong> — Cloud sandbox or self-hosted container where code runs</li>
+        <li><strong>Session</strong> — One running instance of an agent working on a task</li>
+        <li><strong>Events</strong> — SSE stream of messages between your app and the agent</li>
+        <li><strong>Outcome</strong> — Optional success criteria; agent iterates until satisfied</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">python</span><span class="code-label">managed-agent-quickstart.py</span></div>
+      <div class="code-body"><pre><span class="kw">from</span> anthropic <span class="kw">import</span> Anthropic
+client = <span class="fn">Anthropic</span>()
+
+<span class="cm"># 1 — Create a reusable agent definition</span>
+agent = client.beta.agents.<span class="fn">create</span>(
+    name=<span class="st">"My First Agent"</span>,
+    model=<span class="st">"claude-opus-4-7"</span>,
+    system=<span class="st">"You are a helpful coding assistant."</span>,
+    tools=[{<span class="st">"type"</span>: <span class="st">"agent_toolset_20260401"</span>}],
+)
+
+<span class="cm"># 2 — Create an execution environment</span>
+environment = client.beta.environments.<span class="fn">create</span>(
+    name=<span class="st">"dev-environment"</span>,
+    config={<span class="st">"type"</span>: <span class="st">"cloud"</span>, <span class="st">"networking"</span>: {<span class="st">"type"</span>: <span class="st">"unrestricted"</span>}},
+)
+
+<span class="cm"># 3 — Start a session</span>
+session = client.beta.sessions.<span class="fn">create</span>(
+    agent=agent.id,
+    environment_id=environment.id,
+    title=<span class="st">"Fibonacci Task"</span>,
+)
+
+<span class="cm"># 4 — Open stream FIRST, then send message</span>
+<span class="kw">with</span> client.beta.sessions.events.<span class="fn">stream</span>(session.id) <span class="kw">as</span> stream:
+    client.beta.sessions.events.<span class="fn">send</span>(session.id, events=[{
+        <span class="st">"type"</span>: <span class="st">"user.message"</span>,
+        <span class="st">"content"</span>: [{<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="st">"Write and run fib.py"</span>}],
+    }])
+
+    <span class="kw">for</span> event <span class="kw">in</span> stream:
+        <span class="kw">if</span> event.<span class="fn">type</span> == <span class="st">"agent.message"</span>:
+            <span class="kw">for</span> block <span class="kw">in</span> event.content:
+                <span class="kw">if</span> <span class="fn">hasattr</span>(block, <span class="st">"text"</span>): <span class="fn">print</span>(block.text, end=<span class="st">""</span>)
+        <span class="kw">elif</span> event.<span class="fn">type</span> == <span class="st">"session.status_idle"</span>:
+            <span class="kw">break</span></pre></div>
+    </div>
+
+    <div class="prose-card">
+      <h3>Event Types Reference</h3>
+      <p>All agent activity arrives as a stream of typed events.</p>
+    </div>
+
+    <div class="comp-table-wrap">
+      <table class="comp-table">
+        <thead><tr><th>Event Type</th><th>When it fires</th><th>Key fields</th></tr></thead>
+        <tbody>
+          <tr><td><code>agent.message</code></td><td>Agent sends a text response</td><td><code>.content[].text</code></td></tr>
+          <tr><td><code>agent.tool_use</code></td><td>Agent calls a built-in tool</td><td><code>.name</code>, <code>.input</code></td></tr>
+          <tr><td><code>agent.tool_result</code></td><td>Tool execution returns</td><td><code>.content</code>, <code>.is_error</code></td></tr>
+          <tr><td><code>agent.custom_tool_use</code></td><td>Agent calls YOUR custom tool</td><td><code>.name</code>, <code>.input</code>, <code>.id</code></td></tr>
+          <tr><td><code>session.status_idle</code></td><td>Agent finished its turn</td><td>—</td></tr>
+          <tr><td><code>span.outcome_evaluation_end</code></td><td>Outcome rubric evaluated</td><td><code>.result</code> ("satisfied"/"unsatisfied")</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="prose-card">
+      <h3>5.4 · Outcomes — Quality-Driven Iteration</h3>
+      <p>Define a rubric and <code>max_iterations</code>. The agent will keep retrying until the rubric is satisfied.</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">python</span><span class="code-label">outcomes.py</span></div>
+      <div class="code-body"><pre>client.beta.sessions.events.<span class="fn">send</span>(session.id, events=[{
+    <span class="st">"type"</span>: <span class="st">"user.define_outcome"</span>,
+    <span class="st">"description"</span>: <span class="st">"Implement a REST API server in Python"</span>,
+    <span class="st">"rubric"</span>: <span class="st">"""
+- [ ] server.py exists and is runnable
+- [ ] GET /health returns 200
+- [ ] GET /users returns JSON list
+- [ ] POST /users creates a user
+- [ ] All endpoints have error handling
+"""</span>,
+    <span class="st">"max_iterations"</span>: <span class="nm">5</span>,
+}])
+
+<span class="kw">for</span> event <span class="kw">in</span> stream:
+    <span class="kw">if</span> event.<span class="fn">type</span> == <span class="st">"span.outcome_evaluation_end"</span>:
+        <span class="fn">print</span>(<span class="fn">f</span><span class="st">"Outcome: {event.result}"</span>)  <span class="cm"># "satisfied" or "unsatisfied"</span>
+        <span class="kw">if</span> event.result == <span class="st">"satisfied"</span>: <span class="kw">break</span></pre></div>
+    </div>
+
+    <!-- ── SECTION 6: CUSTOM TOOLS ─────────────────── -->
+    <div class="sec-divider" id="s-custom-tools">
+      <span class="sec-icon">🔧</span>
+      <h2>6 · Custom Tools</h2>
+    </div>
+
+    <div class="prose-card">
+      <h3>Give your agent access to your APIs and databases</h3>
+      <p>Custom tools let the agent call your business logic. The agent decides when to call them based on the <code>description</code> — write it clearly.</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">python</span><span class="code-label">custom-tools.py</span></div>
+      <div class="code-body"><pre>agent = client.beta.agents.<span class="fn">create</span>(
+    name=<span class="st">"Business Agent"</span>, model=<span class="st">"claude-opus-4-7"</span>,
+    tools=[
+        {<span class="st">"type"</span>: <span class="st">"agent_toolset_20260401"</span>},  <span class="cm"># built-in tools</span>
+        {
+            <span class="st">"type"</span>: <span class="st">"custom"</span>,
+            <span class="st">"name"</span>: <span class="st">"get_customer"</span>,
+            <span class="st">"description"</span>: <span class="st">"Fetch customer from CRM by ID. Use when you need customer details or order history."</span>,
+            <span class="st">"input_schema"</span>: {
+                <span class="st">"type"</span>: <span class="st">"object"</span>,
+                <span class="st">"properties"</span>: {
+                    <span class="st">"customer_id"</span>: {<span class="st">"type"</span>: <span class="st">"string"</span>, <span class="st">"description"</span>: <span class="st">"Format: CUS-XXXXX"</span>},
+                    <span class="st">"include_orders"</span>: {<span class="st">"type"</span>: <span class="st">"boolean"</span>, <span class="st">"default"</span>: <span class="kw">False</span>}
+                },
+                <span class="st">"required"</span>: [<span class="st">"customer_id"</span>]
+            }
+        }
+    ],
+)
+
+<span class="cm"># Handle custom tool calls in the event loop</span>
+<span class="kw">for</span> event <span class="kw">in</span> stream:
+    <span class="kw">if</span> event.<span class="fn">type</span> == <span class="st">"agent.custom_tool_use"</span>:
+        result = <span class="fn">my_crm_api</span>(event.name, event.input)  <span class="cm"># your logic</span>
+        client.beta.sessions.events.<span class="fn">send</span>(session.id, events=[{
+            <span class="st">"type"</span>: <span class="st">"user.custom_tool_result"</span>,
+            <span class="st">"tool_use_id"</span>: event.id,
+            <span class="st">"content"</span>: [{<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: result}],
+        }])</pre></div>
+    </div>
+
+    <!-- ── SECTION 7: MULTI-AGENT ─────────────────── -->
+    <div class="sec-divider" id="s-multi-agent">
+      <span class="sec-icon">🕸️</span>
+      <h2>7 · Multi-Agent Orchestration</h2>
+    </div>
+
+    <div class="prose-card">
+      <h3>Three Orchestration Patterns</h3>
+      <ul>
+        <li><strong>Coordinator + Specialists</strong> — A parent agent delegates to named sub-agents. Best for complex tasks that need different expertise.</li>
+        <li><strong>Pipeline (Sequential)</strong> — Each agent's output becomes the next agent's input. Best for data transformation chains.</li>
+        <li><strong>Parallel Fan-Out</strong> — Multiple agents run simultaneously via <code>asyncio.gather()</code>. Best for batch analysis (e.g., reviewing 20 files at once).</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">python</span><span class="code-label">coordinator-pattern.py</span></div>
+      <div class="code-body"><pre><span class="cm"># Create specialist agents</span>
+researcher = client.beta.agents.<span class="fn">create</span>(name=<span class="st">"Researcher"</span>, model=<span class="st">"claude-opus-4-7"</span>, ...)
+writer     = client.beta.agents.<span class="fn">create</span>(name=<span class="st">"Writer"</span>,     model=<span class="st">"claude-sonnet-4-6"</span>, ...)
+
+<span class="cm"># Create coordinator that delegates to them</span>
+coordinator = client.beta.agents.<span class="fn">create</span>(
+    name=<span class="st">"Project Coordinator"</span>,
+    model=<span class="st">"claude-opus-4-7"</span>,
+    system=<span class="st">"You coordinate: researcher + writer. Delegate appropriately."</span>,
+    multiagent={<span class="st">"agents"</span>: [{<span class="st">"id"</span>: researcher.id}, {<span class="st">"id"</span>: writer.id}]},
+)</pre></div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">python</span><span class="code-label">parallel-fan-out.py</span></div>
+      <div class="code-body"><pre><span class="kw">import</span> asyncio
+
+<span class="kw">async def</span> <span class="fn">analyze_parallel</span>(files):
+    <span class="kw">async def</span> <span class="fn">one</span>(f):
+        result = <span class="kw">await</span> <span class="fn">run_agent_task</span>(ANALYZER_ID, <span class="fn">f</span><span class="st">"Analyze {f} for security issues"</span>)
+        <span class="kw">return</span> (f, result)
+
+    <span class="kw">return dict</span>(<span class="kw">await</span> asyncio.<span class="fn">gather</span>(*[<span class="fn">one</span>(f) <span class="kw">for</span> f <span class="kw">in</span> files]))</pre></div>
+    </div>
+
+    <!-- ── SECTION 8: MCP ──────────────────────────── -->
+    <div class="sec-divider" id="s-mcp">
+      <span class="sec-icon">🔌</span>
+      <h2>8 · MCP Servers</h2>
+    </div>
+
+    <div class="prose-card">
+      <h3>Model Context Protocol — plug-in tools for agents</h3>
+      <p>Instead of writing custom tools for every integration, MCP servers are pre-built, standardised connectors. Install once, use in any agent.</p>
+      <ul>
+        <li><strong>GitHub</strong> — read/write repos, PRs, issues</li>
+        <li><strong>PostgreSQL / SQLite</strong> — run queries</li>
+        <li><strong>Slack</strong> — read channels, send messages</li>
+        <li><strong>Filesystem</strong> — access local files from a sandboxed path</li>
+        <li><strong>Google Drive, Notion, Linear, Jira</strong> — and hundreds more</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">json</span><span class="code-label">.claude/settings.json — MCP servers for Claude Code CLI</span></div>
+      <div class="code-body"><pre>{
+  <span class="st">"mcpServers"</span>: {
+    <span class="st">"github"</span>: {
+      <span class="st">"command"</span>: <span class="st">"npx"</span>,
+      <span class="st">"args"</span>: [<span class="st">"-y"</span>, <span class="st">"@modelcontextprotocol/server-github"</span>],
+      <span class="st">"env"</span>: { <span class="st">"GITHUB_PERSONAL_ACCESS_TOKEN"</span>: <span class="st">"${GITHUB_TOKEN}"</span> }
+    },
+    <span class="st">"postgres"</span>: {
+      <span class="st">"command"</span>: <span class="st">"npx"</span>,
+      <span class="st">"args"</span>: [<span class="st">"-y"</span>, <span class="st">"@modelcontextprotocol/server-postgres"</span>],
+      <span class="st">"env"</span>: { <span class="st">"POSTGRES_CONNECTION_STRING"</span>: <span class="st">"${DATABASE_URL}"</span> }
+    },
+    <span class="st">"slack"</span>: {
+      <span class="st">"command"</span>: <span class="st">"npx"</span>,
+      <span class="st">"args"</span>: [<span class="st">"-y"</span>, <span class="st">"@modelcontextprotocol/server-slack"</span>],
+      <span class="st">"env"</span>: { <span class="st">"SLACK_BOT_TOKEN"</span>: <span class="st">"${SLACK_BOT_TOKEN}"</span> }
+    }
+  }
+}</pre></div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">python</span><span class="code-label">mcp-in-managed-agent.py — remote MCP via URL</span></div>
+      <div class="code-body"><pre>agent = client.beta.agents.<span class="fn">create</span>(
+    name=<span class="st">"DevOps Agent"</span>,
+    model=<span class="st">"claude-opus-4-7"</span>,
+    mcp_servers=[
+        {<span class="st">"type"</span>: <span class="st">"url"</span>, <span class="st">"url"</span>: <span class="st">"https://your-github-mcp.example.com/mcp"</span>, <span class="st">"name"</span>: <span class="st">"github"</span>},
+    ],
+    tools=[
+        {<span class="st">"type"</span>: <span class="st">"agent_toolset_20260401"</span>},
+        {<span class="st">"type"</span>: <span class="st">"mcp_toolset"</span>, <span class="st">"mcp_server_name"</span>: <span class="st">"github"</span>},
+    ],
+)</pre></div>
+    </div>
+
+    <!-- ── SECTION 9: SUBAGENTS ────────────────────── -->
+    <div class="sec-divider" id="s-subagents">
+      <span class="sec-icon">🤖</span>
+      <h2>9 · Claude Code Subagents (CLI)</h2>
+    </div>
+
+    <div class="prose-card">
+      <h3>How Subagents Work</h3>
+      <p>Inside a Claude Code CLI session, you can spawn isolated child agents. Each subagent gets its own fresh context window — no bleed from the parent conversation. Key options:</p>
+      <ul>
+        <li><code>subagent_type</code> — which agent definition to use (<code>Explore</code>, <code>Plan</code>, <code>general-purpose</code>, custom)</li>
+        <li><code>run_in_background: true</code> — don't block the parent agent</li>
+        <li><code>isolation: "worktree"</code> — give the subagent its own git branch + worktree so file changes are isolated</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">markdown</span><span class="code-label">.claude/agents/security-reviewer.md — custom subagent definition</span></div>
+      <div class="code-body"><pre><span class="cm">---
+name: security-reviewer
+description: Reviews code for security vulnerabilities. Use when auditing
+             authentication, SQL queries, or input validation code.
+model: claude-opus-4-7
+tools:
+  - Read
+  - Bash
+  - Glob
+  - Grep
+---</span>
+
+You are a security code reviewer specializing in OWASP Top 10.
+
+For every file you review:
+1. Check for injection flaws (SQL, command, LDAP)
+2. Check for broken authentication
+3. Check for sensitive data exposure
+4. Check for XSS vulnerabilities
+
+Report findings as: CRITICAL / HIGH / MEDIUM / LOW with file:line references.</pre></div>
+    </div>
+
+    <div class="callout warn">
+      <strong>Write self-contained prompts.</strong> The subagent has zero context from your conversation. Include file paths, what you've tried, and what "done" looks like. "Fix the bug we were discussing" will fail. "Fix the null pointer in <code>src/api/users.py:47</code> where <code>get_user_by_id</code> should return None for missing users" will succeed.
+    </div>
+
+    <!-- ── SECTION 10: HOOKS ───────────────────────── -->
+    <div class="sec-divider" id="s-hooks">
+      <span class="sec-icon">🪝</span>
+      <h2>10 · Hooks System</h2>
+    </div>
+
+    <div class="prose-card">
+      <h3>Lifecycle callbacks for Claude Code</h3>
+      <p>Hooks run shell commands automatically when events occur in Claude Code. Think of them as middleware between you and every tool call.</p>
+    </div>
+
+    <div class="comp-table-wrap">
+      <table class="comp-table">
+        <thead><tr><th>Event</th><th>When</th><th>Can Block?</th></tr></thead>
+        <tbody>
+          <tr><td><code>UserPromptSubmit</code></td><td>Before Claude processes your message</td><td>Yes</td></tr>
+          <tr><td><code>PreToolUse</code></td><td>Before any tool call executes</td><td>Yes — denies the tool</td></tr>
+          <tr><td><code>PostToolUse</code></td><td>After tool call succeeds</td><td>No</td></tr>
+          <tr><td><code>Stop</code></td><td>When Claude finishes its turn</td><td>No</td></tr>
+          <tr><td><code>Notification</code></td><td>App-level notifications</td><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">json</span><span class="code-label">.claude/settings.json — hook configuration</span></div>
+      <div class="code-body"><pre>{
+  <span class="st">"hooks"</span>: {
+    <span class="st">"PreToolUse"</span>: [{
+      <span class="st">"matcher"</span>: <span class="st">"Bash"</span>,
+      <span class="st">"hooks"</span>: [{<span class="st">"type"</span>: <span class="st">"command"</span>, <span class="st">"command"</span>: <span class="st">"/path/to/security-check.sh"</span>}]
+    }],
+    <span class="st">"PostToolUse"</span>: [{
+      <span class="st">"matcher"</span>: <span class="st">"Edit|Write"</span>,
+      <span class="st">"hooks"</span>: [{<span class="st">"type"</span>: <span class="st">"command"</span>, <span class="st">"command"</span>: <span class="st">"npm run lint -- --fix"</span>}]
+    }],
+    <span class="st">"Stop"</span>: [{
+      <span class="st">"matcher"</span>: <span class="st">"*"</span>,
+      <span class="st">"hooks"</span>: [{<span class="st">"type"</span>: <span class="st">"command"</span>, <span class="st">"command"</span>: <span class="st">"osascript -e 'display notification \"Done\" with title \"Claude Code\"'"</span>}]
+    }]
+  }
+}</pre></div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">bash</span><span class="code-label">security-check.sh — block destructive bash commands</span></div>
+      <div class="code-body"><pre>#!/bin/bash
+COMMAND=$(cat | python3 -c "import sys,json; print(json.load(sys.stdin).get('tool_input',{}).get('command',''))")
+
+for pattern in "rm -rf /" "dd if=" "mkfs" "> /dev/sda"; do
+    if echo "$COMMAND" | grep -qF "$pattern"; then
+        echo '{"continue": false, "reason": "Destructive command blocked"}'
+        exit 2
+    fi
+done
+exit 0</pre></div>
+    </div>
+
+    <!-- ── SECTION 11: SETTINGS ────────────────────── -->
+    <div class="sec-divider" id="s-settings">
+      <span class="sec-icon">⚙️</span>
+      <h2>11 · Settings &amp; Permissions</h2>
+    </div>
+
+    <div class="comp-table-wrap">
+      <table class="comp-table">
+        <thead><tr><th>File</th><th>Scope</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><code>~/.claude/settings.json</code></td><td>Global — all projects</td><td>Your personal defaults</td></tr>
+          <tr><td><code>.claude/settings.json</code></td><td>Project — shared</td><td>Commit to git for team</td></tr>
+          <tr><td><code>.claude/settings.local.json</code></td><td>Project — personal</td><td>Git-ignored, personal overrides</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">json</span><span class="code-label">.claude/settings.json — full example</span></div>
+      <div class="code-body"><pre>{
+  <span class="st">"model"</span>: <span class="st">"claude-sonnet-4-6"</span>,
+  <span class="st">"permissions"</span>: {
+    <span class="st">"allow"</span>:  [<span class="st">"Bash(npm run *)"</span>, <span class="st">"Bash(pytest *)"</span>, <span class="st">"Read(**)"</span>, <span class="st">"Edit(**)"</span>],
+    <span class="st">"deny"</span>:   [<span class="st">"Bash(curl *)"</span>, <span class="st">"Bash(rm -rf *)"</span>, <span class="st">"Read(.env)"</span>],
+    <span class="st">"ask"</span>:    [<span class="st">"Bash(git push *)"</span>, <span class="st">"Bash(git commit *)"</span>],
+    <span class="st">"defaultMode"</span>: <span class="st">"acceptEdits"</span>
+  },
+  <span class="st">"env"</span>: { <span class="st">"NODE_ENV"</span>: <span class="st">"development"</span> }
+}</pre></div>
+    </div>
+
+    <!-- ── SECTION 12: SLASH COMMANDS ─────────────── -->
+    <div class="sec-divider" id="s-commands">
+      <span class="sec-icon">⚡</span>
+      <h2>12 · Custom Slash Commands</h2>
+    </div>
+
+    <div class="prose-card">
+      <h3>Reusable commands in <code>.claude/commands/</code></h3>
+      <p>Create a <code>.md</code> file — the filename becomes the slash command. Use <code>$ARGUMENTS</code> to capture what the user types after the command name.</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">markdown</span><span class="code-label">.claude/commands/review.md → /review src/payments.py</span></div>
+      <div class="code-body"><pre>Review the code in $ARGUMENTS for:
+
+1. **Security** — OWASP Top 10, injection flaws, auth issues
+2. **Performance** — N+1 queries, unnecessary loops, blocking I/O
+3. **Readability** — naming, complexity, missing docs
+4. **Tests** — coverage gaps, missing edge cases
+
+Format:
+## Summary
+## Issues Found  | Severity | File:Line | Issue | Fix |
+## Recommendations</pre></div>
+    </div>
+
+    <!-- ── SECTION 13: USE CASES ───────────────────── -->
+    <div class="sec-divider" id="s-use-cases">
+      <span class="sec-icon">🏗️</span>
+      <h2>13 · Real-World Use Cases</h2>
+    </div>
+
+    <div class="prose-card">
+      <h3>13.1 · Automated PR Review Pipeline</h3>
+      <p>Fetch open PRs with <code>gh pr list</code>, create one session per PR, post the review back as a GitHub comment. Run on a cron job for continuous review.</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-header"><span class="code-lang">python</span><span class="code-label">pr-review-pipeline.py</span></div>
+      <div class="code-body"><pre><span class="kw">def</span> <span class="fn">review_pr</span>(pr_number, title):
+    session = client.beta.sessions.<span class="fn">create</span>(agent=REVIEWER_AGENT_ID, environment_id=ENV_ID)
+    diff = subprocess.<span class="fn">run</span>([<span class="st">"gh"</span>,<span class="st">"pr"</span>,<span class="st">"diff"</span>,<span class="fn">str</span>(pr_number)], capture_output=<span class="kw">True</span>, text=<span class="kw">True</span>).stdout[:<span class="nm">50000</span>]
+
+    output = []
+    <span class="kw">with</span> client.beta.sessions.events.<span class="fn">stream</span>(session.id) <span class="kw">as</span> stream:
+        client.beta.sessions.events.<span class="fn">send</span>(session.id, events=[{
+            <span class="st">"type"</span>: <span class="st">"user.message"</span>,
+            <span class="st">"content"</span>: [{<span class="st">"type"</span>: <span class="st">"text"</span>, <span class="st">"text"</span>: <span class="fn">f</span><span class="st">"Review PR #{pr_number}: {title}\n\n{diff}"</span>}],
+        }])
+        <span class="kw">for</span> event <span class="kw">in</span> stream:
+            <span class="kw">if</span> event.<span class="fn">type</span> == <span class="st">"agent.message"</span>:
+                <span class="kw">for</span> block <span class="kw">in</span> event.content:
+                    <span class="kw">if</span> <span class="fn">hasattr</span>(block, <span class="st">"text"</span>): output.<span class="fn">append</span>(block.text)
+            <span class="kw">elif</span> event.<span class="fn">type</span> == <span class="st">"session.status_idle"</span>: <span class="kw">break</span>
+    <span class="kw">return</span> <span class="st">""</span>.<span class="fn">join</span>(output)</pre></div>
+    </div>
+
+    <div class="prose-card">
+      <h3>13.2 · Document Processing Pipeline</h3>
+      <p>An agent reads PDFs/documents, extracts structured data matching your JSON schema, and writes the result. Use outcomes to guarantee quality.</p>
+    </div>
+
+    <div class="prose-card">
+      <h3>13.3 · Deep Research Agent</h3>
+      <p>The built-in <code>web_search</code> and <code>web_fetch</code> tools give your agent internet access. Combine with a detailed system prompt to get verified, cited research reports.</p>
+    </div>
+
+    <div class="prose-card">
+      <h3>13.4 · Automated Testing Agent</h3>
+      <p>Define an outcome rubric: "all public functions have tests, coverage &gt; 80%, pytest exits 0". The agent writes tests, runs them, fixes failures — and iterates until the rubric is satisfied.</p>
+    </div>
+
+    <!-- ── SECTION 14: GOTCHAS ─────────────────────── -->
+    <div class="sec-divider" id="s-gotchas">
+      <span class="sec-icon">⚠️</span>
+      <h2>14 · Common Gotchas</h2>
+    </div>
+
+    <div class="gotcha-card">
+      <div class="gotcha-header"><span class="gotcha-num">G1</span><span class="gotcha-title">Open the stream BEFORE sending a message</span></div>
+      <div class="gotcha-body">
+        <p>If you send the message first, events fired during startup are lost. Always open the stream context manager, then call <code>events.send()</code> inside it.</p>
+        <p><code>with client.beta.sessions.events.stream(session.id) as stream:</code> → <em>then</em> send.</p>
+      </div>
+    </div>
+
+    <div class="gotcha-card">
+      <div class="gotcha-header"><span class="gotcha-num">G2</span><span class="gotcha-title">Subagent prompts must be 100% self-contained</span></div>
+      <div class="gotcha-body">
+        <p>The subagent has zero context from your conversation. Include file paths, what you've already tried, what success looks like, and any constraints. "Fix the bug" fails. "Fix the null pointer in <code>src/api/users.py:47</code>" succeeds.</p>
+      </div>
+    </div>
+
+    <div class="gotcha-card">
+      <div class="gotcha-header"><span class="gotcha-num">G3</span><span class="gotcha-title">Store Agent IDs — don't recreate on every run</span></div>
+      <div class="gotcha-body">
+        <p>Agent and Environment objects are persistent in Anthropic's system. Recreating them every run wastes API calls and creates orphaned resources. Save the IDs to a config file on first creation and load them on subsequent runs.</p>
+      </div>
+    </div>
+
+    <div class="gotcha-card">
+      <div class="gotcha-header"><span class="gotcha-num">G4</span><span class="gotcha-title">Not all content blocks have text</span></div>
+      <div class="gotcha-body">
+        <p>When iterating <code>event.content</code> on <code>agent.message</code> events, always check <code>if hasattr(block, "text")</code> before printing. Tool use blocks don't have a text attribute and will raise AttributeError.</p>
+      </div>
+    </div>
+
+    <div class="gotcha-card">
+      <div class="gotcha-header"><span class="gotcha-num">G5</span><span class="gotcha-title">Model selection has a big impact on cost and speed</span></div>
+      <div class="gotcha-body">
+        <p><strong>claude-opus-4-7</strong> → complex reasoning, orchestration (slow, high cost). <strong>claude-sonnet-4-6</strong> → balanced default (medium). <strong>claude-haiku-4-5-20251001</strong> → high-volume, simple tasks (fast, cheap). Don't default everything to Opus.</p>
+      </div>
+    </div>
+
+    <div class="gotcha-card">
+      <div class="gotcha-header"><span class="gotcha-num">G6</span><span class="gotcha-title">API key not found at runtime</span></div>
+      <div class="gotcha-body">
+        <p>Add this guard at the top of every script: <code>if not os.getenv("ANTHROPIC_API_KEY"): raise EnvironmentError("...")</code>. Fail fast with a clear message rather than a cryptic SDK exception deep in the call stack.</p>
+      </div>
+    </div>
+
+    <!-- ── SECTION 15: LEARNING PATH ──────────────── -->
+    <div class="sec-divider" id="s-learning-path">
+      <span class="sec-icon">🗺️</span>
+      <h2>15 · Recommended Learning Path</h2>
+    </div>
+
+    <div class="phase-grid">
+      <div class="phase-card">
+        <div class="phase-card-header c1">
+          <div class="phase-num">Phase 1</div>
+          <div class="phase-title">Foundation</div>
+        </div>
+        <div class="phase-card-body">
+          <div class="phase-hours c1">5 hrs</div>
+          <div class="phase-hours-label">estimated time</div>
+          <div class="phase-steps">API key → first curl test → single-turn Python → multi-turn conversation → streaming</div>
+        </div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-card-header c2">
+          <div class="phase-num">Phase 2</div>
+          <div class="phase-title">Tool Use</div>
+        </div>
+        <div class="phase-card-body">
+          <div class="phase-hours c2">3 hrs</div>
+          <div class="phase-hours-label">estimated time</div>
+          <div class="phase-steps">Define tools → agentic loop → handle tool results → multi-tool agents</div>
+        </div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-card-header c3">
+          <div class="phase-num">Phase 3</div>
+          <div class="phase-title">Managed Agents</div>
+        </div>
+        <div class="phase-card-body">
+          <div class="phase-hours c3">5 hrs</div>
+          <div class="phase-hours-label">estimated time</div>
+          <div class="phase-steps">First managed agent → event streaming → custom tools → outcomes → multi-agent patterns</div>
+        </div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-card-header c4">
+          <div class="phase-num">Phase 4</div>
+          <div class="phase-title">MCP &amp; Integrations</div>
+        </div>
+        <div class="phase-card-body">
+          <div class="phase-hours c4">3 hrs</div>
+          <div class="phase-hours-label">estimated time</div>
+          <div class="phase-steps">Add GitHub MCP → add DB MCP → build your own MCP server → remote MCP in Managed Agents</div>
+        </div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-card-header c5">
+          <div class="phase-num">Phase 5</div>
+          <div class="phase-title">Claude Code Power</div>
+        </div>
+        <div class="phase-card-body">
+          <div class="phase-hours c5">7 hrs</div>
+          <div class="phase-hours-label">estimated time</div>
+          <div class="phase-steps">Custom subagents → hooks system → slash commands → settings/permissions → end-to-end project</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REFERENCES -->
+    <div class="refs-box" id="s-refs">
+      <div class="refs-box-header">Official Documentation &amp; References</div>
+      <div class="refs-grid">
+        <div class="ref-item"><span class="ref-label">Anthropic Console (API Keys)</span><a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></div>
+        <div class="ref-item"><span class="ref-label">API Documentation</span><a href="https://docs.anthropic.com" target="_blank">docs.anthropic.com</a></div>
+        <div class="ref-item"><span class="ref-label">Claude Code Overview</span><a href="https://docs.anthropic.com/en/docs/claude-code/overview" target="_blank">docs.anthropic.com/claude-code</a></div>
+        <div class="ref-item"><span class="ref-label">Claude Code Subagents</span><a href="https://docs.anthropic.com/en/docs/claude-code/sub-agents" target="_blank">…/claude-code/sub-agents</a></div>
+        <div class="ref-item"><span class="ref-label">Claude Code Hooks</span><a href="https://docs.anthropic.com/en/docs/claude-code/hooks" target="_blank">…/claude-code/hooks</a></div>
+        <div class="ref-item"><span class="ref-label">Managed Agents Overview</span><a href="https://docs.anthropic.com/en/docs/agents-and-tools/managed-agents" target="_blank">…/managed-agents</a></div>
+        <div class="ref-item"><span class="ref-label">Messages API Reference</span><a href="https://docs.anthropic.com/en/api/messages" target="_blank">…/api/messages</a></div>
+        <div class="ref-item"><span class="ref-label">Tool Use Guide</span><a href="https://docs.anthropic.com/en/docs/tool-use" target="_blank">…/docs/tool-use</a></div>
+        <div class="ref-item"><span class="ref-label">Python SDK (GitHub)</span><a href="https://github.com/anthropics/anthropic-sdk-python" target="_blank">github.com/anthropics/…python</a></div>
+        <div class="ref-item"><span class="ref-label">TypeScript SDK (GitHub)</span><a href="https://github.com/anthropics/anthropic-sdk-typescript" target="_blank">github.com/anthropics/…typescript</a></div>
+        <div class="ref-item"><span class="ref-label">MCP Protocol Spec</span><a href="https://modelcontextprotocol.io" target="_blank">modelcontextprotocol.io</a></div>
+        <div class="ref-item"><span class="ref-label">MCP Servers Directory</span><a href="https://github.com/modelcontextprotocol/servers" target="_blank">github.com/modelcontextprotocol/…</a></div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <!-- TOC SIDEBAR -->
+  <aside class="toc-sidebar">
+    <div class="toc-box" id="tocBox">
+      <div class="toc-box-header" onclick="toggleToc()">
+        Contents <span id="tocArrow">▲</span>
+      </div>
+      <div class="toc-box-body" id="tocBody">
+        <div class="toc-group-label">Foundation</div>
+        <a class="toc-link" href="#s-mental-model">1 · Mental Model</a>
+        <a class="toc-link" href="#s-api-key">2 · API Key Setup</a>
+        <a class="toc-link" href="#s-install">3 · Install SDKs</a>
+
+        <div class="toc-group-label">Core SDK</div>
+        <a class="toc-link" href="#s-messages-api">4 · Messages API</a>
+        <a class="toc-link" href="#s-managed-agents">5 · Managed Agents SDK</a>
+        <a class="toc-link" href="#s-custom-tools">6 · Custom Tools</a>
+        <a class="toc-link" href="#s-multi-agent">7 · Multi-Agent Patterns</a>
+
+        <div class="toc-group-label">Integrations</div>
+        <a class="toc-link" href="#s-mcp">8 · MCP Servers</a>
+
+        <div class="toc-group-label">Claude Code CLI</div>
+        <a class="toc-link" href="#s-subagents">9 · Subagents</a>
+        <a class="toc-link" href="#s-hooks">10 · Hooks System</a>
+        <a class="toc-link" href="#s-settings">11 · Settings &amp; Permissions</a>
+        <a class="toc-link" href="#s-commands">12 · Slash Commands</a>
+
+        <div class="toc-group-label">Production</div>
+        <a class="toc-link" href="#s-use-cases">13 · Real-World Use Cases</a>
+        <a class="toc-link" href="#s-gotchas">14 · Common Gotchas</a>
+        <a class="toc-link" href="#s-learning-path">15 · Learning Path</a>
+        <a class="toc-link" href="#s-refs">References</a>
+      </div>
+    </div>
+
+    <!-- Quick stats box -->
+    <div class="toc-box" style="transition-delay:.1s">
+      <div class="toc-box-header" style="cursor:default">Article Stats</div>
+      <div class="toc-box-body">
+        <div style="padding:.5rem .9rem; font-size:.8rem; color:var(--text-muted); border-bottom:1px solid #f9f9f9; display:flex; justify-content:space-between;"><span>Sections</span><strong style="color:var(--text)">15</strong></div>
+        <div style="padding:.5rem .9rem; font-size:.8rem; color:var(--text-muted); border-bottom:1px solid #f9f9f9; display:flex; justify-content:space-between;"><span>Code Examples</span><strong style="color:var(--text)">20+</strong></div>
+        <div style="padding:.5rem .9rem; font-size:.8rem; color:var(--text-muted); border-bottom:1px solid #f9f9f9; display:flex; justify-content:space-between;"><span>Languages</span><strong style="color:var(--text)">Python &amp; TS</strong></div>
+        <div style="padding:.5rem .9rem; font-size:.8rem; color:var(--text-muted); border-bottom:1px solid #f9f9f9; display:flex; justify-content:space-between;"><span>Gotchas</span><strong style="color:#d97706">6</strong></div>
+        <div style="padding:.5rem .9rem; font-size:.8rem; color:var(--text-muted); display:flex; justify-content:space-between;"><span>To Competency</span><strong style="color:var(--text)">~23 hrs</strong></div>
+      </div>
+    </div>
+  </aside>
+
+</div><!-- /article-wrap -->
+
+<footer>
+  <strong>Salesforce Encyclopedia</strong> &mdash;
+  Not affiliated with Salesforce, Inc. or Anthropic, PBC.
+</footer>
+
+<script>
+  /* ── Nav scroll shrink ── */
+  window.addEventListener('scroll', () => {
+    document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive: true });
+
+  /* ── IntersectionObserver: animate cards / tables / code blocks on entry ── */
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.07 });
+
+  document.querySelectorAll(
+    '.prose-card, .comp-table-wrap, .code-block, .gotcha-card, .phase-card, .refs-box, .toc-box'
+  ).forEach(el => io.observe(el));
+
+  /* ── TOC active link on scroll ── */
+  const tocLinks = document.querySelectorAll('.toc-link[href^="#"]');
+  const sections = [...tocLinks].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+
+  const tocObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        tocLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`.toc-link[href="#${e.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+  sections.forEach(s => tocObserver.observe(s));
+
+  /* ── TOC toggle ── */
+  function toggleToc() {
+    const body = document.getElementById('tocBody');
+    const arrow = document.getElementById('tocArrow');
+    const isOpen = body.style.display !== 'none';
+    body.style.display = isOpen ? 'none' : '';
+    arrow.textContent = isOpen ? '▼' : '▲';
+  }
+
+  /* ── Theme toggle ── */
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    document.getElementById('themeBtn').textContent = next === 'dark' ? '☀️' : '🌙';
+    try { localStorage.setItem('enc-theme', next); } catch(e) {}
+  }
+  (function() {
+    try {
+      const saved = localStorage.getItem('enc-theme');
+      if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.addEventListener('DOMContentLoaded', () => {
+          const b = document.getElementById('themeBtn');
+          if (b) b.textContent = '☀️';
+        });
+      }
+    } catch(e) {}
+  })();
+</script>
+</body>
+</html>

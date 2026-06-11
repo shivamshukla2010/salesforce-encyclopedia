@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTI Multi-Vendor Switching Architecture — Salesforce Encyclopedia</title>
+<style>
+  :root {
+    --blue:       #0176d3;
+    --blue-dark:  #014486;
+    --blue-light: #e8f4fd;
+    --navy:       #032d60;
+    --cloud:      #f4f6f9;
+    --white:      #ffffff;
+    --border:     #d8dde6;
+    --text:       #16325c;
+    --text-muted: #54698d;
+    --radius:     0.6rem;
+    --shadow-sm:  0 2px 6px rgba(0,0,0,.09);
+    --shadow-md:  0 4px 18px rgba(0,0,0,.13);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Salesforce Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--cloud);
+    color: var(--text);
+  }
+
+  /* ── NAV ─────────────────────────────────────────── */
+  nav {
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    height: 52px;
+    gap: 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  }
+  .nav-back {
+    color: rgba(255,255,255,.75);
+    text-decoration: none;
+    font-size: .82rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    transition: color .15s;
+  }
+  .nav-back:hover { color: #fff; }
+  .nav-divider { color: rgba(255,255,255,.25); }
+  .nav-crumb { color: rgba(255,255,255,.5); font-size: .82rem; }
+  .nav-brand {
+    margin-left: auto;
+    font-size: .95rem;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+  }
+  .nav-brand .dot { color: #00a1e0; }
+  .theme-btn {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.22);
+    color: #fff;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    transition: background .2s, transform .2s;
+    flex-shrink: 0; padding: 0;
+    margin-left: .5rem;
+  }
+  .theme-btn:hover { background: rgba(255,255,255,.22); transform: rotate(20deg); }
+
+  /* ── ARTICLE HERO ─────────────────────────────────── */
+  .article-hero {
+    background: linear-gradient(140deg, #032d60 0%, #0b5fb0 60%, #0176d3 100%);
+    padding: 3rem 2rem 2.5rem;
+    color: #fff;
+  }
+  .article-hero .breadcrumb {
+    font-size: .75rem;
+    opacity: .65;
+    margin-bottom: .75rem;
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+  }
+  .article-hero .breadcrumb a { color: #fff; text-decoration: none; }
+  .article-hero .breadcrumb a:hover { text-decoration: underline; }
+  .article-hero h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -.4px;
+    line-height: 1.25;
+    max-width: 760px;
+    margin-bottom: .75rem;
+  }
+  .article-date {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 2rem;
+    padding: .25rem .75rem;
+    font-size: .75rem;
+    opacity: .9;
+    margin-bottom: .7rem;
+  }
+  .article-date::before { content: '📅'; font-size: .7rem; }
+  .article-meta {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    flex-wrap: wrap;
+    font-size: .78rem;
+    opacity: .85;
+  }
+  .article-meta .tag {
+    background: rgba(255,255,255,.15);
+    border-radius: 2rem;
+    padding: .15rem .65rem;
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+
+  /* ── LAYOUT ───────────────────────────────────────── */
+  .article-wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 5rem;
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* ── TOC SIDEBAR ──────────────────────────────────── */
+  .toc-sidebar { position: sticky; top: 68px; }
+  .toc-box {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .toc-box-header {
+    background: var(--blue-light);
+    padding: .55rem .9rem;
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--blue-dark);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .toc-box-body { max-height: 70vh; overflow-y: auto; }
+  .toc-group-label {
+    padding: .5rem .9rem .25rem;
+    font-size: .68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--blue);
+    background: #fafbfc;
+    border-bottom: 1px solid #f0f3f7;
+  }
+  .toc-link {
+    display: block;
+    padding: .38rem .9rem .38rem 1.2rem;
+    font-size: .8rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid #f9f9f9;
+    transition: background .12s, color .12s;
+    line-height: 1.4;
+  }
+  .toc-link:hover, .toc-link.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
+
+  .info-box {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    padding: .9rem 1rem;
+    font-size: .8rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+  .info-box strong { color: var(--text); display: block; margin-bottom: .35rem; font-size: .82rem; }
+
+  /* ── ARTICLE BODY ─────────────────────────────────── */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin: 2.5rem 0 1.1rem;
+  }
+  .section-divider:first-child { margin-top: 0; }
+  .section-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .section-divider h2 {
+    font-size: .8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--blue);
+    flex: 1;
+  }
+  .section-divider::after {
+    content: '';
+    height: 2px;
+    background: linear-gradient(90deg, var(--blue) 0%, transparent 100%);
+    flex: 1;
+  }
+
+  /* ── Q CARDS ──────────────────────────────────────── */
+  .q-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition: box-shadow .2s;
+    scroll-margin-top: 80px;
+  }
+  .q-card:hover { box-shadow: var(--shadow-md); }
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: .9rem;
+    padding: .9rem 1.1rem;
+    cursor: pointer;
+    user-select: none;
+    background: var(--white);
+    transition: background .12s;
+  }
+  .q-header:hover { background: #fafbfd; }
+  .q-num {
+    background: var(--blue);
+    color: #fff;
+    border-radius: 50%;
+    min-width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .q-num.green  { background: #2e844a; }
+  .q-num.orange { background: #fe9339; }
+  .q-num.purple { background: #7b5ea7; }
+  .q-num.teal   { background: #0b827c; }
+  .q-num.red    { background: #c23934; }
+  .q-title {
+    font-size: .93rem;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+    line-height: 1.45;
+  }
+  .q-chevron {
+    color: #aaa;
+    font-size: .75rem;
+    transition: transform .22s;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .q-card.open .q-chevron { transform: rotate(180deg); }
+  .q-body {
+    display: none;
+    padding: 0 1.1rem 1.1rem 1.1rem;
+    border-top: 1px solid var(--border);
+  }
+  .q-card.open .q-body { display: block; }
+
+  .q-body p {
+    font-size: .875rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+    margin-bottom: .7rem;
+    margin-top: .7rem;
+  }
+  .q-body p:last-of-type { margin-bottom: 0; }
+  .q-body ul, .q-body ol {
+    padding-left: 1.3rem;
+    margin-bottom: .75rem;
+    font-size: .875rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+  }
+  .q-body li { margin-bottom: .3rem; }
+  .q-body strong { color: var(--text); }
+  .q-body code {
+    background: #f0f3f8;
+    border: 1px solid var(--border);
+    border-radius: .25rem;
+    padding: .05rem .35rem;
+    font-size: .82rem;
+    font-family: 'SFMono-Regular', Consolas, monospace;
+    color: #c7254e;
+  }
+
+  /* ── CALLOUTS ──────────────────────────────────────── */
+  .callout {
+    border-radius: 0 .35rem .35rem 0;
+    padding: .65rem 1rem;
+    margin-top: .8rem;
+    font-size: .83rem;
+    line-height: 1.6;
+  }
+  .callout.tip  { background: #e8f4fd; border-left: 3px solid var(--blue); color: #014486; }
+  .callout.tip::before { content: '💡  '; }
+  .callout.warn { background: #fff8e6; border-left: 3px solid #fe9339; color: #5d3a00; }
+  .callout.warn::before { content: '⚠️  '; }
+  .callout.info { background: #e3f5e3; border-left: 3px solid #2e844a; color: #143a1e; }
+  .callout.info::before { content: 'ℹ️  '; }
+  .callout.danger { background: #fde8e8; border-left: 3px solid #c23934; color: #5a0000; }
+  .callout.danger::before { content: '🔒  '; }
+
+  /* ── BADGES ──────────────────────────────────────────  */
+  .tag-row { display: flex; gap: .35rem; flex-wrap: wrap; margin-top: .8rem; }
+  .badge {
+    border-radius: 2rem;
+    padding: .12rem .6rem;
+    font-size: .68rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+  }
+  .badge.blue   { background: #e8f4fd; color: #014486; }
+  .badge.green  { background: #e3f5e3; color: #2e844a; }
+  .badge.orange { background: #fff0e0; color: #8a4500; }
+  .badge.purple { background: #f3e8ff; color: #5e00c8; }
+  .badge.teal   { background: #e0f5f4; color: #0b5c58; }
+  .badge.red    { background: #fde8e8; color: #c23934; }
+
+  /* ── CODE BLOCKS ─────────────────────────────────────  */
+  .code-wrap {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: .5rem;
+    overflow: hidden;
+    margin: .9rem 0;
+    font-family: 'SFMono-Regular', Consolas, 'Cascadia Code', monospace;
+  }
+  .code-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .45rem .9rem;
+    background: rgba(255,255,255,.04);
+    border-bottom: 1px solid #30363d;
+    font-size: .72rem;
+  }
+  .code-lang {
+    background: #161b22;
+    color: #58a6ff;
+    padding: .1rem .5rem;
+    border-radius: .3rem;
+    font-size: .68rem;
+    font-weight: 700;
+  }
+  .code-file { color: #8b949e; font-size: .72rem; }
+  .code-copy-btn {
+    background: none;
+    border: 1px solid #30363d;
+    color: #8b949e;
+    padding: .15rem .6rem;
+    border-radius: .3rem;
+    font-size: .68rem;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .code-copy-btn:hover { border-color: #58a6ff; color: #58a6ff; }
+  .code-wrap pre {
+    padding: 1rem;
+    overflow-x: auto;
+    font-size: .8rem;
+    line-height: 1.7;
+    color: #e6edf3;
+    tab-size: 4;
+  }
+  .kw  { color: #ff7b72; }
+  .fn  { color: #79c0ff; }
+  .str { color: #a5d6ff; }
+  .num { color: #f0883e; }
+  .cm  { color: #6e7681; font-style: italic; }
+  .cl  { color: #ffa657; }
+  .prop{ color: #d2a8ff; }
+
+  /* ── CMDT DEMO TABLE ─────────────────────────────────  */
+  .cmdt-demo {
+    border: 1px solid var(--border);
+    border-radius: .5rem;
+    overflow: hidden;
+    margin: .9rem 0;
+  }
+  .cmdt-row {
+    display: grid;
+    grid-template-columns: 130px 220px 180px 90px;
+    padding: .6rem .9rem;
+    font-size: .8rem;
+    border-bottom: 1px solid var(--border);
+    transition: all .3s;
+    align-items: center;
+    font-family: monospace;
+  }
+  .cmdt-row.head {
+    background: var(--blue-light);
+    font-size: .68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .7px;
+    color: var(--blue-dark);
+    font-family: inherit;
+  }
+  .cmdt-row:last-child { border-bottom: none; }
+  .cmdt-row.active-row { background: #e3f5e3; border-left: 3px solid #2e844a; }
+  .cmdt-row.inactive-row { opacity: .55; }
+  .active-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 2px 8px; border-radius: 2rem; font-size: .68rem; font-weight: 700; font-family: inherit;
+  }
+  .active-pill.on  { background: #e3f5e3; color: #2e844a; border: 1px solid #2e844a40; }
+  .active-pill.off { background: #f4f6f9; color: #aaa;     border: 1px solid var(--border); }
+  .active-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+  /* ── VENDOR SWITCH CONTROLS ──────────────────────────  */
+  .switch-controls { display: flex; gap: 8px; flex-wrap: wrap; margin: .7rem 0; }
+  .switch-btn {
+    padding: 7px 16px; border-radius: 6px;
+    border: 2px solid var(--border);
+    background: var(--white); color: var(--text-muted);
+    font-size: .8rem; font-weight: 700; cursor: pointer; transition: all .2s;
+  }
+  .switch-btn:hover { border-color: var(--blue); color: var(--blue); }
+  .switch-btn.av1 { border-color: #0176d3; color: #0176d3; background: #e8f4fd; }
+  .switch-btn.av2 { border-color: #2e844a; color: #2e844a; background: #e3f5e3; }
+  .switch-btn.av3 { border-color: #fe9339; color: #8a4500; background: #fff0e0; }
+
+  /* ── DATA TABLE ──────────────────────────────────────  */
+  .data-table { width: 100%; border-collapse: collapse; font-size: .82rem; }
+  .data-table th {
+    background: var(--blue-light);
+    padding: .5rem .8rem;
+    text-align: left;
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    color: var(--blue-dark);
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table td {
+    padding: .5rem .8rem;
+    border-bottom: 1px solid #f0f3f7;
+    color: var(--text-muted);
+    vertical-align: top;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: #fafbfd; }
+  .data-table td strong { color: var(--text); }
+
+  /* ── FLOW STEPS ──────────────────────────────────────  */
+  .flow-steps { display: flex; flex-direction: column; gap: 0; }
+  .flow-step { display: flex; align-items: flex-start; gap: 16px; }
+  .step-left { display: flex; flex-direction: column; align-items: center; min-width: 34px; }
+  .step-num {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--blue); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: .75rem; font-weight: 800; flex-shrink: 0; z-index: 1;
+  }
+  .step-line {
+    width: 2px; flex: 1; min-height: 28px;
+    background: linear-gradient(var(--blue), transparent);
+    opacity: .25; margin: 4px 0;
+  }
+  .flow-step:last-child .step-line { display: none; }
+  .step-content { padding: 4px 0 24px; flex: 1; }
+  .step-title { font-size: .88rem; font-weight: 700; color: var(--text); margin-bottom: 5px; }
+  .step-desc { font-size: .82rem; color: var(--text-muted); line-height: 1.65; }
+  .step-actor {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: .72rem; margin-bottom: 6px;
+  }
+  .ab {
+    padding: 2px 8px; border-radius: 4px;
+    font-size: .68rem; font-weight: 700;
+  }
+  .ab-lwc    { background: #e8f4fd; color: #014486; }
+  .ab-apex   { background: #f3e8ff; color: #5e00c8; }
+  .ab-cmdt   { background: #fff0e0; color: #8a4500; }
+  .ab-api    { background: #e3f5e3; color: #2e844a; }
+  .ab-sdk    { background: #fde8e8; color: #c23934; }
+
+  /* ── ANALOGY BOX ─────────────────────────────────────  */
+  .analogy {
+    background: #f8f3ff;
+    border-left: 4px solid #7b5ea7;
+    border-radius: 0 .4rem .4rem 0;
+    padding: .7rem 1rem;
+    font-size: .83rem;
+    color: #3a2060;
+    margin: .8rem 0;
+    line-height: 1.65;
+  }
+  .analogy::before { content: '💬  Analogy: '; font-weight: 700; }
+
+  /* ── TOOLBAR ──────────────────────────────────────────  */
+  .article-toolbar {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    padding: .7rem 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .toolbar-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: .4rem;
+    padding: .3rem .75rem;
+    font-size: .78rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-weight: 600;
+    transition: background .12s, color .12s, border-color .12s;
+    display: flex; align-items: center; gap: .3rem;
+  }
+  .toolbar-btn:hover { background: var(--blue-light); color: var(--blue); border-color: var(--blue); }
+  .toolbar-sep { flex: 1; }
+  .toolbar-count { font-size: .78rem; color: var(--text-muted); }
+
+  /* ── HIDDEN ───────────────────────────────────────────  */
+  .hidden { display: none !important; }
+
+  /* ── FLOATING TOC BUTTON ──────────────────────────────  */
+  #toc-float-btn {
+    position: fixed; bottom: 1.5rem; right: 1.25rem; z-index: 300;
+    background: var(--navy); color: #fff; border: none; border-radius: 2rem;
+    padding: .55rem 1.1rem .55rem .85rem; font-size: .8rem; font-weight: 700;
+    cursor: pointer; box-shadow: 0 4px 16px rgba(3,45,96,.45);
+    display: flex; align-items: center; gap: .4rem;
+    opacity: 0; transform: translateY(12px);
+    transition: opacity .25s ease, transform .25s ease; pointer-events: none;
+  }
+  #toc-float-btn.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+  /* ── TOC OVERLAY ──────────────────────────────────────  */
+  #toc-overlay { display: none; position: fixed; inset: 0; z-index: 400;
+    background: rgba(3,45,96,.45); backdrop-filter: blur(4px); }
+  #toc-overlay.open { display: block; }
+  #toc-overlay-panel {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: var(--white); border-radius: 1.2rem 1.2rem 0 0;
+    max-height: 72vh; overflow-y: auto;
+    padding-bottom: env(safe-area-inset-bottom, 1rem);
+    animation: slideUp .25s ease both;
+  }
+  @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  #toc-overlay-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .9rem 1.1rem .6rem; border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; background: var(--white); z-index: 1;
+  }
+  #toc-overlay-header span { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--blue-dark); }
+  #toc-overlay-close { background: none; border: none; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; padding: .25rem .5rem; line-height: 1; border-radius: .3rem; }
+
+  /* ── DARK THEME ───────────────────────────────────────  */
+  [data-theme="dark"] {
+    --cloud: #0a0f1a; --white: #111c2e; --border: #1e3050;
+    --text: #d8eaff; --text-muted: #7099bb;
+  }
+  [data-theme="dark"] body { background: var(--cloud); color: var(--text); }
+  [data-theme="dark"] .article-hero { background: linear-gradient(140deg,#020818 0%,#041228 60%,#0c2240 100%); }
+  [data-theme="dark"] .q-card { background: var(--white); border-color: var(--border); }
+  [data-theme="dark"] .q-header { background: var(--white); }
+  [data-theme="dark"] .q-header:hover { background: #162033; }
+  [data-theme="dark"] .q-title { color: var(--text); }
+  [data-theme="dark"] .q-body { border-top-color: var(--border); }
+  [data-theme="dark"] .q-body code { background: #0d1117; border-color: #30363d; color: #f0883e; }
+  [data-theme="dark"] .toc-box { background: var(--white); border-color: var(--border); }
+  [data-theme="dark"] .toc-box-header { background: rgba(1,118,211,.12); color: #7ac7f0; border-color: var(--border); }
+  [data-theme="dark"] .toc-link { color: var(--text-muted); border-bottom-color: rgba(255,255,255,.04); }
+  [data-theme="dark"] .toc-link:hover, [data-theme="dark"] .toc-link.active { background: rgba(1,118,211,.15); color: #7ac7f0; }
+  [data-theme="dark"] .article-toolbar { background: var(--white); border-color: var(--border); }
+  [data-theme="dark"] .info-box { background: var(--white); border-color: var(--border); }
+  [data-theme="dark"] .data-table th { background: rgba(1,118,211,.12); color: #7ac7f0; border-color: var(--border); }
+  [data-theme="dark"] .data-table td { border-color: rgba(255,255,255,.05); color: var(--text-muted); }
+  [data-theme="dark"] .data-table tr:hover td { background: #162033; }
+  [data-theme="dark"] .cmdt-demo { border-color: var(--border); }
+  [data-theme="dark"] .cmdt-row { border-color: rgba(255,255,255,.05); }
+  [data-theme="dark"] .cmdt-row.head { background: rgba(1,118,211,.12); color: #7ac7f0; }
+  [data-theme="dark"] .cmdt-row.active-row { background: rgba(46,132,74,.12); }
+  [data-theme="dark"] .analogy { background: #1e1533; color: #d4b8ff; }
+  [data-theme="dark"] .callout.tip    { background: rgba(1,118,211,.1);  color: #7ac7f0; }
+  [data-theme="dark"] .callout.warn   { background: rgba(254,147,57,.1); color: #ffc27d; }
+  [data-theme="dark"] .callout.info   { background: rgba(46,132,74,.1);  color: #7fcf9a; }
+  [data-theme="dark"] .callout.danger { background: rgba(194,57,52,.1);  color: #ff9999; }
+  [data-theme="dark"] .switch-btn { background: var(--white); border-color: var(--border); color: var(--text-muted); }
+  [data-theme="dark"] .switch-btn.av1 { background: rgba(1,118,211,.12); border-color: #58a6ff; color: #58a6ff; }
+  [data-theme="dark"] .switch-btn.av2 { background: rgba(46,132,74,.12); border-color: #7fcf9a; color: #7fcf9a; }
+  [data-theme="dark"] .switch-btn.av3 { background: rgba(254,147,57,.12); border-color: #ffc27d; color: #ffc27d; }
+
+  /* ── RESPONSIVE ───────────────────────────────────────  */
+  @media (min-width: 821px) and (max-width: 1180px) {
+    .article-wrap { grid-template-columns: 1fr 210px; gap: 1.5rem; padding: 1.75rem 1.25rem 4rem; }
+    .toc-sidebar { top: 62px; }
+  }
+  @media (max-width: 820px) {
+    .article-wrap { grid-template-columns: 1fr; padding: 1.25rem 1rem 5rem; gap: 0; }
+    .toc-sidebar { position: static; order: -1; margin-bottom: 1.25rem; }
+    .article-hero { padding: 2.5rem 1.25rem 2rem; }
+    .article-hero h1 { font-size: 1.65rem; }
+    #toc-float-btn { display: flex; }
+    .cmdt-row { grid-template-columns: 110px 1fr; }
+    .cmdt-row .cmdt-ep, .cmdt-row .cmdt-cls { display: none; }
+  }
+  @media (max-width: 560px) {
+    .article-wrap { padding: 1rem .75rem 4.5rem; }
+    .article-hero { padding: 2rem 1rem 1.75rem; }
+    .article-hero h1 { font-size: 1.35rem; }
+    nav { padding: 0 1rem; }
+    .nav-crumb, .nav-divider { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-back" href="../index.html">← Back</a>
+  <span class="nav-divider">/</span>
+  <span class="nav-crumb">CTI Multi-Vendor Switching Architecture</span>
+  <a class="nav-brand" href="../index.html">☁ Salesforce <span class="dot">Encyclopedia</span></a>
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle theme">🌙</button>
+</nav>
+
+<!-- HERO -->
+<div class="article-hero">
+  <div class="breadcrumb">
+    <a href="../index.html">Encyclopedia</a> › <span>Integrations &amp; Architecture</span>
+  </div>
+  <div class="article-date">11 Jun 2026</div>
+  <h1>CTI Multi-Vendor Switching Architecture in Salesforce</h1>
+  <div class="article-meta">
+    <span class="tag">Custom Metadata</span>
+    <span class="tag">Apex</span>
+    <span class="tag">LWC</span>
+    <span class="tag">Open CTI</span>
+    <span class="tag">Strategy Pattern</span>
+    <span class="tag">Softphone</span>
+    <span class="tag">Telephony</span>
+  </div>
+</div>
+
+<!-- BODY -->
+<div class="article-wrap">
+
+  <!-- ── ARTICLE BODY ── -->
+  <div class="article-body">
+
+    <div class="article-toolbar">
+      <button class="toolbar-btn" onclick="expandAll()">▼ Expand All</button>
+      <button class="toolbar-btn" onclick="collapseAll()">▲ Collapse All</button>
+      <span class="toolbar-sep"></span>
+      <span class="toolbar-count" id="cardCount">14 topics</span>
+    </div>
+
+    <!-- ══ SECTION 1: OVERVIEW ══ -->
+    <div class="section-divider" id="s-overview"><span class="section-icon">🏠</span><h2>Overview</h2></div>
+
+    <div class="q-card open" id="c1">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num">1</div>
+        <div class="q-title">What are we building and what problem does it solve?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>Salesforce agents need to make phone calls directly from within Salesforce. These calls are handled by a <strong>CTI (Computer Telephony Integration) vendor</strong> — a third-party telephony service. You may have 2 or 3 such vendors and need to switch between them by clicking a button, without changing any code.</p>
+        <div class="analogy">Think of it like a food delivery app. Your app (Salesforce) wants to deliver food (initiate a call). The CTI vendor is the delivery service (Uber Eats, DoorDash). You want to switch delivery services without changing how you order.</div>
+        <p>The architecture uses a <strong>single active vendor pointer</strong> stored in a Custom Metadata record. Every component in the system — Apex callouts, JS SDK calls, softphone routing — reads this pointer before acting. A button click flips the pointer. Everything else changes automatically.</p>
+        <div class="tag-row">
+          <span class="badge blue">Salesforce</span>
+          <span class="badge purple">Custom Metadata</span>
+          <span class="badge green">CTI / Open CTI</span>
+          <span class="badge teal">LWC</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 2: INTEGRATION OPTIONS ══ -->
+    <div class="section-divider" id="s-options"><span class="section-icon">🔀</span><h2>Integration Options</h2></div>
+
+    <div class="q-card" id="c2">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num">2</div>
+        <div class="q-title">Option 1 — Server-Side Initiation with Telephony Disposition</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>In this flow, <strong>Salesforce initiates the call server-side</strong> by sending only the Lead/Contact record ID to the CTI vendor. The vendor handles everything: fetching the phone number, placing the call, and then pushing a signal back to the Salesforce softphone adapter to auto-open the popup for the agent.</p>
+        <ul>
+          <li>Salesforce Apex sends <code>recordId</code> → CTI vendor API</li>
+          <li>Vendor fetches phone number from its own system</li>
+          <li>Vendor initiates the outbound call</li>
+          <li>Vendor fires a disposition/webhook back to the softphone adapter</li>
+          <li>Softphone popup opens automatically for the agent</li>
+        </ul>
+        <div class="callout tip"><strong>Key question to ask your vendor:</strong> Does your adapter support "auto-opening" the softphone via a server-side signal, without frontend initiation?</div>
+        <div class="tag-row">
+          <span class="badge orange">Vendor handles number lookup</span>
+          <span class="badge blue">Fire-and-forget from Apex</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card" id="c3">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num">3</div>
+        <div class="q-title">Option 2 — API Call + Custom JS SDK Method (Claim the Call)</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>In this flow, Salesforce hits the CTI vendor's API via Apex and receives a unique <strong>Call ID</strong> in the response. That Call ID is returned to the LWC component in the browser. The LWC then calls the vendor's <strong>JavaScript SDK method</strong> with that Call ID to "claim" the call and open the softphone layout.</p>
+        <ul>
+          <li>Salesforce Apex fires HTTP request to CTI vendor API</li>
+          <li>Vendor responds with a unique <code>callId</code></li>
+          <li>Apex returns <code>callId</code> to LWC</li>
+          <li>LWC calls <code>window.VendorSDK.claimCall(callId)</code></li>
+          <li>Softphone opens; agent sees the active call</li>
+        </ul>
+        <div class="callout tip"><strong>Key question:</strong> Does your vendor's Salesforce adapter expose a JavaScript SDK method that accepts a Call ID to open the softphone?</div>
+        <div class="tag-row">
+          <span class="badge blue">Salesforce controls the flow</span>
+          <span class="badge teal">Call ID bridges Apex ↔ JS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 3: ACTIVE VENDOR POINTER ══ -->
+    <div class="section-divider" id="s-pointer"><span class="section-icon">📌</span><h2>The Active Vendor Pointer</h2></div>
+
+    <div class="q-card" id="c4">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num">4</div>
+        <div class="q-title">What is the Active Vendor Pointer and why use Custom Metadata?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>Every part of the system must answer one runtime question: <em>"Which CTI vendor is currently active?"</em> The answer lives in a single Custom Metadata record with <code>IsActive__c = true</code>. All code reads this one record — there is no hardcoded vendor name anywhere.</p>
+        <div class="analogy">A whiteboard in the call center says "Today we are using: Vendor 1." Every agent checks it before calling. To switch, you erase "Vendor 1" and write "Vendor 2." All agents automatically use the new vendor without any individual instructions.</div>
+        <table class="data-table" style="margin:.8rem 0;">
+          <thead><tr><th></th><th>Custom Metadata (CMDT)</th><th>Custom Settings</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Scope</strong></td><td>Org-wide</td><td>Org-wide or per-user</td></tr>
+            <tr><td><strong>Deployable via changeset?</strong></td><td>✅ Yes</td><td>⚠️ Partial</td></tr>
+            <tr><td><strong>SOQL queryable?</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
+            <tr><td><strong>Runtime DML write?</strong></td><td>Requires Metadata API</td><td>Plain upsert DML</td></tr>
+            <tr><td><strong>Adding a vendor</strong></td><td>One new record</td><td>One new record</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Why CMDT was chosen:</strong> It travels with deployments (sandbox → production), so vendor config moves with your code and never needs to be manually recreated in each org.</p>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 4: CMDT RECORD ══ -->
+    <div class="section-divider" id="s-cmdt"><span class="section-icon">🗄️</span><h2>The CMDT Record</h2></div>
+
+    <div class="q-card" id="c5">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num">5</div>
+        <div class="q-title">What is a CMDT record? (Plain English)</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>CMDT stands for <strong>Custom Metadata Type</strong>. A CMDT record is one row in a Custom Metadata Type — exactly like a row in a spreadsheet.</p>
+        <div class="analogy">The Custom Metadata Type (<code>CTI_Vendor_Config__mdt</code>) is the spreadsheet. Each vendor (Vendor 1, Vendor 2, Vendor 3) is one row. Each column (endpoint, class name, active flag) is a field. Code reads from this spreadsheet at runtime to pick the right vendor.</div>
+        <p>The critical difference from a regular Salesforce record: CMDT records are part of your <strong>metadata layer</strong>, not your data layer. They deploy with your code via changesets and do not count against your storage limits.</p>
+        <div class="callout warn"><strong>Important:</strong> Writing to CMDT at runtime requires the <strong>Metadata API</strong> (<code>Metadata.Operations.enqueueDeployment()</code>), not a plain DML upsert. This is an asynchronous operation — the write is queued, not instant.</div>
+      </div>
+    </div>
+
+    <div class="q-card" id="c6">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num">6</div>
+        <div class="q-title">Full CMDT field list — what goes in each vendor's record?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p><strong>Identity &amp; Routing</strong></p>
+        <table class="data-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Example</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>DeveloperName</code></td><td>Text</td><td><code>Vendor1</code></td><td>Built-in CMDT field — unique key per vendor</td></tr>
+            <tr><td><code>Label</code></td><td>Text</td><td><code>Vendor 1 CTI</code></td><td>Human-readable name shown in the UI switch button</td></tr>
+            <tr><td><code>IsActive__c</code></td><td>Checkbox</td><td><code>true</code></td><td><strong>The active vendor pointer.</strong> Only one vendor has this as true</td></tr>
+            <tr><td><code>Integration_Option__c</code></td><td>Picklist</td><td><code>Option2</code></td><td>Whether to use server-side initiation or API+SDK flow</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Apex / Server-Side Fields</strong></p>
+        <table class="data-table">
+          <thead><tr><th>Field</th><th>Example</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>Adapter_Class__c</code></td><td><code>Vendor1CTIService</code></td><td>Apex class instantiated via <code>Type.forName()</code></td></tr>
+            <tr><td><code>Named_Credential__c</code></td><td><code>Vendor1_API_Cred</code></td><td>Named Credential holding the API key/token securely</td></tr>
+            <tr><td><code>API_Endpoint__c</code></td><td><code>/initiate</code></td><td>API path on the vendor's server</td></tr>
+            <tr><td><code>HTTP_Method__c</code></td><td><code>POST</code></td><td>HTTP method the vendor expects</td></tr>
+            <tr><td><code>Timeout_ms__c</code></td><td><code>10000</code></td><td>Callout timeout in milliseconds</td></tr>
+          </tbody>
+        </table>
+        <p><strong>JS / Frontend SDK Fields</strong></p>
+        <table class="data-table">
+          <thead><tr><th>Field</th><th>Example</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td><code>JS_SDK_Global__c</code></td><td><code>Vendor1SDK</code></td><td>The <code>window.*</code> object the vendor SDK exposes</td></tr>
+            <tr><td><code>JS_SDK_Claim_Method__c</code></td><td><code>claimCall</code></td><td>JS method to call to open the softphone and claim the call</td></tr>
+            <tr><td><code>Call_Center_Name__c</code></td><td><code>Vendor1_Call_Center</code></td><td>Salesforce Call Center DeveloperName for this vendor</td></tr>
+            <tr><td><code>Call_ID_Response_Path__c</code></td><td><code>data.callId</code></td><td>JSON path in API response where the Call ID lives</td></tr>
+          </tbody>
+        </table>
+        <div class="callout danger"><strong>Never store raw API keys or tokens in CMDT</strong> — these records are visible to all admins. Store the <em>name</em> of a Named Credential here. The Named Credential holds the secret in Salesforce's encrypted storage.</div>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 5: VENDOR SWITCHING ══ -->
+    <div class="section-divider" id="s-switching"><span class="section-icon">🔄</span><h2>Vendor Switching — The State Change</h2></div>
+
+    <div class="q-card" id="c7">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num">7</div>
+        <div class="q-title">What does the CMDT state look like before and after switching? (Interactive)</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>With 3 vendors, exactly <strong>one record has <code>IsActive__c = true</code></strong> at any time. The button click flips two fields — that is the entire switch operation.</p>
+        <p><strong>Click a button to simulate the switch:</strong></p>
+        <div class="switch-controls">
+          <button class="switch-btn av1" onclick="demoSwitch(1)">Activate Vendor 1</button>
+          <button class="switch-btn" onclick="demoSwitch(2)">Activate Vendor 2</button>
+          <button class="switch-btn" onclick="demoSwitch(3)">Activate Vendor 3</button>
+        </div>
+        <div class="cmdt-demo">
+          <div class="cmdt-row head">
+            <div>DeveloperName</div>
+            <div class="cmdt-ep">API_Endpoint__c</div>
+            <div class="cmdt-cls">Adapter_Class__c</div>
+            <div>IsActive__c</div>
+          </div>
+          <div class="cmdt-row active-row" id="dr1">
+            <div style="color:#0176d3;font-weight:700">Vendor1</div>
+            <div class="cmdt-ep" style="font-size:.75rem;color:#54698d">https://api.vendor1.com/call</div>
+            <div class="cmdt-cls" style="color:#7b5ea7">Vendor1CTIService</div>
+            <div><span class="active-pill on" id="dp1"><span class="dot"></span>true</span></div>
+          </div>
+          <div class="cmdt-row inactive-row" id="dr2">
+            <div style="color:#2e844a;font-weight:700">Vendor2</div>
+            <div class="cmdt-ep" style="font-size:.75rem;color:#54698d">https://api.vendor2.com/call</div>
+            <div class="cmdt-cls" style="color:#7b5ea7">Vendor2CTIService</div>
+            <div><span class="active-pill off" id="dp2"><span class="dot"></span>false</span></div>
+          </div>
+          <div class="cmdt-row inactive-row" id="dr3">
+            <div style="color:#fe9339;font-weight:700">Vendor3</div>
+            <div class="cmdt-ep" style="font-size:.75rem;color:#54698d">https://api.vendor3.com/call</div>
+            <div class="cmdt-cls" style="color:#7b5ea7">Vendor3CTIService</div>
+            <div><span class="active-pill off" id="dp3"><span class="dot"></span>false</span></div>
+          </div>
+        </div>
+        <div class="callout info" id="demo-callout">
+          <strong>Vendor 1 is active.</strong> API calls go to <code>https://api.vendor1.com/call</code>. Apex instantiates <code>Vendor1CTIService</code>. JS calls <code>window.Vendor1SDK.claimCall()</code>.
+        </div>
+        <p>Only <code>IsActive__c</code> changes on two records. Endpoints, class names, and everything else are untouched.</p>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 6: APEX STRUCTURE ══ -->
+    <div class="section-divider" id="s-apex"><span class="section-icon">⚙️</span><h2>Apex Class Structure</h2></div>
+
+    <div class="q-card" id="c8">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num">8</div>
+        <div class="q-title">Do we need separate Apex classes per vendor? What is the Strategy Pattern?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>You need <strong>one class per vendor</strong> for vendor-specific logic, plus <strong>three shared classes</strong> that never change. This is the Strategy Pattern — every vendor implements the same interface (<code>ICTIVendor</code>), so all callers are decoupled from vendor details.</p>
+        <table class="data-table">
+          <thead><tr><th>Class</th><th>Count</th><th>Changes when vendor switches?</th><th>Changes when adding a 4th vendor?</th></tr></thead>
+          <tbody>
+            <tr><td><code>ICTIVendor</code></td><td>1</td><td>✅ Never</td><td>✅ Never</td></tr>
+            <tr><td><code>VendorXCTIService</code></td><td>1 per vendor</td><td>✅ Never — new class, old ones untouched</td><td>Write one new class</td></tr>
+            <tr><td><code>CTIVendorFactory</code></td><td>1</td><td>✅ Never</td><td>✅ Never</td></tr>
+            <tr><td><code>CallController</code></td><td>1</td><td>✅ Never</td><td>✅ Never</td></tr>
+          </tbody>
+        </table>
+        <div class="code-wrap">
+          <div class="code-head"><span class="code-lang">Apex</span><span class="code-file">ICTIVendor.cls</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="cm">// The contract every vendor class must fulfill</span>
+<span class="kw">public interface</span> <span class="cl">ICTIVendor</span> {
+    <span class="cm">// Returns Call ID (Option 2) or null (Option 1)</span>
+    String <span class="fn">initiateCall</span>(Id recordId);
+}</pre>
+        </div>
+        <div class="code-wrap">
+          <div class="code-head"><span class="code-lang">Apex</span><span class="code-file">CTIVendorFactory.cls</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="kw">public class</span> <span class="cl">CTIVendorFactory</span> {
+
+    <span class="kw">public static</span> <span class="cl">ICTIVendor</span> <span class="fn">getActive</span>() {
+        <span class="cl">CTI_Vendor_Config__mdt</span> cfg = [
+            <span class="kw">SELECT</span> Adapter_Class__c
+            <span class="kw">FROM</span>   CTI_Vendor_Config__mdt
+            <span class="kw">WHERE</span>  IsActive__c = <span class="kw">true</span>
+            <span class="kw">LIMIT</span>  <span class="num">1</span>
+        ];
+        <span class="cm">// Dynamically load the correct vendor class from CMDT</span>
+        Type t = Type.<span class="fn">forName</span>(cfg.Adapter_Class__c);
+        <span class="kw">return</span> (<span class="cl">ICTIVendor</span>) t.<span class="fn">newInstance</span>();
+    }
+
+    <span class="kw">public static</span> <span class="cl">CTI_Vendor_Config__mdt</span> <span class="fn">getConfig</span>(String devName) {
+        <span class="kw">return</span> [
+            <span class="kw">SELECT</span> Named_Credential__c, API_Endpoint__c, HTTP_Method__c,
+                   Call_ID_Response_Path__c, Timeout_ms__c
+            <span class="kw">FROM</span>   CTI_Vendor_Config__mdt
+            <span class="kw">WHERE</span>  DeveloperName = :devName
+            <span class="kw">LIMIT</span>  <span class="num">1</span>
+        ];
+    }
+}</pre>
+        </div>
+        <div class="code-wrap">
+          <div class="code-head"><span class="code-lang">Apex</span><span class="code-file">Vendor1CTIService.cls (example)</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="kw">public class</span> <span class="cl">Vendor1CTIService</span> <span class="kw">implements</span> <span class="cl">ICTIVendor</span> {
+
+    <span class="kw">public</span> String <span class="fn">initiateCall</span>(Id recordId) {
+        <span class="cl">CTI_Vendor_Config__mdt</span> cfg = <span class="cl">CTIVendorFactory</span>.<span class="fn">getConfig</span>(<span class="str">'Vendor1'</span>);
+
+        HttpRequest req = <span class="kw">new</span> HttpRequest();
+        req.<span class="fn">setEndpoint</span>(<span class="str">'callout:'</span> + cfg.Named_Credential__c + cfg.API_Endpoint__c);
+        req.<span class="fn">setMethod</span>(cfg.HTTP_Method__c);
+        req.<span class="fn">setTimeout</span>(Integer.<span class="fn">valueOf</span>(cfg.Timeout_ms__c));
+        req.<span class="fn">setBody</span>(JSON.<span class="fn">serialize</span>(<span class="kw">new</span> Map&lt;String, Object&gt;{
+            <span class="str">'recordId'</span> =&gt; recordId,
+            <span class="str">'source'</span>   =&gt; <span class="str">'salesforce'</span>
+        }));
+
+        HttpResponse res = <span class="kw">new</span> Http().<span class="fn">send</span>(req);
+        Map&lt;String, Object&gt; body =
+            (Map&lt;String, Object&gt;) JSON.<span class="fn">deserializeUntyped</span>(res.<span class="fn">getBody</span>());
+        <span class="kw">return</span> (String) body.<span class="fn">get</span>(<span class="str">'callId'</span>); <span class="cm">// Vendor 1-specific response key</span>
+    }
+}</pre>
+        </div>
+        <div class="code-wrap">
+          <div class="code-head"><span class="code-lang">Apex</span><span class="code-file">CallController.cls</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="kw">public class</span> <span class="cl">CallController</span> {
+
+    <span class="prop">@AuraEnabled</span>
+    <span class="kw">public static</span> String <span class="fn">startCall</span>(Id recordId) {
+        <span class="cm">// This single line never changes regardless of which vendor is active</span>
+        <span class="kw">return</span> <span class="cl">CTIVendorFactory</span>.<span class="fn">getActive</span>().<span class="fn">initiateCall</span>(recordId);
+    }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 7: CALL FLOW ══ -->
+    <div class="section-divider" id="s-flow"><span class="section-icon">📞</span><h2>Full Call Initiation Flow</h2></div>
+
+    <div class="q-card" id="c9">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num">9</div>
+        <div class="q-title">Step-by-step: what happens from button click to softphone opening?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-actor"><span class="ab ab-lwc">LWC</span> Agent's browser</div>
+              <div class="step-title">Agent clicks "Call" on a Lead or Contact record</div>
+              <div class="step-desc">LWC captures the click, extracts <code>recordId</code> from the page context, fires an Apex call to <code>CallController.startCall(recordId)</code>.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-actor"><span class="ab ab-apex">Apex</span> CallController.cls</div>
+              <div class="step-title">Controller delegates to the factory</div>
+              <div class="step-desc">No vendor knowledge here — just <code>CTIVendorFactory.getActive().initiateCall(recordId)</code>.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-actor"><span class="ab ab-cmdt">CMDT</span> CTI_Vendor_Config__mdt</div>
+              <div class="step-title">Factory queries the active CMDT record</div>
+              <div class="step-desc">SOQL: <code>SELECT Adapter_Class__c FROM CTI_Vendor_Config__mdt WHERE IsActive__c = true LIMIT 1</code>. Returns <code>'Vendor1CTIService'</code>.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-left"><div class="step-num">4</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-actor"><span class="ab ab-apex">Apex</span> CTIVendorFactory.cls</div>
+              <div class="step-title">Factory dynamically loads the right class</div>
+              <div class="step-desc"><code>Type.forName('Vendor1CTIService').newInstance()</code> — no if/else, no hardcoding. The string came from the CMDT record.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-left"><div class="step-num">5</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-actor"><span class="ab ab-apex">Apex</span> Vendor1CTIService.cls</div>
+              <div class="step-title">Vendor class reads its own config and builds the HTTP request</div>
+              <div class="step-desc">Fetches its own CMDT row by DeveloperName. Builds the HttpRequest using <code>Named_Credential__c</code>, <code>API_Endpoint__c</code>, <code>HTTP_Method__c</code>.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-left"><div class="step-num">6</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-actor"><span class="ab ab-api">API</span> Vendor 1's servers</div>
+              <div class="step-title">HTTP callout fires to Vendor 1's API</div>
+              <div class="step-desc">Vendor receives the request, initiates the call, returns JSON: <code>{"callId": "abc-123-xyz", "status": "initiated"}</code>.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-left"><div class="step-num">7</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-actor"><span class="ab ab-lwc">LWC</span> ← Apex</div>
+              <div class="step-title">Call ID travels back to the browser</div>
+              <div class="step-desc"><code>'abc-123-xyz'</code> is returned through Vendor1CTIService → Factory → Controller → LWC Promise.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-left"><div class="step-num">8</div><div class="step-line"></div></div>
+            <div class="step-content">
+              <div class="step-actor"><span class="ab ab-sdk">JS SDK</span> window.Vendor1SDK</div>
+              <div class="step-title">LWC calls the vendor's JavaScript SDK to claim the call</div>
+              <div class="step-desc"><code>window[cfg.JS_SDK_Global__c][cfg.JS_SDK_Claim_Method__c]('abc-123-xyz')</code> — equivalent to <code>window.Vendor1SDK.claimCall('abc-123-xyz')</code>.</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="step-left"><div class="step-num">9</div></div>
+            <div class="step-content" style="padding-bottom:0;">
+              <div class="step-actor"><span class="ab ab-lwc">UI</span> Softphone</div>
+              <div class="step-title">Softphone opens — agent sees the call</div>
+              <div class="step-desc">Flow complete. If Vendor 2 were active instead, steps 3–6 would differ. Steps 1, 2, 7, 8, 9 are identical.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 8: SINGLE SOFTPHONE ══ -->
+    <div class="section-divider" id="s-softphone"><span class="section-icon">🖥️</span><h2>Single Softphone Layout Routing</h2></div>
+
+    <div class="q-card" id="c10">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num">10</div>
+        <div class="q-title">How does one softphone layout route to the correct active vendor?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>Salesforce loads the softphone via a <strong>Call Center</strong> definition in Setup. The naive approach (one Call Center per vendor) would require an admin to manually reassign users every time you switch — impractical. The solution is a <strong>meta-adapter pattern</strong>: one permanent Call Center pointing to a single Visualforce page that loads all vendor SDKs and activates only the correct one by reading the CMDT record at page-load time.</p>
+        <table class="data-table">
+          <thead><tr><th></th><th>Naive (1 Call Center per vendor)</th><th>Meta-Adapter (recommended)</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Call Center definitions</strong></td><td>One per vendor</td><td>One, permanent</td></tr>
+            <tr><td><strong>User reassignment on switch</strong></td><td>Required (admin action)</td><td>Not required</td></tr>
+            <tr><td><strong>Page reload needed after switch</strong></td><td>Yes</td><td>Yes (reads CMDT at load time)</td></tr>
+            <tr><td><strong>Setup changes on switch</strong></td><td>Yes</td><td>None</td></tr>
+          </tbody>
+        </table>
+        <p><strong>The Call Center points to your meta-adapter VF page — set once, never touched again:</strong></p>
+        <div class="code-wrap">
+          <div class="code-head"><span class="code-lang">XML</span><span class="code-file">Call Center definition</span></div>
+          <pre>&lt;CallCenter&gt;
+  &lt;item sortOrder=<span class="str">"0"</span> name=<span class="str">"reqAdapterUrl"</span> label=<span class="str">"CTI Adapter URL"</span>&gt;
+    /apex/CTIMetaAdapter
+  &lt;/item&gt;
+&lt;/CallCenter&gt;</pre>
+        </div>
+        <p><strong>The VF meta-adapter loads all SDKs and injects active vendor config:</strong></p>
+        <div class="code-wrap">
+          <div class="code-head"><span class="code-lang">Visualforce</span><span class="code-file">CTIMetaAdapter.page</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>&lt;apex:page controller=<span class="str">"CTIMetaAdapterController"</span> showHeader=<span class="str">"false"</span>&gt;
+
+  <span class="cm">&lt;!-- Load ALL vendor SDKs — only one will be activated --&gt;</span>
+  &lt;script src=<span class="str">"{!$Resource.Vendor1SDK}"</span>&gt;&lt;/script&gt;
+  &lt;script src=<span class="str">"{!$Resource.Vendor2SDK}"</span>&gt;&lt;/script&gt;
+  &lt;script src=<span class="str">"{!$Resource.Vendor3SDK}"</span>&gt;&lt;/script&gt;
+
+  &lt;script&gt;
+    <span class="kw">var</span> ACTIVE_VENDOR = {
+      sdkGlobal:   <span class="str">'{!activeVendor.JS_SDK_Global__c}'</span>,
+      claimMethod: <span class="str">'{!activeVendor.JS_SDK_Claim_Method__c}'</span>,
+      name:        <span class="str">'{!activeVendor.DeveloperName}'</span>
+    };
+  &lt;/script&gt;
+
+  &lt;script src=<span class="str">"{!$Resource.CTIMetaAdapterJS}"</span>&gt;&lt;/script&gt;
+
+&lt;/apex:page&gt;</pre>
+        </div>
+        <p><strong>The meta-adapter JS wires Open CTI events to the active vendor's SDK:</strong></p>
+        <div class="code-wrap">
+          <div class="code-head"><span class="code-lang">JS</span><span class="code-file">CTIMetaAdapterJS.js (Static Resource)</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="kw">var</span> vendorSDK = window[ACTIVE_VENDOR.sdkGlobal]; <span class="cm">// e.g. window['Vendor1SDK']</span>
+
+vendorSDK.<span class="fn">init</span>({
+    onCallReceived: <span class="kw">function</span>(callData) {
+        sforce.opencti.<span class="fn">setSoftphonePanelVisibility</span>({ visible: <span class="kw">true</span> });
+        sforce.opencti.<span class="fn">screenPop</span>({
+            type: sforce.opencti.SCREENPOP_TYPE.SOBJECT,
+            params: { recordId: callData.linkedRecordId }
+        });
+    },
+    onCallEnded: <span class="kw">function</span>() {
+        sforce.opencti.<span class="fn">setSoftphonePanelVisibility</span>({ visible: <span class="kw">false</span> });
+    }
+});
+
+<span class="cm">// Expose a bridge so LWC can call it after receiving the Call ID</span>
+window.CTIBridge = {
+    claimCall: <span class="kw">function</span>(callId) {
+        vendorSDK[ACTIVE_VENDOR.claimMethod](callId);
+    }
+};</pre>
+        </div>
+        <div class="callout warn"><strong>The softphone reads CMDT once at page load.</strong> After switching vendors, agents need to refresh their Salesforce page for the softphone to pick up the new vendor. If you need live switching without a page reload, use a Lightning Message Channel to signal the adapter to re-initialize — this is more complex but eliminates the refresh requirement.</div>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 9: SWITCH BUTTON ══ -->
+    <div class="section-divider" id="s-button"><span class="section-icon">🔘</span><h2>The Vendor Switch Button — LWC</h2></div>
+
+    <div class="q-card" id="c11">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num">11</div>
+        <div class="q-title">LWC component — HTML template and JavaScript controller</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>This component shows all vendors as buttons, highlights the active one, and shows a loading spinner during the switch. It can be placed in the utility bar, a home page, or any Lightning app page.</p>
+        <div class="code-wrap">
+          <div class="code-head"><span class="code-lang">LWC HTML</span><span class="code-file">ctiVendorSwitcher.html</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>&lt;<span class="kw">template</span>&gt;
+  &lt;<span class="fn">div</span> class=<span class="str">"vendor-switcher"</span>&gt;
+
+    &lt;<span class="fn">div</span> class=<span class="str">"switcher-header"</span>&gt;
+      &lt;<span class="fn">h3</span>&gt;CTI Vendor&lt;/<span class="fn">h3</span>&gt;
+      &lt;<span class="fn">span</span>&gt;Active: &lt;<span class="fn">strong</span>&gt;{activeVendorLabel}&lt;/<span class="fn">strong</span>&gt;&lt;/<span class="fn">span</span>&gt;
+    &lt;/<span class="fn">div</span>&gt;
+
+    &lt;<span class="kw">template</span> if:true={isSwitching}&gt;
+      &lt;<span class="fn">lightning-spinner</span> alternative-text=<span class="str">"Switching..."</span> size=<span class="str">"small"</span>&gt;&lt;/<span class="fn">lightning-spinner</span>&gt;
+      &lt;<span class="fn">p</span>&gt;Switching to {targetVendorLabel}...&lt;/<span class="fn">p</span>&gt;
+    &lt;/<span class="kw">template</span>&gt;
+
+    &lt;<span class="kw">template</span> if:false={isSwitching}&gt;
+      &lt;<span class="fn">div</span> class=<span class="str">"vendor-buttons"</span>&gt;
+        &lt;<span class="kw">template</span> for:each={vendors} for:item=<span class="str">"vendor"</span>&gt;
+          &lt;<span class="fn">button</span>
+            key={vendor.developerName}
+            class={vendor.btnClass}
+            data-name={vendor.developerName}
+            data-label={vendor.label}
+            onclick={handleVendorSwitch}
+            disabled={vendor.isActive}&gt;
+            {vendor.label}
+            &lt;<span class="kw">template</span> if:true={vendor.isActive}&gt;
+              &lt;<span class="fn">span</span>&gt; ✓ ACTIVE&lt;/<span class="fn">span</span>&gt;
+            &lt;/<span class="kw">template</span>&gt;
+          &lt;/<span class="fn">button</span>&gt;
+        &lt;/<span class="kw">template</span>&gt;
+      &lt;/<span class="fn">div</span>&gt;
+    &lt;/<span class="kw">template</span>&gt;
+
+    &lt;<span class="kw">template</span> if:true={errorMessage}&gt;
+      &lt;<span class="fn">div</span> class=<span class="str">"error-banner"</span>&gt;{errorMessage}&lt;/<span class="fn">div</span>&gt;
+    &lt;/<span class="kw">template</span>&gt;
+
+  &lt;/<span class="fn">div</span>&gt;
+&lt;/<span class="kw">template</span>&gt;</pre>
+        </div>
+        <div class="code-wrap">
+          <div class="code-head"><span class="code-lang">LWC JS</span><span class="code-file">ctiVendorSwitcher.js</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="kw">import</span> { LightningElement, track } <span class="kw">from</span> <span class="str">'lwc'</span>;
+<span class="kw">import</span> getAllVendors    <span class="kw">from</span> <span class="str">'@salesforce/apex/CTIVendorSwitchController.getAllVendors'</span>;
+<span class="kw">import</span> setActiveVendor <span class="kw">from</span> <span class="str">'@salesforce/apex/CTIVendorSwitchController.setActiveVendor'</span>;
+<span class="kw">import</span> { ShowToastEvent } <span class="kw">from</span> <span class="str">'lightning/platformShowToastEvent'</span>;
+
+<span class="kw">export default class</span> <span class="cl">CtiVendorSwitcher</span> <span class="kw">extends</span> <span class="cl">LightningElement</span> {
+    <span class="prop">@track</span> vendors = [];
+    <span class="prop">@track</span> isSwitching = <span class="kw">false</span>;
+    <span class="prop">@track</span> errorMessage = <span class="kw">null</span>;
+    targetVendorLabel = <span class="str">''</span>;
+
+    connectedCallback() { <span class="kw">this</span>.<span class="fn">loadVendors</span>(); }
+
+    <span class="fn">loadVendors</span>() {
+        <span class="fn">getAllVendors</span>().<span class="fn">then</span>(result =&gt; {
+            <span class="kw">this</span>.vendors = result.<span class="fn">map</span>(v =&gt; ({
+                ...v,
+                btnClass: v.IsActive__c ? <span class="str">'vendor-btn active'</span> : <span class="str">'vendor-btn'</span>
+            }));
+        }).<span class="fn">catch</span>(err =&gt; { <span class="kw">this</span>.errorMessage = err.body.message; });
+    }
+
+    <span class="fn">handleVendorSwitch</span>(event) {
+        <span class="kw">const</span> name  = event.target.dataset.name;
+        <span class="kw">const</span> label = event.target.dataset.label;
+        <span class="kw">this</span>.isSwitching = <span class="kw">true</span>;
+        <span class="kw">this</span>.targetVendorLabel = label;
+        <span class="kw">this</span>.errorMessage = <span class="kw">null</span>;
+
+        <span class="fn">setActiveVendor</span>({ vendorName: name })
+            .<span class="fn">then</span>(() =&gt; {
+                <span class="kw">this</span>.isSwitching = <span class="kw">false</span>;
+                <span class="kw">this</span>.<span class="fn">loadVendors</span>();
+                <span class="kw">this</span>.<span class="fn">dispatchEvent</span>(<span class="kw">new</span> <span class="cl">ShowToastEvent</span>({
+                    title:   <span class="str">'Vendor Switched'</span>,
+                    message: `Now using ${label}. Refresh to update the softphone.`,
+                    variant: <span class="str">'success'</span>
+                }));
+            })
+            .<span class="fn">catch</span>(err =&gt; {
+                <span class="kw">this</span>.isSwitching = <span class="kw">false</span>;
+                <span class="kw">this</span>.errorMessage = <span class="str">'Switch failed: '</span> + err.body.message;
+            });
+    }
+
+    <span class="kw">get</span> <span class="fn">activeVendorLabel</span>() {
+        <span class="kw">const</span> active = <span class="kw">this</span>.vendors.<span class="fn">find</span>(v =&gt; v.IsActive__c);
+        <span class="kw">return</span> active ? active.Label : <span class="str">'None'</span>;
+    }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="q-card" id="c12">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num">12</div>
+        <div class="q-title">Apex controller — getAllVendors() and setActiveVendor()</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <div class="code-wrap">
+          <div class="code-head"><span class="code-lang">Apex</span><span class="code-file">CTIVendorSwitchController.cls</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre><span class="kw">public class</span> <span class="cl">CTIVendorSwitchController</span> {
+
+    <span class="cm">// Returns all vendor records so the LWC can render buttons</span>
+    <span class="prop">@AuraEnabled(cacheable=true)</span>
+    <span class="kw">public static</span> List&lt;<span class="cl">CTI_Vendor_Config__mdt</span>&gt; <span class="fn">getAllVendors</span>() {
+        <span class="kw">return</span> [
+            <span class="kw">SELECT</span> DeveloperName, Label, IsActive__c
+            <span class="kw">FROM</span>   CTI_Vendor_Config__mdt
+            <span class="kw">ORDER BY</span> Label ASC
+        ];
+    }
+
+    <span class="cm">// Called on button click — flips IsActive__c via the Metadata API</span>
+    <span class="prop">@AuraEnabled</span>
+    <span class="kw">public static void</span> <span class="fn">setActiveVendor</span>(String vendorName) {
+        <span class="cl">Metadata.DeployContainer</span> container = <span class="kw">new</span> <span class="cl">Metadata.DeployContainer</span>();
+
+        <span class="kw">for</span> (<span class="cl">CTI_Vendor_Config__mdt</span> v : [
+            <span class="kw">SELECT</span> DeveloperName, Label <span class="kw">FROM</span> CTI_Vendor_Config__mdt
+        ]) {
+            <span class="cl">Metadata.CustomMetadata</span> md = <span class="kw">new</span> <span class="cl">Metadata.CustomMetadata</span>();
+            md.fullName = <span class="str">'CTI_Vendor_Config.'</span> + v.DeveloperName;
+            md.label    = v.Label;
+
+            <span class="cl">Metadata.CustomMetadataValue</span> field = <span class="kw">new</span> <span class="cl">Metadata.CustomMetadataValue</span>();
+            field.field = <span class="str">'IsActive__c'</span>;
+            field.value = (v.DeveloperName == vendorName); <span class="cm">// true for target, false for all others</span>
+            md.values.add(field);
+            container.<span class="fn">addMetadata</span>(md);
+        }
+
+        <span class="cm">// Async — completes in a few seconds, not instantly</span>
+        <span class="cl">Metadata.Operations</span>.<span class="fn">enqueueDeployment</span>(container, <span class="kw">null</span>);
+    }
+}</pre>
+        </div>
+        <div class="callout warn"><strong>Async note:</strong> <code>enqueueDeployment()</code> queues the write — it does not complete instantly. The toast tells the agent the switch was requested. For production use, pass a callback class (second argument) to receive a Salesforce notification when the write succeeds or fails.</div>
+      </div>
+    </div>
+
+    <div class="q-card" id="c13">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num">13</div>
+        <div class="q-title">Meta XML — where does the switch button component appear?</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>The component can be placed in the utility bar (always visible at the bottom of Salesforce), a home page, or a supervisor dashboard app page.</p>
+        <div class="code-wrap">
+          <div class="code-head"><span class="code-lang">XML</span><span class="code-file">ctiVendorSwitcher.js-meta.xml</span><button class="code-copy-btn" onclick="copyCode(this)">Copy</button></div>
+          <pre>&lt;?xml version=<span class="str">"1.0"</span> encoding=<span class="str">"UTF-8"</span>?&gt;
+&lt;LightningComponentBundle xmlns=<span class="str">"http://soap.sforce.com/2006/04/metadata"</span>&gt;
+  &lt;apiVersion&gt;59.0&lt;/apiVersion&gt;
+  &lt;isExposed&gt;true&lt;/isExposed&gt;
+  &lt;targets&gt;
+    &lt;target&gt;lightning__UtilityBar&lt;/target&gt;   <span class="cm">&lt;!-- always-visible bottom bar --&gt;</span>
+    &lt;target&gt;lightning__AppPage&lt;/target&gt;       <span class="cm">&lt;!-- standalone supervisor dashboard --&gt;</span>
+    &lt;target&gt;lightning__HomePage&lt;/target&gt;      <span class="cm">&lt;!-- call center home page --&gt;</span>
+  &lt;/targets&gt;
+&lt;/LightningComponentBundle&gt;</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SECTION 10: SUMMARY ══ -->
+    <div class="section-divider" id="s-summary"><span class="section-icon">✅</span><h2>Summary &amp; Key Rules</h2></div>
+
+    <div class="q-card" id="c14">
+      <div class="q-header" onclick="toggleCard(this)">
+        <div class="q-num green">✓</div>
+        <div class="q-title">Architecture summary — what changes vs what never changes</div>
+        <div class="q-chevron">▼</div>
+      </div>
+      <div class="q-body">
+        <p>The entire architecture reduces to one rule: <strong>every piece of vendor-specific knowledge lives in the CMDT record, not in code.</strong> Code only reads that record and routes accordingly.</p>
+        <table class="data-table">
+          <thead><tr><th>What changes when vendor switches</th><th>What NEVER changes</th></tr></thead>
+          <tbody>
+            <tr><td>Which CMDT record <code>IsActive__c = true</code></td><td>LWC "Call" button component</td></tr>
+            <tr><td>Which Apex class <code>Type.forName()</code> loads</td><td><code>CallController.cls</code></td></tr>
+            <tr><td>Which API endpoint the HTTP callout hits</td><td><code>CTIVendorFactory.cls</code></td></tr>
+            <tr><td>Which JS SDK method is invoked in the browser</td><td><code>ICTIVendor</code> interface</td></tr>
+            <tr><td>Which Named Credential is used for auth</td><td>Call Center definition + VF meta-adapter URL</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Adding a 4th vendor = one new CMDT record + one new Apex class.</strong> Zero changes to existing code.</p>
+        <div class="tag-row">
+          <span class="badge blue">Custom Metadata</span>
+          <span class="badge purple">Strategy Pattern</span>
+          <span class="badge green">Open CTI</span>
+          <span class="badge teal">Meta-Adapter VF</span>
+          <span class="badge orange">Named Credentials</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /article-body -->
+
+  <!-- ── TOC SIDEBAR ── -->
+  <aside class="toc-sidebar">
+    <div class="toc-box">
+      <div class="toc-box-header" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? '' : 'none'">
+        📋 TABLE OF CONTENTS
+      </div>
+      <div class="toc-box-body">
+        <div class="toc-group-label">Overview</div>
+        <a class="toc-link" href="#c1">1. What are we building?</a>
+        <div class="toc-group-label">Integration Options</div>
+        <a class="toc-link" href="#c2">2. Option 1 — Server-Side Initiation</a>
+        <a class="toc-link" href="#c3">3. Option 2 — API + JS SDK Claim</a>
+        <div class="toc-group-label">The Architecture</div>
+        <a class="toc-link" href="#c4">4. Active Vendor Pointer</a>
+        <a class="toc-link" href="#c5">5. What is a CMDT Record?</a>
+        <a class="toc-link" href="#c6">6. Full CMDT Field List</a>
+        <a class="toc-link" href="#c7">7. Vendor State Demo (Interactive)</a>
+        <div class="toc-group-label">The Code</div>
+        <a class="toc-link" href="#c8">8. Apex Class Structure</a>
+        <a class="toc-link" href="#c9">9. Full Call Flow (9 Steps)</a>
+        <a class="toc-link" href="#c10">10. Single Softphone Routing</a>
+        <a class="toc-link" href="#c11">11. Switch Button — HTML &amp; JS</a>
+        <a class="toc-link" href="#c12">12. Switch Button — Apex Controller</a>
+        <a class="toc-link" href="#c13">13. Switch Button — Meta XML</a>
+        <div class="toc-group-label">Summary</div>
+        <a class="toc-link" href="#c14">14. Architecture Summary</a>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>Key Decision</strong>
+      Custom Metadata was chosen over Custom Settings for deployment portability — vendor config travels with code via changesets. Runtime writes require Metadata API (async), not plain DML.
+    </div>
+
+    <div class="info-box" style="margin-top:.75rem;">
+      <strong>Official Docs</strong>
+      <ul style="list-style:none;margin-top:.4rem;font-size:.78rem;">
+        <li style="margin-bottom:.3rem;"><a href="https://help.salesforce.com/s/articleView?id=sf.custommetadatatypes_overview.htm" target="_blank" style="color:var(--blue);">Custom Metadata Types ↗</a></li>
+        <li style="margin-bottom:.3rem;"><a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_metadata_types_crud.htm" target="_blank" style="color:var(--blue);">CMDT Runtime Writes ↗</a></li>
+        <li style="margin-bottom:.3rem;"><a href="https://developer.salesforce.com/docs/atlas.en-us.api_cti.meta/api_cti/sforce_api_cti_intro.htm" target="_blank" style="color:var(--blue);">Open CTI Dev Guide ↗</a></li>
+        <li style="margin-bottom:.3rem;"><a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_methods_system_type.htm" target="_blank" style="color:var(--blue);">Type.forName() ↗</a></li>
+        <li><a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_callouts_named_credentials.htm" target="_blank" style="color:var(--blue);">Named Credentials ↗</a></li>
+      </ul>
+    </div>
+  </aside>
+
+</div><!-- /article-wrap -->
+
+<!-- Floating TOC button (mobile) -->
+<button id="toc-float-btn" onclick="document.getElementById('toc-overlay').classList.add('open')">
+  📋 Contents
+</button>
+
+<!-- TOC Overlay (mobile) -->
+<div id="toc-overlay" onclick="if(event.target===this) this.classList.remove('open')">
+  <div id="toc-overlay-panel">
+    <div id="toc-overlay-header">
+      <span>Table of Contents</span>
+      <button id="toc-overlay-close" onclick="document.getElementById('toc-overlay').classList.remove('open')">✕</button>
+    </div>
+    <div class="toc-group-label">Overview</div>
+    <a class="toc-link" href="#c1" onclick="document.getElementById('toc-overlay').classList.remove('open')">1. What are we building?</a>
+    <div class="toc-group-label">Integration Options</div>
+    <a class="toc-link" href="#c2" onclick="document.getElementById('toc-overlay').classList.remove('open')">2. Option 1 — Server-Side Initiation</a>
+    <a class="toc-link" href="#c3" onclick="document.getElementById('toc-overlay').classList.remove('open')">3. Option 2 — API + JS SDK Claim</a>
+    <div class="toc-group-label">Architecture</div>
+    <a class="toc-link" href="#c4" onclick="document.getElementById('toc-overlay').classList.remove('open')">4. Active Vendor Pointer</a>
+    <a class="toc-link" href="#c5" onclick="document.getElementById('toc-overlay').classList.remove('open')">5. What is a CMDT Record?</a>
+    <a class="toc-link" href="#c6" onclick="document.getElementById('toc-overlay').classList.remove('open')">6. Full CMDT Field List</a>
+    <a class="toc-link" href="#c7" onclick="document.getElementById('toc-overlay').classList.remove('open')">7. Vendor State Demo</a>
+    <div class="toc-group-label">Code</div>
+    <a class="toc-link" href="#c8" onclick="document.getElementById('toc-overlay').classList.remove('open')">8. Apex Class Structure</a>
+    <a class="toc-link" href="#c9" onclick="document.getElementById('toc-overlay').classList.remove('open')">9. Full Call Flow</a>
+    <a class="toc-link" href="#c10" onclick="document.getElementById('toc-overlay').classList.remove('open')">10. Single Softphone Routing</a>
+    <a class="toc-link" href="#c11" onclick="document.getElementById('toc-overlay').classList.remove('open')">11. Switch Button — HTML &amp; JS</a>
+    <a class="toc-link" href="#c12" onclick="document.getElementById('toc-overlay').classList.remove('open')">12. Switch Button — Apex</a>
+    <a class="toc-link" href="#c13" onclick="document.getElementById('toc-overlay').classList.remove('open')">13. Switch Button — Meta XML</a>
+    <a class="toc-link" href="#c14" onclick="document.getElementById('toc-overlay').classList.remove('open')">14. Summary</a>
+  </div>
+</div>
+
+<footer style="background:var(--navy);color:rgba(255,255,255,.55);text-align:center;padding:1.5rem 2rem;font-size:.78rem;">
+  <strong style="color:rgba(255,255,255,.8);">Salesforce Encyclopedia</strong> &mdash; A community knowledge base &mdash; Not affiliated with Salesforce, Inc.
+</footer>
+
+<script>
+  /* ── Card toggle ── */
+  function toggleCard(header) {
+    header.closest('.q-card').classList.toggle('open');
+  }
+
+  function expandAll() {
+    document.querySelectorAll('.q-card').forEach(c => c.classList.add('open'));
+  }
+  function collapseAll() {
+    document.querySelectorAll('.q-card').forEach(c => c.classList.remove('open'));
+  }
+
+  /* ── Copy code ── */
+  function copyCode(btn) {
+    const pre = btn.closest('.code-wrap').querySelector('pre');
+    navigator.clipboard.writeText(pre.innerText).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 1600);
+    });
+  }
+
+  /* ── CMDT demo ── */
+  const demoTexts = {
+    1: '<strong>Vendor 1 is active.</strong> API calls go to <code>https://api.vendor1.com/call</code>. Apex instantiates <code>Vendor1CTIService</code>. JS calls <code>window.Vendor1SDK.claimCall()</code>.',
+    2: '<strong>Vendor 2 is now active.</strong> API calls go to <code>https://api.vendor2.com/call</code>. Apex now instantiates <code>Vendor2CTIService</code>. JS calls <code>window.Vendor2SDK.openCall()</code>.',
+    3: '<strong>Vendor 3 is now active.</strong> API calls go to <code>https://api.vendor3.com/call</code>. Apex now instantiates <code>Vendor3CTIService</code>. JS calls <code>window.Vendor3SDK.startCall()</code>.'
+  };
+
+  function demoSwitch(n) {
+    const btns = document.querySelectorAll('.switch-btn');
+    btns.forEach((b, i) => {
+      b.className = 'switch-btn';
+      if (i + 1 === n) b.classList.add('av' + n);
+    });
+    for (let i = 1; i <= 3; i++) {
+      const row  = document.getElementById('dr' + i);
+      const pill = document.getElementById('dp' + i);
+      if (i === n) {
+        row.className  = 'cmdt-row active-row';
+        pill.className = 'active-pill on';
+        pill.innerHTML = '<span class="dot"></span>true';
+      } else {
+        row.className  = 'cmdt-row inactive-row';
+        pill.className = 'active-pill off';
+        pill.innerHTML = '<span class="dot"></span>false';
+      }
+    }
+    document.getElementById('demo-callout').innerHTML = demoTexts[n];
+  }
+
+  /* ── TOC active link on scroll ── */
+  const cards = document.querySelectorAll('.q-card');
+  const tocLinks = document.querySelectorAll('.toc-link');
+  const tocObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        tocLinks.forEach(l => {
+          l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  cards.forEach(c => tocObs.observe(c));
+
+  /* ── Floating TOC button ── */
+  const tocSidebar = document.querySelector('.toc-sidebar');
+  window.addEventListener('scroll', () => {
+    const btn = document.getElementById('toc-float-btn');
+    if (!tocSidebar) { btn.classList.add('show'); return; }
+    const rect = tocSidebar.getBoundingClientRect();
+    btn.classList.toggle('show', rect.bottom < 0 || rect.top > window.innerHeight);
+  }, { passive: true });
+
+  /* ── Theme toggle ── */
+  function toggleTheme() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    document.getElementById('themeBtn').textContent = next === 'dark' ? '☀️' : '🌙';
+    try { localStorage.setItem('enc-theme', next); } catch(e) {}
+  }
+  (function() {
+    try {
+      const saved = localStorage.getItem('enc-theme');
+      if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.addEventListener('DOMContentLoaded', () => {
+          const b = document.getElementById('themeBtn');
+          if (b) b.textContent = '☀️';
+        });
+      }
+    } catch(e) {}
+  })();
+</script>
+
+</body>
+</html>
